@@ -39,7 +39,7 @@
 A milestone is created for these occasions :
 
 - For every TP submission (TP1, TP2, TP3, and TP4)
-- For when all features from a TP have been merged onto the `experimental` branch
+- For when all features from a TP have been merged onto the `Dev` branch
 - When the project ends
 
 ## Conventional Commits Messages
