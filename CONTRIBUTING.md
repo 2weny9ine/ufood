@@ -25,14 +25,14 @@
 
 #### `Dev`
 
-- Only completed features should be pushed onto the `experimental` branch
+- Only completed features should be pushed onto the `Dev` branch
 - No commits can/should be directly pushed to the `main`
-- A pull request must be made from the `experimental` branch to push commits onto this branch.
+- A pull request must be made from the `Dev` branch to push commits onto this branch.
   - **At least 1** person other than the author needs to review and approve the pull request before the merge is done
 
 > [!CAUTION]
 > Absolutely any pull request made directly to the `main` by a feature branch or bug fix branch will be rejected. It
-> must pass by `experimental` first.
+> must pass by `Dev` first.
 
 ### Milestones
 
