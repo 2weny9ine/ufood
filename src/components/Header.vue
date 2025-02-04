@@ -3,10 +3,12 @@
     <div class="logo">
       <img src="../assets/Logo.png" alt="Logo" />
     </div>
+    <SearchBar />
     <Navigation />
   </header>
 </template>
 <script setup lang="ts">
+import SearchBar from '@/components/SearchBar.vue'
 import Navigation from '@/components/Navigation.vue'
 </script>
 <style>
