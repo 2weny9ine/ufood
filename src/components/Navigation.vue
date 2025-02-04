@@ -24,11 +24,10 @@ nav a {
   text-decoration: none;
   color: white;
   font-weight: bold;
-  font-family: 'Optima', sans-serif;
-  font-size: 15px;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-size: 20px;
 }
 nav a:hover {
-  text-decoration: underline;
-  color: #a5a1a1;
+  color: #f4b4b4;
 }
 </style>
