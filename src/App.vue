@@ -1,12 +1,13 @@
 <template>
-  <div id="app">
-    <Navigation></Navigation>
-    <router-view></router-view>
+  <div>
+    <Header />
+    <Navigation />
+    <router-view />
   </div>
 </template>
 
 <script setup>
-import Navigation from './components/Navigation.vue'
+import Header from '@/components/Header.vue'
 </script>
 
 <style></style>
