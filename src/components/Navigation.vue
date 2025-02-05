@@ -14,4 +14,20 @@
   </nav>
 </template>
 
-<style></style>
+<style>
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+nav a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-size: 20px;
+}
+nav a:hover {
+  color: #f4b4b4;
+}
+</style>
