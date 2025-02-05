@@ -18,7 +18,6 @@
 </template>
 
 <style scoped>
-/* Ensure full-screen layout */
 .Home {
   display: flex;
   width: 100vw;
@@ -35,7 +34,6 @@
   height: 100%;
 }
 
-/* Make the image fill the background */
 .image {
   width: 100%;
   height: 100%;
@@ -47,7 +45,6 @@
   filter: brightness(90%);
 }
 
-/* Center the overlay content */
 .overlay {
   position: absolute;
   top: 50%;
@@ -55,10 +52,9 @@
   transform: translate(-50%, -50%);
   text-align: center;
   width: 100%;
-  padding: 20px; /* Add padding to give space */
+  padding: 20px;
 }
 
-/* Center the logo and make it bigger */
 .logo {
   display: flex;
   justify-content: center;
@@ -71,7 +67,6 @@
   height: auto;
 }
 
-/* Style headings */
 .overlay h1 {
   font-size: 3em;
   color: white;
@@ -86,12 +81,11 @@
   margin-bottom: 20px;
 }
 
-/* Center buttons and ensure spacing */
 .Buttons {
   display: flex;
   justify-content: center;
-  gap: 20px; /* Adds space between the buttons */
-  margin-top: 20px; /* Add space between buttons and text */
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .Explore,
@@ -110,7 +104,7 @@
 }
 
 .Start {
-  background-color: #f55702; /* Example for visual differentiation */
+  background-color: #f55702;
 }
 
 .Explore:hover,
