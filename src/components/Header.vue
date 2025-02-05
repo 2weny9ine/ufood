@@ -16,13 +16,17 @@ import Navigation from '@/components/Navigation.vue'
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 5px 10px;
   background-color: #f55702;
   color: white;
-  border-radius: 25px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
 .logo img {
-  height: 70px;
+  height: 40px;
   margin-right: 10px;
 }
 </style>
