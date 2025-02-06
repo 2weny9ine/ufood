@@ -1,197 +1,76 @@
 <template>
-  <section class="section1">
-    <img src="../assets/background%20pic.png" alt="Background Image" class="main-image" />
+  <div class="Main">
+    <img src="../assets/background%20pic.png" alt="Background Image" class="image" />
     <div class="overlay">
+      <div class="logo">
+        <img src="../assets/Logo.png" alt="logo" />
+      </div>
       <h1>Discover Flavor, Share the Love!</h1>
-      <h2>Find & Share Your Farorite Restaurants!</h2>
-      <img class="logo-main" src="../assets/Logo.png" alt="Logo" />
+      <h2>Find & Share Your Favorite Restaurants!</h2>
+      <div class="Buttons">
+        <a href="#restaurants-section" class="Explore">Explore</a>
+        <button class="Start">Get Started →</button>
+      </div>
+    </div>
+  </div>
+
+  <section id="restaurants-section">
+    <h1 class="restaurants-label">Restaurants</h1>
+
+    <div class="inline-container">
+      <section class="filter-sidebar">
+        <h3>Filters</h3>
+        <label><input type="checkbox" name="filter" value="Pizza" /> Pizza</label>
+        <label><input type="checkbox" name="filter" value="Burgers" /> Burgers</label>
+        <label><input type="checkbox" name="filter" value="Sushi" /> Sushi</label>
+        <label><input type="checkbox" name="filter" value="Desserts" /> Desserts</label>
+        <button class="apply-filters">Apply Filters</button>
+      </section>
+
+      <section class="restaurants">
+        <div class="Table">
+          <div class="restaurant-card">
+            <div class="banner-container">
+              <img
+                src="../assets/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
+                alt="Pizza Pizza"
+                class="restaurant-banner"
+              />
+              <div class="banner-overlay">
+                <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+              </div>
+            </div>
+            <div class="inline-container-restaurant">
+              <h3>Pizza Pizza</h3>
+              <a href="#" class="details">Details →</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </section>
-
-  <h1 class="restaurants-label">Restaurants</h1>
-
-  <div class="inline-container">
-    <section class="filter-sidebar">
-      <h3>Filters</h3>
-      <label><input type="checkbox" name="filter" value="Pizza" /> Pizza</label>
-      <label><input type="checkbox" name="filter" value="Burgers" /> Burgers</label>
-      <label><input type="checkbox" name="filter" value="Sushi" /> Sushi</label>
-      <label><input type="checkbox" name="filter" value="Desserts" /> Desserts</label>
-      <button class="apply-filters">Apply Filters</button>
-    </section>
-
-    <section class="restaurants">
-      <div class="Table">
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-        <div class="restaurant-card">
-          <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" class="restaurant-logo" />
-          <div class="inline-container-restaurant">
-            <h3>Pizza Pizza</h3>
-            <a href="#" class="details" style="text-align: right">Details →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
 </template>
 
 <style scoped>
-.section1 {
-  position: relative;
+.Main {
   display: flex;
+  width: 100vw;
+  height: 100vh;
   justify-content: center;
   align-items: center;
-  height: 50vh; /* vh: height of viewport */
-  width: 100%;
-  margin-top: 90px;
+  margin-top: 0;
+  overflow: hidden;
 }
 
-.main-image {
-  max-width: 100%;
-  max-height: 100%;
-  width: 70%;
-  border-radius: 50px;
+.image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  filter: brightness(90%);
 }
 
 .overlay {
@@ -200,23 +79,75 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  color: white;
+  width: 100%;
+  padding: 20px;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  width: 200px;
+  height: auto;
 }
 
 .overlay h1 {
-  font-size: 4vh;
+  font-size: 3em;
   color: white;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 0px;
 }
 
 .overlay h2 {
-  font-size: 3vh;
+  font-size: 1.5em;
   color: white;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 40px;
 }
 
-.overlay .logo-main {
-  width: 25vh;
+.Buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.Explore,
+.Start {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-size: 1.3em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.Explore {
+  font-family: Arial, Helvetica, sans-serif;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-size: 1.3em;
+  font-weight: bold;
+  cursor: pointer;
+  color: #f55702;
+  text-decoration: none;
+  background-color: white;
+  display: inline-block;
+}
+
+.Start {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #ffffff;
+  background-color: #f55702;
+}
+
+.Explore:hover,
+.Start:hover {
+  opacity: 0.8;
 }
 
 .restaurants-label {
@@ -237,40 +168,72 @@
 }
 
 .restaurant-card {
+  position: relative;
   background: white;
   border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   width: 400px;
   height: fit-content;
-  max-width: 500px;
+  max-width: 400px;
   max-height: 300px;
+  overflow: hidden;
 }
-.restaurant-logo {
-  max-width: 300px;
-  max-height: 200px;
-  z-index: 1; /* Ensures the logo stays on top */
+.restaurant-banner {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  filter: brightness(0.8);
+  z-index: 0;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+  max-width: 100%;
 }
 
 .inline-container,
 .inline-container-restaurant {
+  margin-left: 10px;
+  margin-right: 10px;
   display: flex;
-  width: 100%; /* Adjust as needed */
+  width: 100%;
 }
 .inline-container-restaurant {
   align-items: center;
   justify-content: space-between;
 }
 
+.banner-container {
+  position: relative;
+  height: 150px;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+}
+
+.banner-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+.banner-overlay img {
+  width: 150px;
+  height: auto;
+}
+
 h3 {
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 20px;
   color: #0b0b0b;
   text-align: left;
 }
 
 .details {
+  margin-right: 20px;
   color: #ff6600;
   text-decoration: none;
   font-weight: bold;
@@ -283,10 +246,9 @@ h3 {
   text-decoration: none;
 }
 
-/* Sidebar for Filters */
 .filter-sidebar {
   padding: 20px;
-  margin: 20px;
+  margin-right: 20px;
   height: fit-content;
   width: 200px;
   max-width: 500px;
@@ -295,7 +257,7 @@ h3 {
   background: rgba(90, 74, 74, 0.33);
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  top: 80px; /* Keeps it 20px from the top */
+  top: 80px;
 }
 
 .filter-sidebar h3 {
