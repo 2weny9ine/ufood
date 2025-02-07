@@ -8,7 +8,13 @@
         <router-link to="/restaurant">Restaurant</router-link>
       </li>
       <li>
-        <router-link to="/user">User Profile</router-link>
+        <router-link to="/user">
+          <img
+            src="../assets/images/profile-round-1342-svgrepo-com.svg"
+            alt="User Profile"
+            class="profile-img"
+          />
+        </router-link>
       </li>
     </ul>
   </nav>
@@ -29,5 +35,8 @@ nav a {
 }
 nav a:hover {
   color: #f4b4b4;
+}
+.profile-img {
+  width: 22px;
 }
 </style>
