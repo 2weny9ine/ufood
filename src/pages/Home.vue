@@ -1,9 +1,9 @@
 <template>
   <div class="Main">
-    <img src="../assets/background%20pic.png" alt="Background Image" class="image" />
+    <img src="../assets/images/background%20pic.png" alt="Background Image" class="image" />
     <div class="overlay">
       <div class="logo">
-        <img src="../assets/Logo.png" alt="logo" />
+        <img src="../assets/images/Logo.png" alt="logo" />
       </div>
       <h1>Discover Flavor, Share the Love!</h1>
       <h2>Find & Share Your Favorite Restaurants!</h2>
@@ -29,19 +29,15 @@
 
       <section class="restaurants">
         <div class="Table">
-          <div class="restaurant-card">
+          <div v-for="restaurant in restaurants" :key="restaurant.id" class="restaurant-card">
             <div class="banner-container">
-              <img
-                src="../assets/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
-                alt="Pizza Pizza"
-                class="restaurant-banner"
-              />
+              <img :src="restaurant.images[0]" :alt="restaurant.name" class="restaurant-banner" />
               <div class="banner-overlay">
-                <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                <img :src="restaurant.images[1]" />
               </div>
             </div>
             <div class="inline-container-restaurant">
-              <h3>Pizza Pizza</h3>
+              <h3>{{ restaurant.name }}</h3>
               <a href="#" class="details">Details →</a>
             </div>
           </div>
@@ -287,4 +283,16 @@ h3 {
   border-radius: 5px;
 }
 </style>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import restaurantsData from '@/assets/restaurants.json'
+
+const restaurants = ref([])
+
+onMounted(() => {
+  restaurants.value = restaurantsData.map((restaurant) => ({
+    ...restaurant,
+    images: restaurant.images.map((image) => new URL(image, import.meta.url).href),
+  }))
+})
+</script>
