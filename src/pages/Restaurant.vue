@@ -18,8 +18,15 @@
             </div>
             <div class="contact-info">
               <p class="restaurant-location">
-                <img src="../assets/location-pin-alt-1-svgrepo-com.svg" height="18" /> 2360 Ch
-                Ste-Foy, Québec, QC G1V 1T1
+                <img src="../assets/location-pin-alt-1-svgrepo-com.svg" height="18" />
+                <a
+                  :href="`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="map-link"
+                >
+                  2360 Ch Ste-Foy, Québec, QC G1V 1T1
+                </a>
               </p>
               <p class="separator">|</p>
               <p class="restaurant-phone">
@@ -66,6 +73,7 @@
 
 <style scoped>
 .restaurant-info {
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -252,6 +260,21 @@
   font-size: 1em;
   color: #555;
   margin: 5px 0;
+}
+
+.map-link {
+  text-decoration: none;
+  color: inherit;
+  font-size: inherit;
+  font-weight: normal;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.map-link:hover {
+  text-decoration: none;
+  color: #f55702;
+  font-weight: bold;
 }
 
 #map {
