@@ -45,7 +45,7 @@
     "phone": "5817001224",
     "location": "",
     "openingHours": "",
-    "images": ["../assets/images/sushi.jpeg", "../assets/sushilogo.png"],
+    "images": ["../assets/images/sushi.jpeg", "../assets/images/sushilogo.png"],
     "genres": ["Sushi", "Halal"],
     "priceRange": "$$$",
     "rating": 4.0
