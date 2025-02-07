@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="logo">
-      <img src="../assets/Logo.png" alt="Logo" />
+      <img src="../assets/images/Logo.png" alt="Logo" />
     </div>
     <SearchBar />
     <Navigation />
