@@ -39,13 +39,19 @@
         </div>
       </div>
     </div>
+  </div>
 
+  <div class="restaurant-info">
+    <h2 style="text-align: center">Restaurant Location</h2>
+    <div id="map"></div>
+
+    <h2 style="text-align: center">Restaurant Gallery</h2>
     <div class="gallery-container">
-      <img
-        src="../assets/Screen-Shot-2020-06-30-at-9.24.59-AM.png"
-        alt="Restaurant Gallery Image"
-        class="gallery-image"
-      />
+      <div class="gallery" ref="gallery">
+        <img v-for="(image, index) in images" :key="index" :src="image" alt="Pizza" />
+      </div>
+      <button class="btn prev" @click="moveSlide(-1)">&#10094;</button>
+      <button class="btn next" @click="moveSlide(1)">&#10095;</button>
     </div>
 
     <div class="opening-hours">
@@ -176,25 +182,53 @@
   font-weight: bold;
 }
 
-.gallery-container,
-.opening-hours {
-  margin-top: 20px;
-}
-
+/* Ensure only one image is visible */
 .gallery-container {
-  width: 80%;
-  max-width: 900px;
+  position: relative;
+  max-width: 600px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.gallery-image {
-  width: 100%;
-  height: 400px;
+/* Make images slide horizontally */
+.gallery {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.gallery img {
+  width: 100%; /* Each image takes full width of container */
+  height: 300px;
   object-fit: cover;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  flex: 0 0 100%; /* Prevents images from stacking */
+}
+
+/* Buttons for navigation */
+.btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 5px;
+}
+
+.prev {
+  left: 10px;
+}
+.next {
+  right: 10px;
 }
 
 .opening-hours {
+  margin-top: 20px;
+  align-items: center;
   text-align: center;
   padding: 15px;
   background-color: #f8f8f8;
@@ -219,4 +253,93 @@
   color: #555;
   margin: 5px 0;
 }
+
+#map {
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  margin: 20px auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 </style>
+
+<script>
+/* global google */
+
+export default {
+  data() {
+    return {
+      images: [
+        '/src/assets/Recipes_2400_Spicy-Pepperoni-Pizza.jpg',
+        '/src/assets/Screen-Shot-2020-06-30-at-9.24.59-AM.png',
+      ],
+      index: 0,
+      address: '2360 Ch Ste-Foy, Québec, QC', // Your address
+      googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c', // Replace with your key
+    }
+  },
+  mounted() {
+    // Ensure the gallery width matches the number of images
+    this.$refs.gallery.style.width = `${this.images.length * 100}%`
+    this.loadGoogleMaps()
+  },
+  methods: {
+    moveSlide(direction) {
+      const totalImages = this.images.length
+      this.index += direction
+
+      if (this.index >= totalImages) this.index = 0 // Loop to first image
+      if (this.index < 0) this.index = totalImages - 1 // Loop to last image
+
+      this.$refs.gallery.style.transform = `translateX(${-this.index * (100 / totalImages)}%)`
+    },
+
+    loadGoogleMaps() {
+      if (!window.google) {
+        const script = document.createElement('script')
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&callback=initMap`
+        script.defer = true
+        script.async = true
+        window.initMap = this.getCoordinates // Call getCoordinates when loaded
+        document.head.appendChild(script)
+      } else {
+        this.getCoordinates()
+      }
+    },
+
+    async getCoordinates() {
+      const address = encodeURIComponent(this.address)
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${this.googleMapsApiKey}`
+
+      try {
+        const response = await fetch(url)
+        const data = await response.json()
+
+        if (data.status === 'OK') {
+          const location = data.results[0].geometry.location
+          this.initMap(location.lat, location.lng)
+        } else {
+          console.error('Geocoding error:', data.status)
+        }
+      } catch (error) {
+        console.error('Error fetching geocode:', error)
+      }
+    },
+
+    initMap(lat, lng) {
+      const restaurantLocation = { lat, lng } // Use fetched coordinates
+      const map = new google.maps.Map(document.getElementById('map'), {
+        center: restaurantLocation,
+        zoom: 15,
+      })
+
+      new google.maps.Marker({
+        position: restaurantLocation,
+        map: map,
+        title: this.address,
+      })
+    },
+  },
+}
+</script>
