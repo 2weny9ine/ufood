@@ -38,7 +38,9 @@
             </div>
             <div class="inline-container-restaurant">
               <h3>{{ restaurant.name }}</h3>
-              <a href="#" class="details">Details →</a>
+              <a href="#" class="details" @click.prevent="updateVisit(restaurant.name)"
+                >Details →</a
+              >
             </div>
           </div>
         </div>
@@ -285,14 +287,28 @@ h3 {
 </style>
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import restaurantsData from '@/assets/restaurants.json'
+import restaurantsData from '../assets/restaurants.json'
 
-const restaurants = ref([])
+const restaurants = ref(restaurantsData)
 
 onMounted(() => {
   restaurants.value = restaurantsData.map((restaurant) => ({
     ...restaurant,
-    images: restaurant.images.map((image) => new URL(image, import.meta.url).href),
+    images: restaurant.images?.map((image) => new URL(image, import.meta.url).href) || [],
   }))
 })
+/*
+const updateVisit = (restaurantName: string) => {
+  let visits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
+
+  const existingVisit = visits.find((visit: any) => visit.restaurantName === restaurantName)
+
+  if (existingVisit) {
+    existingVisit.visitCount++
+  } else {
+    visits.push({ restaurantName, visitCount: 1 })
+  }
+
+  localStorage.setItem('recentVisits', JSON.stringify(visits))
+}*/
 </script>
