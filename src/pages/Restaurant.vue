@@ -41,6 +41,10 @@
                 <span class="star-empty">&#9734;</span>
                 <span class="rating-text">4.0</span>
               </div>
+              <p class="separator">|</p>
+              <div class="price-range">
+                <span>{{ priceRange }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -71,13 +75,14 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .restaurant-info {
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #fff;
+  width: 100%;
 }
 
 .restaurant-header {
@@ -193,7 +198,7 @@
 /* Ensure only one image is visible */
 .gallery-container {
   position: relative;
-  max-width: 600px;
+  max-width: 50%;
   overflow: hidden;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
@@ -285,6 +290,24 @@
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
+
+/* Style the custom Google Maps button */
+.maps-button {
+  padding: 10px 15px;
+  font-size: 1em;
+  font-weight: bold;
+  background-color: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin: 20px;
+}
+
+.maps-button:hover {
+  background-color: #e64a19;
+}
 </style>
 
 <script>
@@ -300,6 +323,7 @@ export default {
       index: 0,
       address: '2360 Ch Ste-Foy, Québec, QC', // Your address
       googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c', // Replace with your key
+      priceRange: '$ - $$', // Example price range
     }
   },
   mounted() {
@@ -351,17 +375,32 @@ export default {
     },
 
     initMap(lat, lng) {
-      const restaurantLocation = { lat, lng } // Use fetched coordinates
+      const restaurantLocation = { lat, lng }
       const map = new google.maps.Map(document.getElementById('map'), {
         center: restaurantLocation,
         zoom: 15,
       })
 
+      // Add Marker
       new google.maps.Marker({
         position: restaurantLocation,
         map: map,
-        title: this.address,
+        title: this.restaurantAddress,
       })
+
+      // Create "Get Directions" Button
+      const button = document.createElement('button')
+      button.textContent = '📍 Get Directions'
+      button.classList.add('maps-button')
+      button.onclick = () => {
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+        window.open(googleMapsUrl, '_blank')
+      }
+
+      // Add Button to Google Maps UI
+      const customControlDiv = document.createElement('div')
+      customControlDiv.appendChild(button)
+      map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(customControlDiv)
     },
   },
 }
