@@ -10,7 +10,11 @@ const emitSearch = () => {
 
 <template>
   <div class="search-bar">
-    <img src="../assets/search-svgrepo-com%20(1).svg" alt="search-logo" class="search-icon" />
+    <img
+      src="../assets/images/search-svgrepo-com%20(1).svg"
+      alt="search-logo"
+      class="search-icon"
+    />
     <input
       type="text"
       v-model="searchQuery"
