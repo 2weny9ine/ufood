@@ -30,7 +30,7 @@ nav a {
   text-decoration: none;
   color: white;
   font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
   font-size: 20px;
 }
 nav a:hover {
