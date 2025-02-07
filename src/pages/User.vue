@@ -3,10 +3,10 @@
     <section class="main">
       <div class="Home">
         <div class="wrapper">
-          <img src="../assets/background%20pic.png" alt="Background Image" class="image" />
+          <img src="../assets/images/background%20pic.png" alt="Background Image" class="image" />
           <div class="overlay">
             <h1>Welcome To your profile</h1>
-            <img class="logo-main" src="../assets/Logo.png" alt="Logo" />
+            <img class="logo-main" src="../assets/images/Logo.png" alt="Logo" />
           </div>
           <div class="info">
             <div class="info-item">
@@ -39,7 +39,7 @@
             <div class="content-each-restaurant">
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p1>Pizza Pizza</p1>
                     <p2>Visits: 1</p2>
@@ -51,7 +51,7 @@
               </div>
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p1>Pizza Pizza</p1>
                     <p2>Visits: 1</p2>
@@ -63,7 +63,7 @@
               </div>
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p1>Pizza Pizza</p1>
                     <p2>Visits: 1</p2>
@@ -75,7 +75,7 @@
               </div>
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p1>Pizza Pizza</p1>
                     <p2>Visits: 1</p2>
@@ -96,7 +96,7 @@
             <div class="content-each-restaurant">
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p4>Pizza Pizza</p4>
                   </div>
@@ -107,7 +107,7 @@
               </div>
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p4>Pizza Pizza</p4>
                   </div>
@@ -118,7 +118,7 @@
               </div>
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p4>Pizza Pizza</p4>
                   </div>
@@ -129,7 +129,7 @@
               </div>
               <div class="restaurant-item">
                 <div class="restaurant-item-part1">
-                  <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                  <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
                   <div class="restaurant-item-part1-2">
                     <p4>Pizza Pizza</p4>
                   </div>

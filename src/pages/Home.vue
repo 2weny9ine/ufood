@@ -1,9 +1,9 @@
 <template>
   <div class="Main">
-    <img src="../assets/background%20pic.png" alt="Background Image" class="image" />
+    <img src="../assets/images/background%20pic.png" alt="Background Image" class="image" />
     <div class="overlay">
       <div class="logo">
-        <img src="../assets/Logo.png" alt="logo" />
+        <img src="../assets/images/Logo.png" alt="logo" />
       </div>
       <h1>Discover Flavor, Share the Love!</h1>
       <h2>Find & Share Your Favorite Restaurants!</h2>
@@ -32,12 +32,12 @@
           <div class="restaurant-card">
             <div class="banner-container">
               <img
-                src="../assets/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
+                src="../assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
                 alt="Pizza Pizza"
                 class="restaurant-banner"
               />
               <div class="banner-overlay">
-                <img src="../assets/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
+                <img src="../assets/images/Pizza-Pizza-Logo.png" alt="Pizza Pizza" />
               </div>
             </div>
             <div class="inline-container-restaurant">
