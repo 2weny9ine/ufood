@@ -2,9 +2,6 @@
   <nav>
     <ul>
       <li>
-        <router-link to="/Main">Main</router-link>
-      </li>
-      <li>
         <router-link to="/Home">Home</router-link>
       </li>
       <li>
@@ -27,7 +24,7 @@ nav a {
   text-decoration: none;
   color: white;
   font-weight: bold;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
 nav a:hover {

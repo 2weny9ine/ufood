@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "name": "Pizza Pizza",
+    "address": "2360 Ch Ste-Foy, Québec, QC G1V 1T1",
+    "phone": "4188741111",
+    "location": "",
+    "openingHours": "",
+    "images": [
+      "../assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "../assets/images/Pizza-Pizza-Logo.png"
+    ],
+    "genres": ["Pizza", "Halal"],
+    "priceRange": "$$",
+    "rating": 4.0
+  },
+  {
+    "id": 2,
+    "name": "Grillades Torino - Pyramide",
+    "address": "2360 Ch Ste-Foy, Québec, QC G1V 1T1",
+    "phone": "4186577475",
+    "location": "",
+    "openingHours": "",
+    "images": ["../assets/images/torino.avif", "../assets/images/torinologo.png"],
+    "genres": ["Grillades", "Halal"],
+    "priceRange": "$",
+    "rating": 4.0
+  },
+  {
+    "id": 3,
+    "name": "McDonalds",
+    "address": "2520 Chem. des Quatre-Bourgeois, QC G1V 4R2",
+    "phone": "4186594808",
+    "location": "",
+    "openingHours": "",
+    "images": ["../assets/images/mcdonalds.jpg", "../assets/images/McDonaldslogo.png"],
+    "genres": ["fast food"],
+    "priceRange": "$",
+    "rating": 3.0
+  },
+  {
+    "id": 4,
+    "name": "Sushi X Pyramide",
+    "address": "2360 Ch Ste-Foy, Québec, QC G1V 1T1",
+    "phone": "5817001224",
+    "location": "",
+    "openingHours": "",
+    "images": ["../assets/images/sushi.jpeg", "../assets/sushilogo.png"],
+    "genres": ["Sushi", "Halal"],
+    "priceRange": "$$$",
+    "rating": 4.0
+  },
+  {
+    "id": 5,
+    "name": "Holy Burgers",
+    "address": "2360 Ch Ste-Foy, Québec, QC G1V 1T1",
+    "phone": "4187802022",
+    "location": "",
+    "openingHours": "",
+    "images": ["../assets/images/holyburgers.jpeg", "../assets/images/holyburgerslogo.png"],
+    "genres": ["Burger"],
+    "priceRange": "$",
+    "rating": 3.5
+  },
+  {
+    "id": 6,
+    "name": "Chocolato",
+    "address": "2327 Bd du Versant N, Québec, QC G1N 4C2",
+    "phone": "4189770557",
+    "location": "",
+    "openingHours": "",
+    "images": ["../assets/images/chocolato.jpg", "../assets/images/chocolatologo.png"],
+    "genres": ["Dessert", "Halal"],
+    "priceRange": "$",
+    "rating": 4.5
+  }
+]

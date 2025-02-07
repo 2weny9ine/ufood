@@ -24,7 +24,7 @@ const emitSearch = () => {
 .search-bar {
   display: flex;
   align-items: center;
-  border-radius: 20px;
+  border-radius: 15px;
   padding: 5px;
   background-color: white;
   max-width: 750px;
@@ -36,9 +36,8 @@ const emitSearch = () => {
   padding: 5px;
   font-size: 20px;
   width: 680px;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
   outline: none;
-  /* background-color: black; */
 }
 .search-icon {
   width: 40px;
