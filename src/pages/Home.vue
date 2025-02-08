@@ -124,6 +124,7 @@
               <a href="#" class="details" @click.prevent="updateVisit(restaurant.name)"
                 >Details →</a
               >
+              >
             </div>
           </div>
         </div>
@@ -488,18 +489,16 @@ const clearAllFilters = () => {
   clearPrice()
   clearRating()
 }
-/*
-const updateVisit = (restaurantName: string) => {
-  let visits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
 
-  const existingVisit = visits.find((visit: any) => visit.restaurantName === restaurantName)
+const recentVisits = ref([])
 
+const updateVisit = (restaurantName) => {
+  const existingVisit = recentVisits.value.find((visit) => visit.name === restaurantName)
   if (existingVisit) {
-    existingVisit.visitCount++
+    existingVisit.visits += 1
   } else {
-    visits.push({ restaurantName, visitCount: 1 })
+    recentVisits.value.push({ name: restaurantName, visits: 1 })
   }
-
-  localStorage.setItem('recentVisits', JSON.stringify(visits))
-}*/
+  localStorage.setItem('recentVisits', JSON.stringify(recentVisits.value))
+}
 </script>
