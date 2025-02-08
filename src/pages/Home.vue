@@ -121,7 +121,9 @@
             </div>
             <div class="inline-container-restaurant">
               <h3>{{ restaurant.name }}</h3>
-              <a href="#" class="details">Details →</a>
+              <a href="#" class="details" @click.prevent="updateVisit(restaurant.name)"
+                >Details →</a
+              >
             </div>
           </div>
         </div>
@@ -422,7 +424,7 @@ const selectedSortOrder = ref('asc')
 onMounted(() => {
   restaurants.value = restaurantsData.map((restaurant) => ({
     ...restaurant,
-    images: restaurant.images.map((image) => new URL(image, import.meta.url).href),
+    images: restaurant.images?.map((image) => new URL(image, import.meta.url).href) || [],
   }))
 })
 
@@ -486,4 +488,18 @@ const clearAllFilters = () => {
   clearPrice()
   clearRating()
 }
+/*
+const updateVisit = (restaurantName: string) => {
+  let visits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
+
+  const existingVisit = visits.find((visit: any) => visit.restaurantName === restaurantName)
+
+  if (existingVisit) {
+    existingVisit.visitCount++
+  } else {
+    visits.push({ restaurantName, visitCount: 1 })
+  }
+
+  localStorage.setItem('recentVisits', JSON.stringify(visits))
+}*/
 </script>

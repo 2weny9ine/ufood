@@ -155,7 +155,7 @@ p {
   position: absolute;
   top: 70%;
   right: 76%;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 1);
 }
 .profile-picture h2 {
   text-align: center;
@@ -245,11 +245,46 @@ p1 {
 .btn:hover {
   background-color: #a5a1a1;
 }
-.gif {
+.restaurants-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.restaurant-card {
   width: 200px;
   height: auto;
-  margin-bottom: 10px;
-  border: 2px solid black;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  text-align: center;
+}
+
+.restaurant-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.restaurant-info {
+  padding: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+ul li p {
+  font-weight: bold;
 }
 </style>
 <script setup lang="ts">
@@ -257,9 +292,11 @@ import { ref, onMounted } from 'vue'
 import userData from '@/assets/user.json'
 
 const user = ref({ firstName: '', lastName: '', followers: 0, following: 0, rating: 0 })
+/*const recentVisits = ref<any[]>([]);*/
 
 onMounted(() => {
   user.value = userData
+  /* recentVisits.value = JSON.parse(localStorage.getItem('recentVisits') || '[]')  Charger les visites récentes}*/
 })
 
 const getInitials = () => {
