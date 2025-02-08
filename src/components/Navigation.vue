@@ -25,7 +25,7 @@ nav a {
   color: white;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 20px;
+  font-size: 15px;
 }
 nav a:hover {
   color: #f4b4b4;

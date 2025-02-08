@@ -60,7 +60,7 @@
     "images": ["../assets/images/holyburgers.jpeg", "../assets/images/holyburgerslogo.png"],
     "genres": ["Burger"],
     "priceRange": "$",
-    "rating": 3.5
+    "rating": 3.0
   },
   {
     "id": 6,
@@ -72,6 +72,6 @@
     "images": ["../assets/images/chocolato.jpg", "../assets/images/chocolatologo.png"],
     "genres": ["Dessert", "Halal"],
     "priceRange": "$",
-    "rating": 4.5
+    "rating": 4.0
   }
 ]
