@@ -37,8 +37,22 @@
       <div class="Table-Visit">
         <h3>Recently Visited</h3>
         <div class="Table-content">
-          <div class="no-visits">
-            <p1>You haven't visited any restaurants yet!</p1>
+          <div v-if="recentVisits.length > 0">
+            <ul class="restaurant-list">
+              <li v-for="visit in recentVisits" :key="visit.name" class="restaurant-card">
+                <div class="restaurant-info">
+                  <p>
+                    <span class="restaurant-name">{{ visit.name }}</span>
+                  </p>
+                  <p>
+                    <span class="visit-count">Visits: {{ visit.visits }}</span>
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div v-else class="no-visits">
+            <p>You haven't visited any restaurants yet!</p>
             <div class="btn">
               <router-link to="/Home">⬅️ Home Page</router-link>
             </div>
@@ -210,9 +224,13 @@ h3 {
   object-position: right;
   background-color: #f3efef;
   display: flex;
-  align-items: center; /* Centrage vertical */
+  flex-wrap: wrap;
+  gap: 20px;
   border: 1px solid #f55702;
   position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 35px;
 }
 
 .no-visits {
@@ -245,46 +263,52 @@ p1 {
 .btn:hover {
   background-color: #a5a1a1;
 }
-.restaurants-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+
+ul li {
+  margin: 10px 0;
 }
 
+ul li p {
+  font-weight: bold;
+}
 .restaurant-card {
-  width: 200px;
-  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 250px;
   border: 1px solid #ccc;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   background-color: #fff;
   text-align: center;
+  height: 200px;
 }
 
-.restaurant-image {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
+.restaurant-name {
+  font-size: 23px;
+  font-weight: bold;
+  color: #f55702;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+}
+
+.visit-count {
+  font-size: 20px;
+  color: grey;
+  font-weight: normal;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
 
 .restaurant-info {
   padding: 10px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul li {
-  font-size: 20px;
-  margin: 10px 0;
-}
-
-ul li p {
+  font-size: 16px;
   font-weight: bold;
+  color: #333;
+}
+.restaurant-list {
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 </style>
 <script setup lang="ts">
@@ -292,11 +316,11 @@ import { ref, onMounted } from 'vue'
 import userData from '@/assets/user.json'
 
 const user = ref({ firstName: '', lastName: '', followers: 0, following: 0, rating: 0 })
-/*const recentVisits = ref<any[]>([]);*/
+const recentVisits = ref([])
 
 onMounted(() => {
   user.value = userData
-  /* recentVisits.value = JSON.parse(localStorage.getItem('recentVisits') || '[]')  Charger les visites récentes}*/
+  recentVisits.value = JSON.parse(localStorage.getItem('recentVisits') || '[]')
 })
 
 const getInitials = () => {
