@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 
-// Liste des options
 const options = [
   'Pizza Pizza',
   'Grillades Torino',
