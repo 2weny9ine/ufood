@@ -8,7 +8,7 @@
         <router-link to="/restaurant">Restaurant</router-link>
       </li>
       <li class="user-container">
-        <span class="user-greeting" @click="toggleDropdown">Hi, Imen</span>
+        <span class="user-greeting" @click="toggleDropdown">Hi, {{ user.firstName }}</span>
         <div v-if="dropdownVisible" class="dropdown-menu">
           <router-link to="/user" class="dropdown-item">
             <img
@@ -16,7 +16,7 @@
               alt="Profile Icon"
               class="icon"
             />
-            Your Profile
+            Profile
           </router-link>
           <router-link to="/user" class="dropdown-item">
             <img
@@ -31,17 +31,32 @@
     </ul>
   </nav>
 </template>
+
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+
+import userData from '@/assets/user.json'
 
 const dropdownVisible = ref(false)
+
+const user = ref({
+  firstName: '',
+  lastName: '',
+  followers: 0,
+  following: 0,
+  rating: 0,
+})
+
+onMounted(() => {
+  user.value = userData
+})
 
 const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value
 }
-
-dropdownVisible.value = false
 </script>
+
+<style scoped></style>
 
 <style>
 nav ul {
@@ -81,13 +96,13 @@ nav a:hover {
 
 .dropdown-menu {
   position: absolute;
-  top: 30px;
+  top: 70px;
   right: 0;
   background: #f55702;
   color: #f3f0f0;
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  width: 150px;
+  width: 180px;
   display: flex;
   flex-direction: column;
 }
