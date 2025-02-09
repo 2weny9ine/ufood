@@ -126,9 +126,9 @@
                 class="details"
                 @click.stop="updateVisit(restaurant.name)"
                 target="_self"
-                >Details →</a
               >
-              >
+                Details →
+              </a>
             </div>
           </div>
         </div>
@@ -136,6 +136,103 @@
     </div>
   </section>
 </template>
+<script setup lang="ts">
+import { ref, onMounted, computed } from 'vue'
+import restaurantsData from '@/assets/restaurants.json'
+
+const restaurants = ref([])
+const selectedGenres = ref([])
+const selectedPrice = ref('')
+const selectedRating = ref(null)
+
+const tempGenres = ref([])
+const tempPrice = ref('')
+const tempRating = ref(null)
+
+const tempSortBy = ref('')
+const tempSortOrder = ref('asc')
+const selectedSortBy = ref('')
+const selectedSortOrder = ref('asc')
+
+onMounted(() => {
+  restaurants.value = restaurantsData.map((restaurant) => ({
+    ...restaurant,
+    images: restaurant.images?.map((image) => new URL(image, import.meta.url).href) || [],
+  }))
+})
+
+const applyFilters = () => {
+  selectedGenres.value = [...tempGenres.value]
+  selectedPrice.value = tempPrice.value
+  selectedRating.value = tempRating.value
+  selectedSortBy.value = tempSortBy.value
+  selectedSortOrder.value = tempSortOrder.value
+}
+
+const filteredRestaurants = computed(() => {
+  let result = restaurants.value.filter((restaurant) => {
+    const matchesGenre =
+      selectedGenres.value.length === 0 ||
+      selectedGenres.value.every((genre) =>
+        restaurant.genres.map((g) => g.toLowerCase()).includes(genre.toLowerCase()),
+      )
+
+    const matchesPrice =
+      !selectedPrice.value || restaurant.priceRange.trim() === selectedPrice.value.trim()
+    const matchesRating =
+      !selectedRating.value || Math.floor(restaurant.rating) === parseInt(selectedRating.value)
+
+    return matchesGenre && matchesPrice && matchesRating
+  })
+
+  if (selectedSortBy.value) {
+    result = result.sort((a, b) => {
+      let valueA = a[selectedSortBy.value]
+      let valueB = b[selectedSortBy.value]
+
+      if (selectedSortBy.value === 'name') {
+        valueA = valueA.toLowerCase()
+        valueB = valueB.toLowerCase()
+      }
+
+      if (valueA < valueB) return selectedSortOrder.value === 'asc' ? -1 : 1
+      if (valueA > valueB) return selectedSortOrder.value === 'asc' ? 1 : -1
+      return 0
+    })
+  }
+
+  return result
+})
+
+const clearGenres = () => {
+  tempGenres.value = []
+}
+
+const clearPrice = () => {
+  tempPrice.value = ''
+}
+
+const clearRating = () => {
+  tempRating.value = null
+}
+
+const clearAllFilters = () => {
+  clearGenres()
+  clearPrice()
+  clearRating()
+}
+
+const updateVisit = (restaurantName) => {
+  const visits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
+
+  visits.push({
+    name: restaurantName,
+    timestamp: new Date().toISOString(),
+  })
+
+  localStorage.setItem('recentVisits', JSON.stringify(visits))
+}
+</script>
 
 <style scoped>
 .clear-button {
@@ -408,101 +505,3 @@ h3 {
   font-weight: bold;
 }
 </style>
-<script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import restaurantsData from '@/assets/restaurants.json'
-
-const restaurants = ref([])
-const selectedGenres = ref([])
-const selectedPrice = ref('')
-const selectedRating = ref(null)
-
-const tempGenres = ref([])
-const tempPrice = ref('')
-const tempRating = ref(null)
-
-const tempSortBy = ref('')
-const tempSortOrder = ref('asc')
-const selectedSortBy = ref('')
-const selectedSortOrder = ref('asc')
-
-onMounted(() => {
-  restaurants.value = restaurantsData.map((restaurant) => ({
-    ...restaurant,
-    images: restaurant.images?.map((image) => new URL(image, import.meta.url).href) || [],
-  }))
-})
-
-const applyFilters = () => {
-  selectedGenres.value = [...tempGenres.value]
-  selectedPrice.value = tempPrice.value
-  selectedRating.value = tempRating.value
-  selectedSortBy.value = tempSortBy.value
-  selectedSortOrder.value = tempSortOrder.value
-}
-
-const filteredRestaurants = computed(() => {
-  let result = restaurants.value.filter((restaurant) => {
-    const matchesGenre =
-      selectedGenres.value.length === 0 ||
-      selectedGenres.value.every((genre) =>
-        restaurant.genres.map((g) => g.toLowerCase()).includes(genre.toLowerCase()),
-      )
-
-    const matchesPrice =
-      !selectedPrice.value || restaurant.priceRange.trim() === selectedPrice.value.trim()
-    const matchesRating =
-      !selectedRating.value || Math.floor(restaurant.rating) === parseInt(selectedRating.value)
-
-    return matchesGenre && matchesPrice && matchesRating
-  })
-
-  if (selectedSortBy.value) {
-    result = result.sort((a, b) => {
-      let valueA = a[selectedSortBy.value]
-      let valueB = b[selectedSortBy.value]
-
-      if (selectedSortBy.value === 'name') {
-        valueA = valueA.toLowerCase()
-        valueB = valueB.toLowerCase()
-      }
-
-      if (valueA < valueB) return selectedSortOrder.value === 'asc' ? -1 : 1
-      if (valueA > valueB) return selectedSortOrder.value === 'asc' ? 1 : -1
-      return 0
-    })
-  }
-
-  return result
-})
-
-const clearGenres = () => {
-  tempGenres.value = []
-}
-
-const clearPrice = () => {
-  tempPrice.value = ''
-}
-
-const clearRating = () => {
-  tempRating.value = null
-}
-
-const clearAllFilters = () => {
-  clearGenres()
-  clearPrice()
-  clearRating()
-}
-
-const recentVisits = ref([])
-
-const updateVisit = (restaurantName) => {
-  const existingVisit = recentVisits.value.find((visit) => visit.name === restaurantName)
-  if (existingVisit) {
-    existingVisit.visits += 1
-  } else {
-    recentVisits.value.push({ name: restaurantName, visits: 1 })
-  }
-  localStorage.setItem('recentVisits', JSON.stringify(recentVisits.value))
-}
-</script>

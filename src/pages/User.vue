@@ -59,6 +59,33 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import userData from '@/assets/user.json'
+
+const user = ref({ firstName: '', lastName: '', followers: 0, following: 0, rating: 0 })
+const recentVisits = ref([])
+
+onMounted(() => {
+  user.value = userData
+
+  const visits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
+
+  const visitCounts = visits.reduce((acc, visit) => {
+    if (!acc[visit.name]) {
+      acc[visit.name] = { name: visit.name, visits: 0 }
+    }
+    acc[visit.name].visits += 1
+    return acc
+  }, {})
+
+  recentVisits.value = Object.values(visitCounts)
+})
+
+const getInitials = () => {
+  return `${user.value.firstName.charAt(0)}${user.value.lastName.charAt(0)}`.toUpperCase()
+}
+</script>
 <style scoped>
 .info {
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
@@ -468,19 +495,3 @@ ul li p {
   }
 }
 </style>
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import userData from '@/assets/user.json'
-
-const user = ref({ firstName: '', lastName: '', followers: 0, following: 0, rating: 0 })
-const recentVisits = ref([])
-
-onMounted(() => {
-  user.value = userData
-  recentVisits.value = JSON.parse(localStorage.getItem('recentVisits') || '[]')
-})
-
-const getInitials = () => {
-  return `${user.value.firstName.charAt(0)}${user.value.lastName.charAt(0)}`.toUpperCase()
-}
-</script>
