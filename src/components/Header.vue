@@ -3,33 +3,26 @@
     <div class="logo">
       <img src="../assets/images/Logo.png" alt="Logo" />
     </div>
-
     <div class="search-container">
       <SearchBar />
     </div>
-
     <button class="menu-toggle" @click="toggleMenu">
       <img src="../assets/images/icone-version2.png" alt="Menu" />
     </button>
-
     <nav :class="['nav-links', { 'nav-active': isMenuOpen }]">
       <Navigation />
     </nav>
   </header>
 </template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
 import Navigation from '@/components/Navigation.vue'
-
 const isMenuOpen = ref(false)
-
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 </script>
-
 <style scoped>
 .header {
   display: flex;
@@ -44,22 +37,18 @@ const toggleMenu = () => {
   right: 0;
   z-index: 1000;
 }
-
 .logo {
   flex: 1;
 }
-
 .logo img {
   height: 40px;
 }
-
 .search-container {
   flex: 2;
   display: flex;
   justify-content: center;
   min-width: 200px;
 }
-
 .menu-toggle {
   display: none;
   background: none;
@@ -67,32 +56,26 @@ const toggleMenu = () => {
   cursor: pointer;
   justify-content: flex-end;
 }
-
 .menu-toggle img {
   width: 30px;
   height: 30px;
   border-radius: 50%;
 }
-
 .nav-links {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 @media (max-width: 768px) {
   .header {
     padding: 10px;
   }
-
   .menu-toggle {
     display: flex;
   }
-
   .search-container {
     display: none;
   }
-
   .nav-links {
     position: absolute;
     top: 60px;
@@ -103,7 +86,6 @@ const toggleMenu = () => {
     flex-direction: column;
     padding: 10px 0;
   }
-
   .nav-active {
     display: flex;
   }

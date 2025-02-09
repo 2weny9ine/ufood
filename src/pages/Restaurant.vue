@@ -3,22 +3,26 @@
     <div class="restaurant-header">
       <div class="image-container">
         <img
-          src="../assets/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
+          src="../assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
           alt="Restaurant Image"
           class="restaurant-image"
         />
-        <img src="../assets/Pizza-Pizza-Logo.png" alt="Restaurant logo" class="restaurant-logo" />
+        <img
+          src="../assets/images/Pizza-Pizza-Logo.png"
+          alt="Restaurant logo"
+          class="restaurant-logo"
+        />
         <div class="logo-text-container">
           <div class="restaurant-details">
             <div class="name-category">
               <h2 class="restaurant-name">Pizza Pizza</h2>
               <p class="restaurant-category">
-                <img src="../assets/food-restaurant-svgrepo-com.svg" height="15" /> Pizza
+                <img src="../assets/images/food-restaurant-svgrepo-com.svg" height="15" /> Pizza
               </p>
             </div>
             <div class="contact-info">
               <p class="restaurant-location">
-                <img src="../assets/location-pin-alt-1-svgrepo-com.svg" height="18" />
+                <img src="../assets/images/location-pin-alt-1-svgrepo-com.svg" height="18" />
                 <a
                   :href="`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`"
                   target="_blank"
@@ -30,7 +34,8 @@
               </p>
               <p class="separator">|</p>
               <p class="restaurant-phone">
-                <img src="../assets/phone-rounded-svgrepo-com.svg" height="18" /> 418-874-1111
+                <img src="../assets/images/phone-rounded-svgrepo-com.svg" height="18" />
+                418-874-1111
               </p>
               <p class="separator">|</p>
               <div class="rating">
@@ -88,7 +93,7 @@
 .restaurant-header {
   width: 100%;
   max-width: 950px;
-  margin-bottom: 80px; /* Ensures space for gallery */
+  margin-bottom: 80px;
 }
 
 .image-container {
