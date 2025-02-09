@@ -2,16 +2,19 @@
   <nav>
     <ul>
       <li>
-        <router-link to="/Main">Main</router-link>
-      </li>
-      <li>
         <router-link to="/Home">Home</router-link>
       </li>
       <li>
         <router-link to="/restaurant">Restaurant</router-link>
       </li>
       <li>
-        <router-link to="/user">User Profile</router-link>
+        <router-link to="/user">
+          <img
+            src="../assets/images/profile-round-1342-svgrepo-com.svg"
+            alt="User Profile"
+            class="profile-img"
+          />
+        </router-link>
       </li>
     </ul>
   </nav>
@@ -27,10 +30,13 @@ nav a {
   text-decoration: none;
   color: white;
   font-weight: bold;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
 }
 nav a:hover {
   color: #f4b4b4;
+}
+.profile-img {
+  width: 22px;
 }
 </style>
