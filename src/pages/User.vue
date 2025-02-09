@@ -18,10 +18,6 @@
                       <span v-for="star in user.rating" :key="star">&#11088;</span>
                     </span>
                   </div>
-                  <div class="info-item-part2">
-                    <p6>{{ user.followers }} Follower</p6>
-                    <p6>{{ user.following }} Following</p6>
-                  </div>
                 </div>
                 <button class="Follow">Follow</button>
               </div>
