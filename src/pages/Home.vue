@@ -121,7 +121,11 @@
             </div>
             <div class="inline-container-restaurant">
               <h3>{{ restaurant.name }}</h3>
-              <a href="#" class="details" @click.prevent="updateVisit(restaurant.name)"
+              <a
+                :href="`restaurant?id=${restaurant.id}`"
+                class="details"
+                @click.stop="updateVisit(restaurant.name)"
+                target="_self"
                 >Details →</a
               >
               >

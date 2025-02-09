@@ -19,6 +19,11 @@ const routes = [
     name: 'User',
     component: User,
   },
+  {
+    path: '/',
+    name: 'Home2',
+    component: Home,
+  },
 ]
 
 export const router = createRouter({

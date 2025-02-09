@@ -7,8 +7,8 @@
     "location": "",
     "openingHours": "",
     "images": [
-      "../assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
-      "../assets/images/Pizza-Pizza-Logo.png"
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "/src/assets/images/Pizza-Pizza-Logo.png"
     ],
     "genres": ["Pizza", "Halal"],
     "priceRange": "$$",
@@ -21,7 +21,7 @@
     "phone": "4186577475",
     "location": "",
     "openingHours": "",
-    "images": ["../assets/images/torino.avif", "../assets/images/torinologo.png"],
+    "images": ["/src/assets/images/torino.avif", "/src/assets/images/torinologo.png"],
     "genres": ["Grillades", "Halal"],
     "priceRange": "$",
     "rating": 4.0
@@ -33,7 +33,7 @@
     "phone": "4186594808",
     "location": "",
     "openingHours": "",
-    "images": ["../assets/images/mcdonalds.jpg", "../assets/images/McDonaldslogo.png"],
+    "images": ["/src/assets/images/mcdonalds.jpg", "/src/assets/images/McDonaldslogo.png"],
     "genres": ["fast food"],
     "priceRange": "$",
     "rating": 3.0
@@ -45,7 +45,7 @@
     "phone": "5817001224",
     "location": "",
     "openingHours": "",
-    "images": ["../assets/images/sushi.jpeg", "../assets/images/sushilogo.png"],
+    "images": ["/src/assets/images/sushi.jpeg", "/src/assets/images/sushilogo.png"],
     "genres": ["Sushi", "Halal"],
     "priceRange": "$$$",
     "rating": 4.0
@@ -57,7 +57,7 @@
     "phone": "4187802022",
     "location": "",
     "openingHours": "",
-    "images": ["../assets/images/holyburgers.jpeg", "../assets/images/holyburgerslogo.png"],
+    "images": ["/src/assets/images/holyburgers.jpeg", "/src/assets/images/holyburgerslogo.png"],
     "genres": ["Burger"],
     "priceRange": "$",
     "rating": 3.0
@@ -69,7 +69,7 @@
     "phone": "4189770557",
     "location": "",
     "openingHours": "",
-    "images": ["../assets/images/chocolato.jpg", "../assets/images/chocolatologo.png"],
+    "images": ["/src/assets/images/chocolato.jpg", "/src/assets/images/chocolatologo.png"],
     "genres": ["Dessert", "Halal"],
     "priceRange": "$",
     "rating": 4.0
