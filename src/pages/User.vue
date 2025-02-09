@@ -116,6 +116,7 @@ p {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
 .main {
   width: 100%;
@@ -252,7 +253,6 @@ p1 {
   justify-content: center;
   align-items: center;
   width: 250px;
-  height: 70px;
   background-color: #f55702;
   border-radius: 25px;
   margin: 20px auto;
@@ -316,6 +316,160 @@ ul li p {
   display: flex;
   gap: 20px;
   align-items: center;
+}
+
+@media (max-width: 1200px) {
+  .image {
+    width: 100%;
+    height: auto;
+  }
+
+  .info {
+    padding-left: 20px;
+  }
+
+  .profile-picture {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .Table {
+    gap: 50px;
+  }
+
+  .Table-content {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .no-visits {
+    width: 100%;
+    padding: 50px;
+  }
+
+  .btn {
+    width: 200px;
+    height: 60px;
+  }
+
+  .btn a {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .overlay h1 {
+    font-size: 2em;
+  }
+
+  .overlay .logo-main {
+    width: 250px;
+  }
+
+  .profile-picture {
+    width: 150px;
+    height: 180px;
+    top: 60%;
+  }
+
+  .profile-picture h2 {
+    font-size: 60px;
+    margin-top: 30%;
+  }
+
+  .info {
+    font-size: 20px;
+  }
+
+  .Follow {
+    width: 120px;
+    height: 75px;
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 40px;
+  }
+
+  p1 {
+    font-size: 30px;
+  }
+
+  .restaurant-card {
+    width: 200px;
+    height: 150px;
+  }
+
+  .restaurant-name {
+    font-size: 20px;
+  }
+
+  .visit-count {
+    font-size: 18px;
+  }
+
+  .info-item-part1-2-3 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay h1 {
+    font-size: 1.5em;
+  }
+
+  .overlay .logo-main {
+    width: 200px;
+  }
+
+  .profile-picture {
+    width: 120px;
+    height: 150px;
+    top: 50%;
+  }
+
+  .profile-picture h2 {
+    font-size: 50px;
+    margin-top: 25%;
+  }
+
+  .info {
+    font-size: 18px;
+  }
+
+  .Follow {
+    width: 100px;
+    height: 60px;
+    font-size: 18px;
+  }
+
+  h3 {
+    font-size: 30px;
+  }
+
+  p1 {
+    font-size: 25px;
+  }
+
+  .restaurant-card {
+    width: 150px;
+    height: 120px;
+  }
+
+  .restaurant-name {
+    font-size: 18px;
+  }
+
+  .visit-count {
+    font-size: 16px;
+  }
+  .info-item-part1-2-3 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
 }
 </style>
 <script setup lang="ts">

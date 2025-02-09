@@ -18,7 +18,7 @@
             />
             Profile
           </router-link>
-          <router-link to="/user" class="dropdown-item">
+          <router-link to="/home" class="dropdown-item">
             <img
               src="../assets/images/logout-line-svgrepo-com.svg"
               alt="Log out Icon"

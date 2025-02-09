@@ -70,7 +70,7 @@ const updateSuggestions = () => {
 <style scoped>
 #container-drop {
   position: relative;
-  width: 350px;
+  width: 500px;
 }
 
 #dropDown-container {
