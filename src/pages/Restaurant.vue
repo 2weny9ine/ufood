@@ -2,22 +2,15 @@
   <div class="restaurant-info">
     <div class="restaurant-header">
       <div class="image-container">
-        <img
-          src="../assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
-          alt="Restaurant Image"
-          class="restaurant-image"
-        />
-        <img
-          src="../assets/images/Pizza-Pizza-Logo.png"
-          alt="Restaurant logo"
-          class="restaurant-logo"
-        />
+        <img :src="images[0]" alt="Restaurant Image" class="restaurant-image" />
+        <img :src="images[1]" alt="Restaurant logo" class="restaurant-logo" />
         <div class="logo-text-container">
           <div class="restaurant-details">
             <div class="name-category">
-              <h2 class="restaurant-name">Pizza Pizza</h2>
+              <h2 class="restaurant-name">{{ name }}</h2>
               <p class="restaurant-category">
-                <img src="../assets/images/food-restaurant-svgrepo-com.svg" height="15" /> Pizza
+                <img src="../assets/images/food-restaurant-svgrepo-com.svg" height="15" />
+                {{ genres[0] }}, {{ genres[1] }}
               </p>
             </div>
             <div class="contact-info">
@@ -29,13 +22,13 @@
                   rel="noopener noreferrer"
                   class="map-link"
                 >
-                  2360 Ch Ste-Foy, Québec, QC G1V 1T1
+                  {{ address }}
                 </a>
               </p>
               <p class="separator">|</p>
               <p class="restaurant-phone">
                 <img src="../assets/images/phone-rounded-svgrepo-com.svg" height="18" />
-                418-874-1111
+                {{ phone }}
               </p>
               <p class="separator">|</p>
               <div class="rating">
@@ -44,7 +37,7 @@
                 <span class="star">&#9733;</span>
                 <span class="star">&#9733;</span>
                 <span class="star-empty">&#9734;</span>
-                <span class="rating-text">4.0</span>
+                <span class="rating-text">{{ rating }}</span>
               </div>
               <p class="separator">|</p>
               <div class="price-range">
@@ -318,25 +311,58 @@
 <script>
 /* global google */
 
+// Get the full URL
+const urlParams = new URLSearchParams(window.location.search)
+// Get specific parameters
+const idRestaurant = urlParams.get('id')
+
 export default {
   data() {
     return {
-      images: [
-        '/src/assets/Recipes_2400_Spicy-Pepperoni-Pizza.jpg',
-        '/src/assets/Screen-Shot-2020-06-30-at-9.24.59-AM.png',
-      ],
       index: 0,
-      address: '2360 Ch Ste-Foy, Québec, QC', // Your address
-      googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c', // Replace with your key
-      priceRange: '$ - $$', // Example price range
+      googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c',
+      name: '',
+      address: '',
+      phone: '',
+      location: '',
+      openingHours: '',
+      genres: '',
+      priceRange: '',
+      rating: '',
+      images: '',
     }
   },
-  mounted() {
+  async mounted() {
     // Ensure the gallery width matches the number of images
     this.$refs.gallery.style.width = `${this.images.length * 100}%`
+    await this.fetchRestaurant(idRestaurant)
     this.loadGoogleMaps()
   },
   methods: {
+    async fetchRestaurant(idRestaurant) {
+      try {
+        const response = await fetch('/src/assets/restaurants.json')
+        const restaurants = await response.json()
+        const restaurantData = restaurants.find((r) => r.id == idRestaurant)
+
+        if (restaurantData) {
+          this.name = restaurantData.name
+          this.address = restaurantData.address
+          this.phone = restaurantData.phone
+          this.location = restaurantData.location //TODO
+          this.openingHours = restaurantData.openingHours //TODO
+          this.priceRange = restaurantData.priceRange
+          this.rating = restaurantData.rating
+          this.genres = restaurantData.genres
+          this.images = restaurantData.images
+        } else {
+          console.error('Restaurant not found!')
+        }
+      } catch (error) {
+        console.error('Error fetching JSON:', error)
+      }
+    },
+
     moveSlide(direction) {
       const totalImages = this.images.length
       this.index += direction
