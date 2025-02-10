@@ -1,12 +1,14 @@
 <template>
-  <div id="app">
-    <Navigation></Navigation>
-    <router-view></router-view>
+  <div>
+    <Header v-if="!route.meta.hideHeader" />
+    <router-view />
   </div>
 </template>
 
 <script setup>
-import Navigation from './components/Navigation.vue'
+import Header from '@/components/Header.vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 </script>
 
 <style></style>

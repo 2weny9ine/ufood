@@ -1,0 +1,9 @@
+{
+  "firstName": "John ",
+  "lastName": "Martin",
+  "followers": 1,
+  "following": 3,
+  "rating": 5,
+  "password": "123456",
+  "rating": 4
+}
