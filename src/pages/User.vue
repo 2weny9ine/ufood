@@ -340,7 +340,6 @@ ul li p {
   gap: 20px;
   align-items: center;
 }
-
 @media (max-width: 1200px) {
   .image {
     width: 100%;
@@ -356,27 +355,16 @@ ul li p {
     transform: translateX(50%);
   }
 
+  .image {
+    width: 100%;
+    height: auto;
+  }
+  .profile-picture {
+    right: 50%;
+    transform: translateX(50%);
+  }
   .Table {
     gap: 50px;
-  }
-
-  .Table-content {
-    width: 100%;
-    padding: 20px;
-  }
-
-  .no-visits {
-    width: 100%;
-    padding: 50px;
-  }
-
-  .btn {
-    width: 200px;
-    height: 60px;
-  }
-
-  .btn a {
-    font-size: 20px;
   }
 }
 
@@ -436,6 +424,20 @@ ul li p {
     align-items: flex-start;
     gap: 5px;
   }
+
+  .Table-Visit {
+    padding: 10px;
+  }
+  .restaurant-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .restaurant-card {
+    width: 90%;
+    padding: 10px;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -492,6 +494,17 @@ ul li p {
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
+  }
+
+  .Table-Visit h3 {
+    font-size: 1.2em;
+    text-align: center;
+  }
+  .restaurant-card {
+    width: 100%;
+  }
+  .btn {
+    text-align: center;
   }
 }
 </style>

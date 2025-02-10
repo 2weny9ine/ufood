@@ -201,7 +201,6 @@
   font-weight: bold;
 }
 
-/* Ensure only one image is visible */
 .gallery-container {
   position: relative;
   max-width: 50%;
@@ -210,21 +209,19 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Make images slide horizontally */
 .gallery {
   display: flex;
   transition: transform 0.5s ease-in-out;
 }
 
 .gallery img {
-  width: 100%; /* Each image takes full width of container */
+  width: 100%;
   height: 300px;
   object-fit: cover;
   border-radius: 10px;
-  flex: 0 0 100%; /* Prevents images from stacking */
+  flex: 0 0 100%;
 }
 
-/* Buttons for navigation */
 .btn {
   position: absolute;
   top: 50%;
@@ -317,9 +314,9 @@
 @media (max-width: 768px) {
   .contact-info {
     display: flex;
-    flex-wrap: wrap; /* Allows items to move to the next line if needed */
-    align-items: center; /* Align elements vertically */
-    gap: 1px; /* Space between elements */
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1px;
   }
 
   .restaurant-location,
@@ -328,8 +325,8 @@
   .price-range {
     display: flex;
     align-items: center;
-    gap: 5px; /* Adjust spacing inside each item */
-    line-height: 1.2; /* Reduce space between lines */
+    gap: 5px;
+    line-height: 1.2;
     margin: 2px 0; /* Reduce vertical margin */
   }
 
