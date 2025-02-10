@@ -116,6 +116,33 @@
 .Start:hover {
   opacity: 0.8;
 }
+
+@media (max-width: 767px) {
+  .overlay {
+    padding: 10px;
+  }
+
+  .overlay h1 {
+    font-size: 1.5em;
+    word-break: break-word;
+    margin-bottom: 5px;
+  }
+
+  .overlay h2 {
+    font-size: 1em;
+    word-break: break-word;
+    margin-bottom: 20px;
+  }
+
+  .login-input {
+    font-size: 14px;
+    width: 90%;
+  }
+
+  .Start {
+    font-size: 0.9em;
+  }
+}
 </style>
 
 <script setup lang="ts">
