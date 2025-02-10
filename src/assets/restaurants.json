@@ -12,7 +12,11 @@
     ],
     "genres": ["Pizza", "Halal"],
     "priceRange": "$$",
-    "rating": 4.0
+    "rating": 4.0,
+    "gallery": [
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "/src/assets/images/mcdonalds.jpg"
+    ]
   },
   {
     "id": 2,
@@ -24,7 +28,11 @@
     "images": ["/src/assets/images/torino.avif", "/src/assets/images/torinologo.png"],
     "genres": ["Grillades", "Halal"],
     "priceRange": "$",
-    "rating": 4.0
+    "rating": 4.0,
+    "gallery": [
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "/src/assets/images/mcdonalds.jpg"
+    ]
   },
   {
     "id": 3,
@@ -36,7 +44,11 @@
     "images": ["/src/assets/images/mcdonalds.jpg", "/src/assets/images/McDonaldslogo.png"],
     "genres": ["fast food"],
     "priceRange": "$",
-    "rating": 3.0
+    "rating": 3.0,
+    "gallery": [
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "/src/assets/images/mcdonalds.jpg"
+    ]
   },
   {
     "id": 4,
@@ -48,7 +60,11 @@
     "images": ["/src/assets/images/sushi.jpeg", "/src/assets/images/sushilogo.png"],
     "genres": ["Sushi", "Halal"],
     "priceRange": "$$$",
-    "rating": 4.0
+    "rating": 4.0,
+    "gallery": [
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "/src/assets/images/mcdonalds.jpg"
+    ]
   },
   {
     "id": 5,
@@ -60,7 +76,11 @@
     "images": ["/src/assets/images/holyburgers.jpeg", "/src/assets/images/holyburgerslogo.png"],
     "genres": ["Burger"],
     "priceRange": "$",
-    "rating": 3.0
+    "rating": 3.0,
+    "gallery": [
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "/src/assets/images/mcdonalds.jpg"
+    ]
   },
   {
     "id": 6,
@@ -72,6 +92,10 @@
     "images": ["/src/assets/images/chocolato.jpg", "/src/assets/images/chocolatologo.png"],
     "genres": ["Dessert", "Halal"],
     "priceRange": "$",
-    "rating": 4.0
+    "rating": 4.0,
+    "gallery": [
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
+      "/src/assets/images/mcdonalds.jpg"
+    ]
   }
 ]

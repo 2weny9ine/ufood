@@ -14,7 +14,7 @@
               </p>
             </div>
             <div class="contact-info">
-              <p class="restaurant-location">
+              <div class="restaurant-location">
                 <img src="../assets/images/location-pin-alt-1-svgrepo-com.svg" height="18" />
                 <a
                   :href="`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`"
@@ -24,12 +24,12 @@
                 >
                   {{ address }}
                 </a>
-              </p>
+              </div>
               <p class="separator">|</p>
-              <p class="restaurant-phone">
+              <div class="restaurant-phone">
                 <img src="../assets/images/phone-rounded-svgrepo-com.svg" height="18" />
-                {{ phone }}
-              </p>
+                <a :href="'tel:' + phone">{{ phone }}</a>
+              </div>
               <p class="separator">|</p>
               <div class="rating">
                 <span class="star">&#9733;</span>
@@ -57,7 +57,7 @@
     <h2 style="text-align: center">Restaurant Gallery</h2>
     <div class="gallery-container">
       <div class="gallery" ref="gallery">
-        <img v-for="(image, index) in images" :key="index" :src="image" alt="Pizza" />
+        <img v-for="(image, index) in gallery" :key="index" :src="image" alt="Pizza" />
       </div>
       <button class="btn prev" @click="moveSlide(-1)">&#10094;</button>
       <button class="btn next" @click="moveSlide(1)">&#10095;</button>
@@ -119,7 +119,7 @@
 
 .logo-text-container {
   position: absolute;
-  bottom: -60px;
+  bottom: -80px;
   left: 130px;
   z-index: 2;
   display: flex;
@@ -158,11 +158,19 @@
   margin: 0;
 }
 
-.restaurant-location,
 .restaurant-phone {
+  display: flex; /* Make icon and text inline */
+  align-items: center; /* Align vertically */
+  gap: 5px; /* Add spacing between icon and text */
   font-size: 0.9em;
   color: #555;
-  margin: 0;
+}
+
+.restaurant-location {
+  display: block; /* Makes the address take the full width */
+  width: 100%;
+  margin-top: 5px;
+  text-align: left; /* Adjust to left if needed */
 }
 
 .separator {
@@ -306,6 +314,55 @@
 .maps-button:hover {
   background-color: #e64a19;
 }
+@media (max-width: 768px) {
+  .contact-info {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to move to the next line if needed */
+    align-items: center; /* Align elements vertically */
+    gap: 1px; /* Space between elements */
+  }
+
+  .restaurant-location,
+  .restaurant-phone,
+  .rating,
+  .price-range {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Adjust spacing inside each item */
+    line-height: 1.2; /* Reduce space between lines */
+    margin: 2px 0; /* Reduce vertical margin */
+  }
+
+  .separator {
+    display: none; /* Hide | separators on small screens */
+  }
+  .restaurant-name {
+    font-size: 1rem; /* Reduce font size */
+  }
+
+  .restaurant-category {
+    font-size: 0.7rem;
+  }
+
+  .restaurant-location,
+  .restaurant-phone,
+  .rating-text,
+  .price-range {
+    font-size: 0.5rem; /* Make text smaller */
+  }
+
+  .logo-text-container {
+    bottom: -70px;
+  }
+
+  .gallery-container {
+    position: relative;
+    max-width: 90%;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+}
 </style>
 
 <script>
@@ -330,15 +387,26 @@ export default {
       priceRange: '',
       rating: '',
       images: '',
+      gallery: ['/src/assets/images/chocolato.jpg', '/src/assets/images/chocolatologo.png'],
     }
   },
   async mounted() {
     // Ensure the gallery width matches the number of images
-    this.$refs.gallery.style.width = `${this.images.length * 100}%`
+    this.$refs.gallery.style.width = `${this.gallery.length * 100}%`
     await this.fetchRestaurant(idRestaurant)
     this.loadGoogleMaps()
   },
   methods: {
+    moveSlide(direction) {
+      const totalImages = this.gallery.length
+      this.index += direction
+
+      if (this.index >= totalImages) this.index = 0 // Loop to first image
+      if (this.index < 0) this.index = totalImages - 1 // Loop to last image
+
+      this.$refs.gallery.style.transform = `translateX(${-this.index * (100 / totalImages)}%)`
+    },
+
     async fetchRestaurant(idRestaurant) {
       try {
         const response = await fetch('/src/assets/restaurants.json')
@@ -355,22 +423,13 @@ export default {
           this.rating = restaurantData.rating
           this.genres = restaurantData.genres
           this.images = restaurantData.images
+          this.gallery = restaurantData.gallery
         } else {
           console.error('Restaurant not found!')
         }
       } catch (error) {
         console.error('Error fetching JSON:', error)
       }
-    },
-
-    moveSlide(direction) {
-      const totalImages = this.images.length
-      this.index += direction
-
-      if (this.index >= totalImages) this.index = 0 // Loop to first image
-      if (this.index < 0) this.index = totalImages - 1 // Loop to last image
-
-      this.$refs.gallery.style.transform = `translateX(${-this.index * (100 / totalImages)}%)`
     },
 
     loadGoogleMaps() {
