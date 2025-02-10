@@ -26,15 +26,16 @@
   height: 100vh;
   justify-content: center;
   align-items: center;
-  margin-top: 0;
+  margin: 0;
   overflow: hidden;
+  position: relative;
 }
 
 .image {
+  position: fixed;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  position: absolute;
   top: 0;
   left: 0;
   z-index: -1;
