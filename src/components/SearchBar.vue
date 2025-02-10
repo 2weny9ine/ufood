@@ -70,7 +70,9 @@ const updateSuggestions = () => {
 <style scoped>
 #container-drop {
   position: relative;
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 #dropDown-container {
@@ -84,28 +86,28 @@ const updateSuggestions = () => {
   border-radius: 15px;
   padding: 5px;
   background-color: #ffffff;
-  max-width: 750px;
   width: 100%;
 }
 
 .search-bar input {
   border: none;
   padding: 5px;
-  font-size: 20px;
-  width: 680px;
+  font-size: 16px;
+  width: 100%;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
   outline: none;
 }
+
 .search-icon {
-  width: 40px;
-  height: 25px;
+  width: 30px;
+  height: 20px;
   margin-right: 10px;
 }
 
 #reset-button {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 16px;
   color: #0b0b0b;
   cursor: pointer;
   margin-left: 10px;
@@ -127,7 +129,7 @@ const updateSuggestions = () => {
   z-index: 10;
   border-radius: 15px;
   width: 100%;
-  font-size: 20px;
+  font-size: 16px;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
 
@@ -151,7 +153,47 @@ const updateSuggestions = () => {
   overflow-y: auto;
   z-index: 10;
   border-radius: 15px;
-  font-size: 20px;
+  font-size: 16px;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+}
+
+@media (max-width: 768px) {
+  .search-bar input {
+    font-size: 14px;
+  }
+
+  .search-icon {
+    width: 25px;
+    height: 15px;
+  }
+
+  #reset-button {
+    font-size: 14px;
+  }
+
+  #suggestions-container,
+  .no-result {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-bar input {
+    font-size: 12px;
+  }
+
+  .search-icon {
+    width: 20px;
+    height: 12px;
+  }
+
+  #reset-button {
+    font-size: 12px;
+  }
+
+  #suggestions-container,
+  .no-result {
+    font-size: 12px;
+  }
 }
 </style>

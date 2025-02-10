@@ -4,7 +4,6 @@
       <li>
         <router-link to="/Home">Home</router-link>
       </li>
-
       <li class="user-container">
         <span class="user-greeting" @click="toggleDropdown">Hi, {{ user.firstName }}</span>
         <div v-if="dropdownVisible" class="dropdown-menu">
