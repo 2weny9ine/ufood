@@ -82,7 +82,7 @@ const toggleMenu = () => {
   gap: 15px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .header {
     padding: 10px;
   }
