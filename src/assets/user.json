@@ -3,5 +3,6 @@
   "lastName": "Martin",
   "followers": 1,
   "following": 3,
-  "rating": 5
+  "rating": 5,
+  "password": "123456"
 }

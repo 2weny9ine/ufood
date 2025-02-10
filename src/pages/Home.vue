@@ -1,20 +1,4 @@
 <template>
-  <section id="main">
-    <div class="Main">
-      <img src="../assets/images/background%20pic.png" alt="Background Image" class="image" />
-      <div class="overlay">
-        <div class="logo">
-          <img src="../assets/images/Logo.png" alt="logo" />
-        </div>
-        <h1>Discover Flavor, Share the Love!</h1>
-        <h2>Find & Share Your Favorite Restaurants!</h2>
-        <div class="Buttons">
-          <a href="#restaurants-section" class="Explore">Explore</a>
-          <button class="Start">Get Started →</button>
-        </div>
-      </div>
-    </div>
-  </section>
   <section id="restaurants-section">
     <h1 class="restaurants-label">Restaurants</h1>
 
@@ -151,104 +135,6 @@
   text-decoration: underline;
 }
 
-.Main {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  margin-top: 0;
-  overflow: hidden;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  filter: brightness(90%);
-}
-
-.overlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  width: 100%;
-  padding: 20px;
-}
-
-.logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.logo img {
-  width: 200px;
-  height: auto;
-}
-
-.overlay h1 {
-  font-size: 3em;
-  color: white;
-  font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 0px;
-}
-
-.overlay h2 {
-  font-size: 1.5em;
-  color: white;
-  font-family: Arial, Helvetica, sans-serif;
-  margin-bottom: 40px;
-}
-
-.Buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.Explore,
-.Start {
-  border: none;
-  padding: 10px 20px;
-  border-radius: 15px;
-  font-size: 1.3em;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.Explore {
-  font-family: Arial, Helvetica, sans-serif;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 15px;
-  font-size: 1.3em;
-  font-weight: bold;
-  cursor: pointer;
-  color: #f55702;
-  text-decoration: none;
-  background-color: white;
-  display: inline-block;
-}
-
-.Start {
-  font-family: Arial, Helvetica, sans-serif;
-  color: #ffffff;
-  background-color: #f55702;
-}
-
-.Explore:hover,
-.Start:hover {
-  opacity: 0.8;
-}
-
 .restaurants-label {
   margin-top: 30px;
   text-align: center;
@@ -265,6 +151,9 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+}
+.restaurants-section {
+  border: 5px solid #0b0b0b;
 }
 
 .restaurant-card {
