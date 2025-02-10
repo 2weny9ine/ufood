@@ -2,8 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../pages/Home.vue'
 import Restaurant from '../pages/Restaurant.vue'
 import User from '../pages/User.vue'
+import Login from '../pages/Login.vue'
 
 const routes = [
+  {
+    path: '/',
+    name: 'Login',
+    component: Login,
+    meta: { hideHeader: true },
+  },
   {
     path: '/Home',
     name: 'Home',
@@ -20,9 +27,8 @@ const routes = [
     component: User,
   },
   {
-    path: '/',
-    name: 'Home2',
-    component: Home,
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
   },
 ]
 
