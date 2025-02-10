@@ -15,7 +15,7 @@
     "rating": 4.0,
     "gallery": [
       "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
-      "/src/assets/images/mcdonalds.jpg"
+      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg"
     ]
   },
   {
@@ -29,10 +29,7 @@
     "genres": ["Grillades", "Halal"],
     "priceRange": "$",
     "rating": 4.0,
-    "gallery": [
-      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
-      "/src/assets/images/mcdonalds.jpg"
-    ]
+    "gallery": ["/src/assets/images/torinoRecipes.jpg", "/src/assets/images/torinoRecipes.jpg"]
   },
   {
     "id": 3,
@@ -46,8 +43,8 @@
     "priceRange": "$",
     "rating": 3.0,
     "gallery": [
-      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
-      "/src/assets/images/mcdonalds.jpg"
+      "/src/assets/images/mcdonaldsRecipes.jpg",
+      "/src/assets/images/mcdonaldsRecipes.jpg"
     ]
   },
   {
@@ -61,10 +58,7 @@
     "genres": ["Sushi", "Halal"],
     "priceRange": "$$$",
     "rating": 4.0,
-    "gallery": [
-      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
-      "/src/assets/images/mcdonalds.jpg"
-    ]
+    "gallery": ["/src/assets/images/sushi.jpeg", "/src/assets/images/sushi.jpeg"]
   },
   {
     "id": 5,
@@ -77,10 +71,7 @@
     "genres": ["Burger"],
     "priceRange": "$",
     "rating": 3.0,
-    "gallery": [
-      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
-      "/src/assets/images/mcdonalds.jpg"
-    ]
+    "gallery": ["/src/assets/images/holyRecipes.jpg", "/src/assets/images/holyRecipes.jpg"]
   },
   {
     "id": 6,
@@ -94,8 +85,8 @@
     "priceRange": "$",
     "rating": 4.0,
     "gallery": [
-      "/src/assets/images/Recipes_2400_Spicy-Pepperoni-Pizza.jpg",
-      "/src/assets/images/mcdonalds.jpg"
+      "/src/assets/images/chocolatoRecipes.jpeg",
+      "/src/assets/images/chocolatoRecipes.jpeg"
     ]
   }
 ]

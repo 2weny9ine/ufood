@@ -1,7 +1,9 @@
 <template>
   <header class="header">
     <div class="logo">
-      <img src="../assets/images/Logo.png" alt="Logo" />
+      <a href="/Home" target="_blank">
+        <img src="../assets/images/Logo.png" alt="Logo" />
+      </a>
     </div>
 
     <div class="search-container">
