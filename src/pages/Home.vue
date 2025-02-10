@@ -3,7 +3,10 @@
     <h1 class="restaurants-label">Restaurants</h1>
 
     <div class="inline-container">
-      <section class="filter-sidebar">
+      <button v-if="isSmallScreen" class="hamburger-button" @click="toggleFilterSidebar">
+        ☰ Filters
+      </button>
+      <section :class="['filter-sidebar', { hidden: isSmallScreen && !isFilterVisible }]">
         <h3>
           Filters <button class="clear-button" @click="clearAllFilters">Clear All</button>
           <i class="icon-settings"></i>
@@ -124,6 +127,20 @@
 import { ref, onMounted, computed } from 'vue'
 import restaurantsData from '@/assets/restaurants.json'
 
+const isSmallScreen = ref(window.innerWidth <= 920)
+const isFilterVisible = ref(false)
+
+const toggleFilterSidebar = () => {
+  isFilterVisible.value = !isFilterVisible.value
+}
+
+window.addEventListener('resize', () => {
+  isSmallScreen.value = window.innerWidth <= 920
+  if (!isSmallScreen.value) {
+    isFilterVisible.value = false
+  }
+})
+
 const restaurants = ref([])
 const selectedGenres = ref([])
 const selectedPrice = ref('')
@@ -219,6 +236,42 @@ const updateVisit = (restaurantName) => {
 </script>
 
 <style scoped>
+.hamburger-button {
+  display: none;
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.hamburger-button:hover {
+  background-color: #cc5200;
+}
+
+.filter-sidebar.hidden {
+  display: none;
+}
+
+@media (max-width: 920px) {
+  .hamburger-button {
+    display: block;
+  }
+
+  .filter-sidebar {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+}
 .clear-button {
   background: none;
   border: none;
@@ -234,7 +287,8 @@ const updateVisit = (restaurantName) => {
 
 .restaurants-label {
   margin-top: 30px;
-  text-align: center;
+  text-align: left;
+  margin-left: 310px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -249,8 +303,15 @@ const updateVisit = (restaurantName) => {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
-.restaurants-section {
-  border: 5px solid #0b0b0b;
+
+#restaurants-section {
+  padding-top: 80px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .restaurant-card {
@@ -260,8 +321,6 @@ const updateVisit = (restaurantName) => {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   width: 400px;
   height: fit-content;
-  max-width: 400px;
-  max-height: 300px;
   overflow: hidden;
 }
 .restaurant-banner {
@@ -275,16 +334,21 @@ const updateVisit = (restaurantName) => {
   max-width: 100%;
 }
 
-.inline-container,
-.inline-container-restaurant {
+.inline-container {
+  display: flex;
   margin-left: 10px;
   margin-right: 10px;
   display: flex;
   width: 100%;
 }
+
 .inline-container-restaurant {
   align-items: center;
   justify-content: space-between;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  width: 100%;
 }
 
 .banner-container {
@@ -335,9 +399,9 @@ h3 {
 
 .filter-sidebar {
   padding: 5px 20px;
-  margin-right: 20px;
+  margin-right: 50px;
   height: fit-content;
-  width: 200px;
+  width: 250px;
   max-width: 500px;
   position: sticky;
   background: rgba(232, 232, 232, 0.33);
@@ -392,5 +456,101 @@ h3 {
 
 .filter-title {
   font-weight: bold;
+}
+
+@media (max-width: 920px) {
+  .filter-sidebar {
+    position: relative;
+    width: 100%;
+    z-index: 10;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .hamburger-button {
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 1600px) and (min-width: 1200px) {
+  .Table {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .filter-sidebar {
+    width: 220px;
+    margin-right: 30px;
+  }
+  .restaurants {
+    width: 50%;
+  }
+  .restaurant-card {
+    width: 400px;
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+  .Table {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .filter-sidebar {
+    width: 200px;
+    margin-right: 20px;
+  }
+  .restaurants {
+    width: 70%;
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 920px) {
+  .Table {
+    grid-template-columns: 1fr;
+  }
+  .filter-sidebar {
+    width: 180px;
+  }
+  .restaurants {
+    width: 100%;
+  }
+  .restaurant-card {
+    width: 700px;
+  }
+}
+
+@media (max-width: 919px) {
+  .inline-container {
+    flex-direction: column;
+  }
+
+  .filter-sidebar {
+    width: 300px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .restaurants {
+    width: 100%;
+  }
+
+  .Table {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .restaurant-card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .apply-filters {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .restaurants-label {
+    margin-left: 0;
+    text-align: center;
+  }
 }
 </style>
