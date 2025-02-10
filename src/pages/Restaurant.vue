@@ -66,8 +66,8 @@
     <div class="opening-hours">
       <h3>Opening Hours</h3>
       <ul>
-        <li>Monday - Friday: 11:00 AM - 10:00 PM</li>
-        <li>Saturday - Sunday: 12:00 PM - 11:00 PM</li>
+        <li>{{ openingHours[0] }}</li>
+        <li>{{ openingHours[1] }}</li>
       </ul>
     </div>
   </div>
@@ -414,8 +414,8 @@ export default {
           this.name = restaurantData.name
           this.address = restaurantData.address
           this.phone = restaurantData.phone
-          this.location = restaurantData.location //TODO
-          this.openingHours = restaurantData.openingHours //TODO
+          this.location = restaurantData.location
+          this.openingHours = restaurantData.openingHours
           this.priceRange = restaurantData.priceRange
           this.rating = restaurantData.rating
           this.genres = restaurantData.genres
