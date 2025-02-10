@@ -92,7 +92,7 @@ const toggleMenu = () => {
   }
 
   .search-container {
-    display: none;
+    margin-right: 80px;
   }
 
   .nav-links {
