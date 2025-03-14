@@ -45,10 +45,24 @@
               </div>
             </div>
           </div>
+
+          <!-- AJOUT: Nouveaux boutons pour les fonctionnalités demandées -->
+          <div class="action-buttons">
+            <button @click="addToFavorites" class="favorite-button">
+              <span v-if="isFavorite">★</span>
+              <span v-else>☆</span>
+              Ajouter aux favoris
+            </button>
+            <button @click="addVisit" class="visit-button">
+              Marquer comme visité
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
   </div>
+
 
   <div class="restaurant-info">
     <h2 style="text-align: center">Restaurant Location</h2>
@@ -74,6 +88,48 @@
 </template>
 
 <style>
+
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.favorite-button, .visit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+}
+
+.favorite-button {
+  background-color: #ff5a5f;
+  color: white;
+}
+
+.favorite-button:hover {
+  background-color: #ff4146;
+}
+
+.visit-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.visit-button:hover {
+  background-color: #3e8e41;
+}
 .restaurant-info {
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
   display: flex;
@@ -318,6 +374,17 @@
     align-items: center;
     gap: 1px;
   }
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .favorite-button, .visit-button {
+    width: 100%;
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
 
   .restaurant-location,
   .restaurant-phone,
@@ -385,12 +452,22 @@ export default {
       rating: '',
       images: '',
       gallery: ['/src/assets/images/chocolato.jpg', '/src/assets/images/chocolatologo.png'],
+
+      // Nouvelles propriétés ajoutées
+      isFavorite: false,
+      userToken: localStorage.getItem('token') || null
     }
   },
   async mounted() {
     // Ensure the gallery width matches the number of images
     this.$refs.gallery.style.width = `${this.gallery.length * 100}%`
-    await this.fetchRestaurant(idRestaurant)
+    await this.fetchRestaurant(idRestaurant);
+
+    // Vérifier si le restaurant est dans les favoris
+    if (this.userToken) {
+      await this.checkIfFavorite();
+    }
+
     this.loadGoogleMaps()
   },
   methods: {
@@ -472,7 +549,7 @@ export default {
       new google.maps.Marker({
         position: restaurantLocation,
         map: map,
-        title: this.restaurantAddress,
+        title: this.name, // Correction: utilisation de name au lieu de restaurantAddress
       })
 
       // Create "Get Directions" Button
@@ -489,6 +566,128 @@ export default {
       customControlDiv.appendChild(button)
       map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(customControlDiv)
     },
-  },
+
+    // Nouvelles méthodes pour les fonctionnalités d'API
+
+    // Vérifier si le restaurant est déjà dans les favoris
+    async checkIfFavorite() {
+      if (!this.userToken || !idRestaurant) return
+
+      try {
+        const response = await fetch('https://ufoodapi.herokuapp.com/favorites', {
+          headers: {
+            'Authorization': `Bearer ${this.userToken}`
+          }
+        })
+
+        if (response.ok) {
+          const favorites = await response.json()
+          // Vérifier si le restaurant actuel est dans une liste de favoris
+          this.isFavorite = favorites.some(list =>
+            list.restaurants.some(restaurant => restaurant.id === idRestaurant)
+          )
+        }
+      } catch (error) {
+        console.error('Error checking favorites:', error)
+      }
+    },
+
+    // Ajouter le restaurant aux favoris
+    async addToFavorites() {
+      if (!this.userToken) {
+        alert('Veuillez vous connecter pour ajouter ce restaurant à vos favoris')
+        return
+      }
+
+      try {
+        // Récupérer les listes de favoris existantes
+        const responseGetLists = await fetch('https://ufoodapi.herokuapp.com/favorites', {
+          headers: {
+            'Authorization': `Bearer ${this.userToken}`
+          }
+        })
+
+        if (responseGetLists.ok) {
+          const favoriteLists = await responseGetLists.json()
+
+          if (favoriteLists.length > 0) {
+            // Ajouter à la première liste
+            const listId = favoriteLists[0].id
+
+            const responseAddToList = await fetch(`https://ufoodapi.herokuapp.com/favorites/${listId}/restaurants`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.userToken}`
+              },
+              body: JSON.stringify({
+                id: idRestaurant
+              })
+            })
+
+            if (responseAddToList.ok) {
+              this.isFavorite = true
+              alert('Restaurant ajouté aux favoris avec succès!')
+            } else {
+              alert('Erreur lors de l\'ajout aux favoris')
+            }
+          } else {
+            // Créer une nouvelle liste de favoris
+            const responseCreateList = await fetch('https://ufoodapi.herokuapp.com/favorites', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.userToken}`
+              },
+              body: JSON.stringify({
+                name: 'Mes favoris'
+              })
+            })
+
+            if (responseCreateList.ok) {
+              const newList = await responseCreateList.json()
+              // Maintenant ajouter le restaurant à cette nouvelle liste
+              this.addToFavorites() // Rappeler la fonction pour ajouter à la liste créée
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error adding to favorites:', error)
+        alert('Erreur lors de l\'ajout aux favoris')
+      }
+    },
+
+    // Marquer le restaurant comme visité
+    async addVisit() {
+      if (!this.userToken) {
+        alert('Veuillez vous connecter pour marquer ce restaurant comme visité')
+        return
+      }
+
+      try {
+        const response = await fetch('https://ufoodapi.herokuapp.com/visits', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.userToken}`
+          },
+          body: JSON.stringify({
+            restaurant_id: idRestaurant,
+            comment: '', // Optionnel: on pourrait ajouter un champ pour le commentaire
+            rating: 5    // Optionnel: on pourrait ajouter un sélecteur de note
+          })
+        })
+
+        if (response.ok) {
+          alert('Restaurant marqué comme visité avec succès!')
+        } else {
+          alert('Erreur lors de l\'ajout de la visite')
+        }
+      } catch (error) {
+        console.error('Error adding visit:', error)
+        alert('Erreur lors de l\'ajout de la visite')
+      }
+    }
+  }
 }
 </script>
