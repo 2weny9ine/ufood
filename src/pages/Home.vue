@@ -2,6 +2,9 @@
   <section id="restaurants-section">
     <h1 class="restaurants-label">Restaurants</h1>
 
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+    <p v-if="loading">Loading...</p>
+
     <div class="inline-container">
       <button v-if="isSmallScreen" class="hamburger-button" @click="toggleFilterSidebar">
         ☰ Filters
@@ -11,13 +14,13 @@
           Filters <button class="clear-button" @click="clearAllFilters">Clear All</button>
           <i class="icon-settings"></i>
         </h3>
+
         <div class="filter-section">
           <p class="filter-title">Sort</p>
           <div class="filter-options">
             <label><input type="radio" v-model="tempSortBy" value="name" /> Name</label>
-            <label><input type="radio" v-model="tempSortBy" value="price" /> Price</label>
+            <label><input type="radio" v-model="tempSortBy" value="price_range" /> Price</label>
             <label><input type="radio" v-model="tempSortBy" value="rating" /> Rating</label>
-            <hr class="line" />
           </div>
           <div class="filter-options">
             <label
@@ -26,70 +29,71 @@
             <label><input type="radio" v-model="tempSortOrder" value="desc" /> Descending</label>
           </div>
         </div>
+
         <div class="filter-section">
-          <p class="filter-title">
-            Genres <button class="clear-button" @click="clearGenres">Clear</button>
-          </p>
-          <div class="filter-section">
-            <div class="filter-options">
-              <label><input type="checkbox" v-model="tempGenres" value="halal" /> Halal</label>
-              <label><input type="checkbox" v-model="tempGenres" value="pizza" /> Pizza</label>
-              <label><input type="checkbox" v-model="tempGenres" value="burger" /> Burger</label>
-              <label><input type="checkbox" v-model="tempGenres" value="dessert" /> Dessert</label>
-              <label
-                ><input type="checkbox" v-model="tempGenres" value="fast food" /> Fast food</label
-              >
-              <label><input type="checkbox" v-model="tempGenres" value="sushi" /> Sushi</label>
-            </div>
-          </div>
-          <div class="filter-section">
-            <p class="filter-title">
-              Price <button class="clear-button" @click="clearPrice">Clear</button>
-            </p>
-            <div class="filter-options">
-              <label><input type="radio" v-model="tempPrice" value="$" checked /> $</label>
-              <label><input type="radio" v-model="tempPrice" value="$$" /> $$</label>
-              <label><input type="radio" v-model="tempPrice" value="$$$" /> $$$</label>
-            </div>
-          </div>
-        </div>
-        <div class="filter-section">
-          <p class="filter-title">
-            Rating <button class="clear-button" @click="clearRating">Clear</button>
-          </p>
+          <p class="filter-title">Genres</p>
           <div class="filter-options">
             <label
-              ><input type="radio" v-model="tempRating" value="1" />
-              <img src="../assets/images/star.png" alt="1 Star" class="star-icon"
-            /></label>
+              ><input type="checkbox" v-model="tempGenres" value="végétarien" /> Végétarien</label
+            >
+            <label><input type="checkbox" v-model="tempGenres" value="café" /> Café</label>
+            <label><input type="checkbox" v-model="tempGenres" value="italien" /> Italien</label>
+            <label><input type="checkbox" v-model="tempGenres" value="santé" /> Santé</label>
             <label
-              ><input type="radio" v-model="tempRating" value="2" />
-              <img src="../assets/images/star.png" alt="2 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="2 Stars" class="star-icon"
-            /></label>
+              ><input type="checkbox" v-model="tempGenres" value="hamburgers" /> Hamburgers</label
+            >
+            <label><input type="checkbox" v-model="tempGenres" value="desserts" /> Desserts</label>
             <label
-              ><input type="radio" v-model="tempRating" value="3" />
-              <img src="../assets/images/star.png" alt="3 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="3 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="3 Stars" class="star-icon"
-            /></label>
+              ><input type="checkbox" v-model="tempGenres" value="asiatique" /> Asiatique</label
+            >
+            <label><input type="checkbox" v-model="tempGenres" value="japonais" /> Japonais</label>
+            <label><input type="checkbox" v-model="tempGenres" value="ambiance" /> Ambiance</label>
             <label
-              ><input type="radio" v-model="tempRating" value="4" />
-              <img src="../assets/images/star.png" alt="4 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="4 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="4 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="4 Stars" class="star-icon"
-            /></label>
+              ><input type="checkbox" v-model="tempGenres" value="happy hour" /> Happy Hour</label
+            >
+            <label><input type="checkbox" v-model="tempGenres" value="pizzeria" /> Pizzeria</label>
             <label
-              ><input type="radio" v-model="tempRating" value="5" />
-              <img src="../assets/images/star.png" alt="5 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="5 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="5 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="5 Stars" class="star-icon" />
-              <img src="../assets/images/star.png" alt="5 Stars" class="star-icon"
-            /></label>
+              ><input type="checkbox" v-model="tempGenres" value="cuisine moléculaire" /> Cuisine
+              Moléculaire</label
+            >
+            <label
+              ><input type="checkbox" v-model="tempGenres" value="fast-food" /> Fast-Food</label
+            >
+            <label><input type="checkbox" v-model="tempGenres" value="mexicain" /> Mexicain</label>
+            <label
+              ><input type="checkbox" v-model="tempGenres" value="fruits de mer" /> Fruits de
+              Mer</label
+            >
+            <label><input type="checkbox" v-model="tempGenres" value="bistro" /> Bistro</label>
+            <label><input type="checkbox" v-model="tempGenres" value="libanais" /> Libanais</label>
+            <label
+              ><input type="checkbox" v-model="tempGenres" value="steakhouse" /> Steakhouse</label
+            >
           </div>
         </div>
+
+        <div class="filter-section">
+          <p class="filter-title">Price Range</p>
+          <div class="filter-options">
+            <label><input type="radio" v-model="tempPrice" :value="1" /> $</label>
+            <label><input type="radio" v-model="tempPrice" :value="2" /> $$</label>
+            <label><input type="radio" v-model="tempPrice" :value="3" /> $$$</label>
+            <label><input type="radio" v-model="tempPrice" :value="4" /> $$$$</label>
+            <label><input type="radio" v-model="tempPrice" :value="5" /> $$$$$</label>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <p class="filter-title">Rating</p>
+          <div class="filter-options">
+            <label><input type="radio" v-model="tempRating" value="1" /> ★</label>
+            <label><input type="radio" v-model="tempRating" value="2" /> ★★</label>
+            <label><input type="radio" v-model="tempRating" value="3" /> ★★★</label>
+            <label><input type="radio" v-model="tempRating" value="4" /> ★★★★</label>
+            <label><input type="radio" v-model="tempRating" value="5" /> ★★★★★</label>
+          </div>
+        </div>
+
         <button class="apply-filters" @click="applyFilters">Apply</button>
       </section>
 
@@ -101,21 +105,23 @@
             class="restaurant-card"
           >
             <div class="banner-container">
-              <img :src="restaurant.images[0]" :alt="restaurant.name" class="restaurant-banner" />
-              <div class="banner-overlay">
-                <img :src="restaurant.images[1]" />
-              </div>
+              <img
+                :src="restaurant.pictures?.[0] || 'default-image.jpg'"
+                :alt="restaurant.name"
+                class="restaurant-banner"
+              />
             </div>
             <div class="inline-container-restaurant">
-              <h3>{{ restaurant.name }}</h3>
-              <a
-                :href="`restaurant?id=${restaurant.id}`"
-                class="details"
-                @click.stop="updateVisit(restaurant.name)"
-                target="_self"
-              >
-                Details →
-              </a>
+              <div class="restaurant-info">
+                <h3 class="restaurant-name">{{ restaurant.name }}</h3>
+                <p class="restaurant-details">
+                  {{ '$'.repeat(restaurant.price_range) }} | {{ restaurant.genres?.join(', ') }}
+                </p>
+              </div>
+              <p class="restaurant-rating">
+                {{ restaurant.rating.toFixed(1) }}
+                <img src="../assets/images/star.png" class="star-icon" />
+              </p>
             </div>
           </div>
         </div>
@@ -125,10 +131,86 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import restaurantsData from '@/assets/restaurants.json'
+import { getRestaurants } from '@/api/restaurants.js'
 
 const isSmallScreen = ref(window.innerWidth <= 920)
 const isFilterVisible = ref(false)
+const loading = ref(true)
+const errorMessage = ref('')
+
+const restaurants = ref([])
+const selectedGenres = ref([])
+const selectedPrice = ref(null)
+const selectedRating = ref(null)
+
+const tempGenres = ref([])
+const tempPrice = ref(null)
+const tempRating = ref(null)
+
+const tempSortBy = ref('')
+const tempSortOrder = ref('asc')
+const selectedSortBy = ref('')
+const selectedSortOrder = ref('asc')
+
+onMounted(async () => {
+  try {
+    const response = await getRestaurants({ limit: 20, page: 1 })
+    restaurants.value = response.items || []
+  } catch (error) {
+    console.error('Error fetching restaurants:', error)
+    errorMessage.value = 'Failed to load restaurants.'
+  } finally {
+    loading.value = false
+  }
+})
+
+const applyFilters = () => {
+  selectedGenres.value = [...tempGenres.value]
+  selectedPrice.value = tempPrice.value ? Number(tempPrice.value) : null
+  selectedRating.value = tempRating.value ? parseFloat(tempRating.value) : null
+  selectedSortBy.value = tempSortBy.value
+  selectedSortOrder.value = tempSortOrder.value
+}
+
+const filteredRestaurants = computed(() => {
+  return restaurants.value
+    .filter((restaurant) => {
+      const matchesGenre =
+        selectedGenres.value.length === 0 ||
+        selectedGenres.value.some((genre) =>
+          restaurant.genres?.map((g) => g.toLowerCase()).includes(genre.toLowerCase()),
+        )
+
+      const matchesPrice =
+        selectedPrice.value === null || restaurant.price_range === selectedPrice.value
+
+      const matchesRating =
+        selectedRating.value === null ||
+        (Math.floor(restaurant.rating) >= selectedRating.value &&
+          Math.floor(restaurant.rating) < selectedRating.value + 1)
+
+      return matchesGenre && matchesPrice && matchesRating
+    })
+    .sort((a, b) => {
+      if (!selectedSortBy.value) return 0
+
+      let valueA = a[selectedSortBy.value]
+      let valueB = b[selectedSortBy.value]
+
+      if (selectedSortBy.value === 'name') {
+        valueA = valueA.toLowerCase()
+        valueB = valueB.toLowerCase()
+      }
+
+      return selectedSortOrder.value === 'asc'
+        ? valueA < valueB
+          ? -1
+          : 1
+        : valueA > valueB
+          ? -1
+          : 1
+    })
+})
 
 const toggleFilterSidebar = () => {
   isFilterVisible.value = !isFilterVisible.value
@@ -140,99 +222,6 @@ window.addEventListener('resize', () => {
     isFilterVisible.value = false
   }
 })
-
-const restaurants = ref([])
-const selectedGenres = ref([])
-const selectedPrice = ref('')
-const selectedRating = ref(null)
-
-const tempGenres = ref([])
-const tempPrice = ref('')
-const tempRating = ref(null)
-
-const tempSortBy = ref('')
-const tempSortOrder = ref('asc')
-const selectedSortBy = ref('')
-const selectedSortOrder = ref('asc')
-
-onMounted(() => {
-  restaurants.value = restaurantsData.map((restaurant) => ({
-    ...restaurant,
-    images: restaurant.images?.map((image) => new URL(image, import.meta.url).href) || [],
-  }))
-})
-
-const applyFilters = () => {
-  selectedGenres.value = [...tempGenres.value]
-  selectedPrice.value = tempPrice.value
-  selectedRating.value = tempRating.value
-  selectedSortBy.value = tempSortBy.value
-  selectedSortOrder.value = tempSortOrder.value
-}
-
-const filteredRestaurants = computed(() => {
-  let result = restaurants.value.filter((restaurant) => {
-    const matchesGenre =
-      selectedGenres.value.length === 0 ||
-      selectedGenres.value.every((genre) =>
-        restaurant.genres.map((g) => g.toLowerCase()).includes(genre.toLowerCase()),
-      )
-
-    const matchesPrice =
-      !selectedPrice.value || restaurant.priceRange.trim() === selectedPrice.value.trim()
-    const matchesRating =
-      !selectedRating.value || Math.floor(restaurant.rating) === parseInt(selectedRating.value)
-
-    return matchesGenre && matchesPrice && matchesRating
-  })
-
-  if (selectedSortBy.value) {
-    result = result.sort((a, b) => {
-      let valueA = a[selectedSortBy.value]
-      let valueB = b[selectedSortBy.value]
-
-      if (selectedSortBy.value === 'name') {
-        valueA = valueA.toLowerCase()
-        valueB = valueB.toLowerCase()
-      }
-
-      if (valueA < valueB) return selectedSortOrder.value === 'asc' ? -1 : 1
-      if (valueA > valueB) return selectedSortOrder.value === 'asc' ? 1 : -1
-      return 0
-    })
-  }
-
-  return result
-})
-
-const clearGenres = () => {
-  tempGenres.value = []
-}
-
-const clearPrice = () => {
-  tempPrice.value = ''
-}
-
-const clearRating = () => {
-  tempRating.value = null
-}
-
-const clearAllFilters = () => {
-  clearGenres()
-  clearPrice()
-  clearRating()
-}
-
-const updateVisit = (restaurantName) => {
-  const visits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
-
-  visits.push({
-    name: restaurantName,
-    timestamp: new Date().toISOString(),
-  })
-
-  localStorage.setItem('recentVisits', JSON.stringify(visits))
-}
 </script>
 
 <style scoped>
@@ -345,10 +334,37 @@ const updateVisit = (restaurantName) => {
 .inline-container-restaurant {
   align-items: center;
   justify-content: space-between;
-  margin-left: 10px;
-  margin-right: 10px;
   display: flex;
-  width: 100%;
+  padding: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.restaurant-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.restaurant-details {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  color: #555;
+  margin-top: 2px;
+  text-align: left;
+}
+.restaurant-name {
+  font-size: 18px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.restaurant-rating {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+  text-align: right;
+  min-width: 50px;
 }
 
 .banner-container {
