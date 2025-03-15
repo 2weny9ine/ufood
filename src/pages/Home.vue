@@ -123,15 +123,55 @@
                 <img src="../assets/images/star.png" class="star-icon" />
               </p>
             </div>
+            <button class="visit-button" @click="openVisitModal(restaurant)">Visit</button>
           </div>
         </div>
       </section>
+    </div>
+
+    <!-- Modal for Registering Visit -->
+    <div v-if="showVisitModal" class="modal-overlay">
+      <div class="visit-modal">
+        <h2>Register Your Visit</h2>
+        <p>
+          <strong>{{ selectedRestaurant?.name }}</strong>
+        </p>
+        <div class="visit-infos">
+          <div>
+            <label for="visit-date">Date:</label>
+            <input type="date" id="visit-date" v-model="visitDate" required />
+          </div>
+
+          <div>
+            <label for="visit-rating">Rating:</label>
+            <select id="visit-rating" v-model="visitRating">
+              <option v-for="n in 5" :key="n" :value="n">{{ n }} ★</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="visit-comment">Comment:</label>
+          </div>
+          <textarea
+            id="visit-comment"
+            v-model="visitComment"
+            placeholder="Write a comment..."
+          ></textarea>
+        </div>
+
+        <p v-if="visitSuccess" class="success-message">Visit recorded successfully!</p>
+        <div class="modal-buttons">
+          <button class="submit-visit" @click="submitVisit" :disabled="!visitDate">Submit</button>
+          <button class="close-modal" @click="closeVisitModal">Cancel</button>
+        </div>
+      </div>
     </div>
   </section>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { getRestaurants } from '@/api/restaurants.js'
+import { postVisit } from '@/api/visit.js'
 
 const isSmallScreen = ref(window.innerWidth <= 920)
 const isFilterVisible = ref(false)
@@ -151,6 +191,52 @@ const tempSortBy = ref('')
 const tempSortOrder = ref('asc')
 const selectedSortBy = ref('')
 const selectedSortOrder = ref('asc')
+
+const showVisitModal = ref(false)
+const selectedRestaurant = ref(null)
+const visitDate = ref('')
+const visitRating = ref(3)
+const visitComment = ref('')
+const visitSuccess = ref(false)
+
+const USER_ID = '6569767db55a58e85c543213'
+
+const openVisitModal = (restaurant) => {
+  selectedRestaurant.value = restaurant
+  visitDate.value = ''
+  visitRating.value = 3
+  visitComment.value = ''
+  showVisitModal.value = true
+}
+
+const closeVisitModal = () => {
+  showVisitModal.value = false
+}
+
+const submitVisit = async () => {
+  if (!visitDate.value) {
+    alert('Please select a date!')
+    return
+  }
+
+  try {
+    await postVisit(USER_ID, {
+      restaurant_id: selectedRestaurant.value.id,
+      comment: visitComment.value,
+      rating: visitRating.value,
+      date: new Date(visitDate.value).toISOString(),
+    })
+
+    visitSuccess.value = true
+    setTimeout(() => {
+      visitSuccess.value = false
+      closeVisitModal()
+    }, 1500)
+  } catch (error) {
+    console.error('Error submitting visit:', error)
+    alert('Failed to register visit.')
+  }
+}
 
 onMounted(async () => {
   try {
@@ -332,10 +418,10 @@ window.addEventListener('resize', () => {
 }
 
 .inline-container-restaurant {
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
   display: flex;
-  padding: 10px;
+  padding: 10px 10px 0px 10px;
   font-family: Arial, Helvetica, sans-serif;
 }
 .restaurant-info {
@@ -474,6 +560,132 @@ h3 {
   font-weight: bold;
 }
 
+.visit-button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 100px;
+  display: block;
+  margin: 0px auto 5px;
+  text-align: center;
+}
+
+.visit-button:hover {
+  background-color: #cc5200;
+}
+
+.modal-overlay {
+  font-family: Arial, Helvetica, sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.visit-modal {
+  background: white;
+  padding: 20px;
+  width: 350px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.visit-infos {
+  font-weight: lighter;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.visit-infos div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 10px;
+}
+
+.visit-infos label {
+  font-weight: bold;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.visit-infos input {
+  width: 100px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.visit-infos select {
+  width: 60px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.visit-infos textarea {
+  width: 95%;
+  min-height: 70px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+}
+
+.visit-modal h2 {
+  margin-bottom: 10px;
+}
+
+.modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.submit-visit {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.submit-visit:hover {
+  background-color: #cc5200;
+}
+
+.close-modal {
+  background-color: #9c9c9c;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.close-modal:hover {
+  background-color: #383737;
+}
+
+textarea {
+  width: 100%;
+  height: 50px;
+  resize: none;
+  padding: 5px;
+}
 @media (max-width: 920px) {
   .filter-sidebar {
     position: relative;
