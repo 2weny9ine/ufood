@@ -180,15 +180,47 @@
   align-items: center;
   gap: 3px;
 }
-
 .star {
-  color: gold;
-  font-size: 1em;
+  display: inline-block;
+  position: relative;
+  width: 1em; /* Control star size here */
+  height: 1em; /* Control star size here */
+  font-size: 24px; /* Alternatively, you can set width/height in px and remove this */
+  color: lightgray; /* Base color for the empty star */
 }
 
-.star-empty {
-  color: lightgray;
-  font-size: 1em;
+/* The star shape itself (empty outline by default) */
+.star::before {
+  content: '★'; /* Unicode star (\2605) */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  /* The star's color is inherited from .star or the classes below */
+}
+
+/* Full star uses gold color */
+.star.full {
+  color: gold;
+}
+
+/* Empty star remains lightgray, which is set by .star */
+
+/* Half star: We show half empty (lightgray) and half gold */
+.star.half {
+  /* Base is lightgray (from .star) */
+}
+
+.star.half::after {
+  content: '★';
+  color: gold; /* Filled color on top */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%; /* Show half of the star */
+  overflow: hidden; /* Ensures only half is visible */
+  text-align: center;
 }
 
 .rating-text {
@@ -548,16 +580,27 @@ export default {
     },
   },
 }
+
 function generateStarRating(rating, totalStars = 5) {
-  let starsHtml = ''
+  const fullStars = Math.floor(rating)
+  const hasHalfStar = rating % 1 >= 0.5 // If rating is 2.5, 3.5, etc.
+  let starsHTML = ''
+
   for (let i = 0; i < totalStars; i++) {
-    if (i < rating) {
-      starsHtml += '<span class="star">&#9733;</span>'
+    if (i < fullStars) {
+      // Full star
+      starsHTML += '<span class="star full"></span>'
+    } else if (i === fullStars && hasHalfStar) {
+      // Half star
+      starsHTML += '<span class="star half"></span>'
     } else {
-      starsHtml += '<span class="star-empty">&#9734;</span>'
+      // Empty star
+      starsHTML += '<span class="star empty"></span>'
     }
   }
-  starsHtml += '<span class="rating-text">' + rating + '</span>'
-  return starsHtml
+
+  // Append numeric rating if desired
+  starsHTML += `<span class="rating-text">${rating}</span>`
+  return starsHTML
 }
 </script>
