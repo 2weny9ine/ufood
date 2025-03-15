@@ -17,7 +17,7 @@ export default [
 
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
-  
+
   {
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
@@ -25,14 +25,15 @@ export default [
   skipFormatting,
   {
     languageOptions: {
-        globals: {
-            ...globals.node
-        }
+      globals: {
+        ...globals.node,
+        google: 'readonly',
+      },
     },
     rules: {
-        "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
-        "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
-        "vue/multi-word-component-names": 0,
-      },
-  }
+      'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+      'vue/multi-word-component-names': 0,
+    },
+  },
 ]

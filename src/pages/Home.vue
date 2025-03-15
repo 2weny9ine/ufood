@@ -104,17 +104,25 @@
             :key="restaurant.id"
             class="restaurant-card"
           >
-            <div class="banner-container">
-              <img
-                :src="restaurant.pictures?.[0] || 'default-image.jpg'"
-                :alt="restaurant.name"
-                class="restaurant-banner"
-              />
-            </div>
+            <router-link
+              :to="{ name: 'Restaurant', params: { id: restaurant.id } }"
+              class="restaurant-card-link"
+            >
+              <div class="banner-container">
+                <img
+                  :src="restaurant.pictures?.[0] || 'default-image.jpg'"
+                  :alt="restaurant.name"
+                  class="restaurant-banner"
+                />
+              </div>
+            </router-link>
             <div class="inline-container-restaurant">
               <div class="restaurant-info">
                 <h3 class="restaurant-name">{{ restaurant.name }}</h3>
-                <p class="restaurant-details">
+                <!-- <p class="restaurant-details">
+                  {{ '$'.repeat(restaurant.price_range) }} | {{ restaurant.genres?.join(', ') }}
+                </p> -->
+                <p>
                   {{ '$'.repeat(restaurant.price_range) }} | {{ restaurant.genres?.join(', ') }}
                 </p>
               </div>
@@ -128,7 +136,6 @@
         </div>
       </section>
     </div>
-
     <!-- Modal for Registering Visit -->
     <div v-if="showVisitModal" class="modal-overlay">
       <div class="visit-modal">

@@ -1,81 +1,270 @@
 <template>
-  <div class="restaurant-info">
+  <div v-if="loading" class="loading">Loading...</div>
+  <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div v-else class="restaurant-info">
     <div class="restaurant-header">
       <div class="image-container">
-        <img :src="images[0]" alt="Restaurant Image" class="restaurant-image" />
-        <img :src="images[1]" alt="Restaurant logo" class="restaurant-logo" />
+        <img
+          :src="restaurant?.pictures?.[0] || '/default-image.jpg'"
+          alt="Restaurant Image"
+          class="restaurant-image"
+        />
+        <img
+          :src="restaurant?.pictures?.[1] || '/default-logo.jpg'"
+          alt="Restaurant logo"
+          class="restaurant-logo"
+        />
+
         <div class="logo-text-container">
           <div class="restaurant-details">
             <div class="name-category">
-              <h2 class="restaurant-name">{{ name }}</h2>
+              <h2 class="restaurant-name">{{ restaurant?.name || 'Restaurant Name' }}</h2>
               <p class="restaurant-category">
                 <img src="../assets/images/food-restaurant-svgrepo-com.svg" height="15" />
-                {{ genres[0] }}, {{ genres[1] }}
+                {{ restaurant?.genres?.[0] || 'Unknown' }}, {{ restaurant?.genres?.[1] || '' }}
               </p>
             </div>
+
             <div class="contact-info">
               <div class="restaurant-location">
                 <img src="../assets/images/location-pin-alt-1-svgrepo-com.svg" height="18" />
                 <a
-                  :href="`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`"
+                  :href="`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(restaurant?.address)}`"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="map-link"
                 >
-                  {{ address }}
+                  {{ restaurant?.address || 'No Address Available' }}
                 </a>
               </div>
               <p class="separator">|</p>
+
               <div class="restaurant-phone">
                 <img src="../assets/images/phone-rounded-svgrepo-com.svg" height="18" />
-                <a :href="'tel:' + phone">{{ phone }}</a>
+                <a :href="'tel:' + restaurant?.tel">{{ restaurant?.tel || 'No Phone' }}</a>
               </div>
               <p class="separator">|</p>
+
               <div class="rating">
-                <span class="star">&#9733;</span>
-                <span class="star">&#9733;</span>
-                <span class="star">&#9733;</span>
-                <span class="star">&#9733;</span>
-                <span class="star-empty">&#9734;</span>
-                <span class="rating-text">{{ rating }}</span>
+                <span class="rating-text">{{ restaurant?.rating?.toFixed(1) || '0.0' }}</span>
+                <img src="../assets/images/star.png" class="star-icon" />
               </div>
               <p class="separator">|</p>
+
               <div class="price-range">
-                <span>{{ priceRange }}</span>
+                <span>{{ '$'.repeat(restaurant?.price_range || 0) }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="restaurant-info">
+    <!-- Google Maps -->
     <h2 style="text-align: center">Restaurant Location</h2>
     <div id="map"></div>
 
+    <!-- Gallery -->
     <h2 style="text-align: center">Restaurant Gallery</h2>
     <div class="gallery-container">
       <div class="gallery" ref="gallery">
-        <img v-for="(image, index) in gallery" :key="index" :src="image" alt="Pizza" />
+        <img
+          v-for="(image, index) in restaurant?.pictures"
+          :key="index"
+          :src="image"
+          alt="Gallery Image"
+        />
       </div>
       <button class="btn prev" @click="moveSlide(-1)">&#10094;</button>
       <button class="btn next" @click="moveSlide(1)">&#10095;</button>
     </div>
 
+    <!-- Opening Hours -->
     <div class="opening-hours">
       <h3>Opening Hours</h3>
       <ul>
-        <li>{{ openingHours[0] }}</li>
-        <li>{{ openingHours[1] }}</li>
+        <li v-for="(hours, day) in restaurant?.opening_hours" :key="day">
+          {{ day }}: {{ hours || 'Closed' }}
+        </li>
       </ul>
     </div>
   </div>
 </template>
 
+<script>
+import { getRestaurantById } from '@/api/restaurantId'
+import { useRoute } from 'vue-router'
+
+export default {
+  data() {
+    return {
+      restaurant: null,
+      loading: true,
+      errorMessage: '',
+      googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c',
+      index: 0,
+    }
+  },
+
+  async mounted() {
+    const route = useRoute()
+    const restaurantId = route.params.id
+
+    if (!restaurantId) {
+      this.errorMessage = 'Invalid restaurant ID.'
+      this.loading = false
+      return
+    }
+
+    try {
+      this.restaurant = await getRestaurantById(restaurantId)
+      this.loadGoogleMaps()
+    } catch (error) {
+      console.error('Error fetching restaurant:', error)
+      this.errorMessage = 'Failed to fetch restaurant data.'
+    } finally {
+      this.loading = false
+    }
+  },
+
+  methods: {
+    moveSlide(direction) {
+      const gallery = this.$refs.gallery
+      const totalImages = this.restaurant?.pictures?.length || 0
+
+      if (!gallery || totalImages === 0) return
+
+      const imageWidth = gallery.clientWidth
+      this.index += direction
+
+      if (this.index >= totalImages) {
+        this.index = 0
+      } else if (this.index < 0) {
+        this.index = totalImages - 1
+      }
+
+      gallery.style.transform = `translateX(${-this.index * imageWidth}px)`
+      gallery.style.transition = 'transform 0.5s ease-in-out'
+    },
+    loadGoogleMaps() {
+      if (!window.google) {
+        const script = document.createElement('script')
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&callback=initMap`
+        script.defer = true
+        script.async = true
+        window.initMap = this.getCoordinates
+        document.head.appendChild(script)
+      } else {
+        this.getCoordinates()
+      }
+    },
+
+    async getCoordinates() {
+      const address = encodeURIComponent(this.restaurant?.address)
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${this.googleMapsApiKey}`
+
+      try {
+        const response = await fetch(url)
+        const data = await response.json()
+
+        if (data.status === 'OK') {
+          const location = data.results[0].geometry.location
+          this.initMap(location.lat, location.lng)
+        } else {
+          console.error('Geocoding error:', data.status)
+        }
+      } catch (error) {
+        console.error('Error fetching geocode:', error)
+      }
+    },
+
+    initMap(lat, lng) {
+      const restaurantLocation = { lat, lng }
+      const map = new google.maps.Map(document.getElementById('map'), {
+        center: restaurantLocation,
+        zoom: 15,
+      })
+
+      new google.maps.Marker({
+        position: restaurantLocation,
+        map: map,
+        title: this.restaurant?.address,
+      })
+
+      const button = document.createElement('button')
+      button.textContent = '📍 Get Directions'
+      button.classList.add('maps-button')
+      button.onclick = () => {
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+        window.open(googleMapsUrl, '_blank')
+      }
+
+      const customControlDiv = document.createElement('div')
+      customControlDiv.appendChild(button)
+      map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(customControlDiv)
+    },
+  },
+}
+</script>
+
 <style>
+.gallery-container {
+  position: relative;
+  width: 800px;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.gallery {
+  display: flex;
+  transition: transform 0.9s ease-in-out;
+  width: 800px;
+  height: 400px;
+}
+
+.gallery img {
+  width: 800px;
+  height: 400px;
+  object-fit: cover;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.restaurant-location,
+.restaurant-phone,
+.rating,
+.price-range {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+.separator {
+  margin: 0 5px;
+  color: #aaa;
+}
+.rating {
+  flex-direction: row;
+}
+.star-icon {
+  height: 15px;
+}
 .restaurant-info {
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -106,17 +295,16 @@
 
 .restaurant-logo {
   position: absolute;
-  bottom: -40px;
+  bottom: -70px;
   left: 30px;
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   border-radius: 20%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   background-color: #fff;
-  padding: 10px;
   z-index: 1;
+  object-fit: cover;
 }
-
 .logo-text-container {
   position: absolute;
   bottom: -80px;
@@ -131,6 +319,9 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
+  position: relative;
+  top: -25px;
+  left: 10px;
 }
 
 .name-category {
@@ -159,18 +350,17 @@
 }
 
 .restaurant-phone {
-  display: flex; /* Make icon and text inline */
-  align-items: center; /* Align vertically */
-  gap: 5px; /* Add spacing between icon and text */
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.9em;
   color: #555;
 }
 
 .restaurant-location {
-  display: block; /* Makes the address take the full width */
-  width: 100%;
-  margin-top: 5px;
-  text-align: left; /* Adjust to left if needed */
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .separator {
@@ -199,27 +389,6 @@
   font-size: 0.9em;
   color: #333;
   font-weight: bold;
-}
-
-.gallery-container {
-  position: relative;
-  max-width: 50%;
-  overflow: hidden;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.gallery {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-.gallery img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-  flex: 0 0 100%;
 }
 
 .btn {
@@ -294,7 +463,6 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Style the custom Google Maps button */
 .maps-button {
   padding: 10px 15px;
   font-size: 1em;
@@ -327,14 +495,14 @@
     align-items: center;
     gap: 5px;
     line-height: 1.2;
-    margin: 2px 0; /* Reduce vertical margin */
+    margin: 2px 0;
   }
 
   .separator {
-    display: none; /* Hide | separators on small screens */
+    display: none;
   }
   .restaurant-name {
-    font-size: 1rem; /* Reduce font size */
+    font-size: 1rem;
   }
 
   .restaurant-category {
@@ -345,150 +513,11 @@
   .restaurant-phone,
   .rating-text,
   .price-range {
-    font-size: 0.5rem; /* Make text smaller */
+    font-size: 0.5rem;
   }
 
   .logo-text-container {
     bottom: -70px;
   }
-
-  .gallery-container {
-    position: relative;
-    max-width: 90%;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  }
 }
 </style>
-
-<script>
-/* global google */
-
-// Get the full URL
-const urlParams = new URLSearchParams(window.location.search)
-// Get specific parameters
-const idRestaurant = urlParams.get('id')
-
-export default {
-  data() {
-    return {
-      index: 0,
-      googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c',
-      name: '',
-      address: '',
-      phone: '',
-      location: '',
-      openingHours: '',
-      genres: '',
-      priceRange: '',
-      rating: '',
-      images: '',
-      gallery: ['/src/assets/images/chocolato.jpg', '/src/assets/images/chocolatologo.png'],
-    }
-  },
-  async mounted() {
-    // Ensure the gallery width matches the number of images
-    this.$refs.gallery.style.width = `${this.gallery.length * 100}%`
-    await this.fetchRestaurant(idRestaurant)
-    this.loadGoogleMaps()
-  },
-  methods: {
-    moveSlide(direction) {
-      const totalImages = this.gallery.length
-      this.index += direction
-
-      if (this.index >= totalImages) this.index = 0 // Loop to first image
-      if (this.index < 0) this.index = totalImages - 1 // Loop to last image
-
-      this.$refs.gallery.style.transform = `translateX(${-this.index * (100 / totalImages)}%)`
-    },
-
-    async fetchRestaurant(idRestaurant) {
-      try {
-        const response = await fetch('/src/assets/restaurants.json')
-        const restaurants = await response.json()
-        const restaurantData = restaurants.find((r) => r.id == idRestaurant)
-
-        if (restaurantData) {
-          this.name = restaurantData.name
-          this.address = restaurantData.address
-          this.phone = restaurantData.phone
-          this.location = restaurantData.location
-          this.openingHours = restaurantData.openingHours
-          this.priceRange = restaurantData.priceRange
-          this.rating = restaurantData.rating
-          this.genres = restaurantData.genres
-          this.images = restaurantData.images
-          this.gallery = restaurantData.gallery
-        } else {
-          console.error('Restaurant not found!')
-        }
-      } catch (error) {
-        console.error('Error fetching JSON:', error)
-      }
-    },
-
-    loadGoogleMaps() {
-      if (!window.google) {
-        const script = document.createElement('script')
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&callback=initMap`
-        script.defer = true
-        script.async = true
-        window.initMap = this.getCoordinates // Call getCoordinates when loaded
-        document.head.appendChild(script)
-      } else {
-        this.getCoordinates()
-      }
-    },
-
-    async getCoordinates() {
-      const address = encodeURIComponent(this.address)
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${this.googleMapsApiKey}`
-
-      try {
-        const response = await fetch(url)
-        const data = await response.json()
-
-        if (data.status === 'OK') {
-          const location = data.results[0].geometry.location
-          this.initMap(location.lat, location.lng)
-        } else {
-          console.error('Geocoding error:', data.status)
-        }
-      } catch (error) {
-        console.error('Error fetching geocode:', error)
-      }
-    },
-
-    initMap(lat, lng) {
-      const restaurantLocation = { lat, lng }
-      const map = new google.maps.Map(document.getElementById('map'), {
-        center: restaurantLocation,
-        zoom: 15,
-      })
-
-      // Add Marker
-      new google.maps.Marker({
-        position: restaurantLocation,
-        map: map,
-        title: this.restaurantAddress,
-      })
-
-      // Create "Get Directions" Button
-      const button = document.createElement('button')
-      button.textContent = '📍 Get Directions'
-      button.classList.add('maps-button')
-      button.onclick = () => {
-        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-        window.open(googleMapsUrl, '_blank')
-      }
-
-      // Add Button to Google Maps UI
-      const customControlDiv = document.createElement('div')
-      customControlDiv.appendChild(button)
-      map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(customControlDiv)
-    },
-  },
-}
-</script>
