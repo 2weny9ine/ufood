@@ -2,15 +2,15 @@
   <div class="restaurant-info">
     <div class="restaurant-header">
       <div class="image-container">
-        <img :src="images[0]" alt="Restaurant Image" class="restaurant-image" />
-        <img :src="images[1]" alt="Restaurant logo" class="restaurant-logo" />
+        <img :src="pictures[0]" alt="Restaurant Image" class="restaurant-image" />
+        <img :src="pictures[1]" alt="Restaurant logo" class="restaurant-logo" />
         <div class="logo-text-container">
           <div class="restaurant-details">
             <div class="name-category">
               <h2 class="restaurant-name">{{ name }}</h2>
               <p class="restaurant-category">
                 <img src="../assets/images/food-restaurant-svgrepo-com.svg" height="15" />
-                {{ genres[0] }}, {{ genres[1] }}
+                <span class="genres" id="genres"></span>
               </p>
             </div>
             <div class="contact-info">
@@ -28,21 +28,12 @@
               <p class="separator">|</p>
               <div class="restaurant-phone">
                 <img src="../assets/images/phone-rounded-svgrepo-com.svg" height="18" />
-                <a :href="'tel:' + phone">{{ phone }}</a>
+                <a :href="'tel:' + tel">{{ tel }}</a>
               </div>
               <p class="separator">|</p>
-              <div class="rating">
-                <span class="star">&#9733;</span>
-                <span class="star">&#9733;</span>
-                <span class="star">&#9733;</span>
-                <span class="star">&#9733;</span>
-                <span class="star-empty">&#9734;</span>
-                <span class="rating-text">{{ rating }}</span>
-              </div>
+              <div class="rating" id="rating"></div>
               <p class="separator">|</p>
-              <div class="price-range">
-                <span>{{ priceRange }}</span>
-              </div>
+              <div class="price-range">{{ price_range }}</div>
             </div>
           </div>
         </div>
@@ -66,8 +57,13 @@
     <div class="opening-hours">
       <h3>Opening Hours</h3>
       <ul>
-        <li>{{ openingHours[0] }}</li>
-        <li>{{ openingHours[1] }}</li>
+        <li>Sunday: {{ opening_hours.sunday }}</li>
+        <li>Monday: {{ opening_hours.monday }}</li>
+        <li>Tuesday: {{ opening_hours.tuesday }}</li>
+        <li>Wednesday: {{ opening_hours.wednesday }}</li>
+        <li>Thursday: {{ opening_hours.thursday }}</li>
+        <li>Friday: {{ opening_hours.friday }}</li>
+        <li>Saturday: {{ opening_hours.saturday }}</li>
       </ul>
     </div>
   </div>
@@ -216,7 +212,7 @@
 
 .gallery img {
   width: 100%;
-  height: 300px;
+  height: 400px;
   object-fit: cover;
   border-radius: 10px;
   flex: 0 0 100%;
@@ -249,8 +245,8 @@
   padding: 15px;
   background-color: #f8f8f8;
   border-radius: 10px;
-  width: 80%;
-  max-width: 600px;
+  width: 100%;
+  max-width: 50%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -324,10 +320,22 @@
   .rating,
   .price-range {
     display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
     align-items: center;
     gap: 5px;
     line-height: 1.2;
-    margin: 2px 0; /* Reduce vertical margin */
+    margin: 2px 0;
+  }
+
+  .price-range {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    align-items: center;
+    gap: 5px;
+    line-height: 1.2;
+    margin: 2px 0;
   }
 
   .separator {
@@ -375,23 +383,25 @@ export default {
     return {
       index: 0,
       googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c',
+      opening_hours: '',
+      pictures: '',
       name: '',
+      place_id: '',
+      tel: '',
       address: '',
-      phone: '',
-      location: '',
-      openingHours: '',
-      genres: '',
-      priceRange: '',
+      price_range: '',
       rating: '',
-      images: '',
-      gallery: ['/src/assets/images/chocolato.jpg', '/src/assets/images/chocolatologo.png'],
+      genres: '',
+      location: '',
+      gallery: [],
     }
   },
   async mounted() {
     // Ensure the gallery width matches the number of images
-    this.$refs.gallery.style.width = `${this.gallery.length * 100}%`
+    this.$refs.gallery.style.width = `${100}%`
     await this.fetchRestaurant(idRestaurant)
-    this.loadGoogleMaps()
+    await this.getUserLocation()
+    await this.loadGoogleMaps()
   },
   methods: {
     moveSlide(direction) {
@@ -401,26 +411,34 @@ export default {
       if (this.index >= totalImages) this.index = 0 // Loop to first image
       if (this.index < 0) this.index = totalImages - 1 // Loop to last image
 
-      this.$refs.gallery.style.transform = `translateX(${-this.index * (100 / totalImages)}%)`
+      this.$refs.gallery.style.transform = `translateX(${-this.index * 100}%)`
     },
-
     async fetchRestaurant(idRestaurant) {
       try {
-        const response = await fetch('/src/assets/restaurants.json')
-        const restaurants = await response.json()
-        const restaurantData = restaurants.find((r) => r.id == idRestaurant)
+        const response = await fetch(
+          `https://ufoodapi.herokuapp.com/unsecure/restaurants/${idRestaurant}`,
+        )
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const restaurantData = await response.json()
 
         if (restaurantData) {
+          this.opening_hours = restaurantData.opening_hours
+          this.pictures = restaurantData.pictures
           this.name = restaurantData.name
+          this.place_id = restaurantData.place_id
+          this.tel = restaurantData.tel
           this.address = restaurantData.address
-          this.phone = restaurantData.phone
-          this.location = restaurantData.location
-          this.openingHours = restaurantData.openingHours
-          this.priceRange = restaurantData.priceRange
-          this.rating = restaurantData.rating
+          this.price_range = '$'.repeat(restaurantData.price_range)
+          this.rating = restaurantData.rating.toFixed(1)
           this.genres = restaurantData.genres
-          this.images = restaurantData.images
-          this.gallery = restaurantData.gallery
+          this.location = restaurantData.location
+          this.gallery = restaurantData.pictures
+          // this.id = restaurantData.id
+
+          document.getElementById('rating').innerHTML = generateStarRating(this.rating)
+          document.getElementById('genres').innerHTML = this.genres.join(', ')
         } else {
           console.error('Restaurant not found!')
         }
@@ -429,7 +447,7 @@ export default {
       }
     },
 
-    loadGoogleMaps() {
+    async loadGoogleMaps() {
       if (!window.google) {
         const script = document.createElement('script')
         script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&callback=initMap`
@@ -452,7 +470,9 @@ export default {
 
         if (data.status === 'OK') {
           const location = data.results[0].geometry.location
-          this.initMap(location.lat, location.lng)
+          this.restaurantLat = location.lat
+          this.restaurantLng = location.lng
+          this.getUserLocation()
         } else {
           console.error('Geocoding error:', data.status)
         }
@@ -461,18 +481,55 @@ export default {
       }
     },
 
-    initMap(lat, lng) {
-      const restaurantLocation = { lat, lng }
+    async getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.userLat = position.coords.latitude
+            this.userLng = position.coords.longitude
+            this.initMapWithDirections()
+          },
+          (error) => {
+            console.error('Error getting location:', error)
+          },
+        )
+      } else {
+        console.error('Geolocation is not supported by this browser.')
+      }
+    },
+
+    async initMapWithDirections() {
+      const restaurantLocation = { lat: this.restaurantLat, lng: this.restaurantLng }
+      const userLocation = { lat: this.userLat, lng: this.userLng }
+
       const map = new google.maps.Map(document.getElementById('map'), {
         center: restaurantLocation,
         zoom: 15,
       })
 
-      // Add Marker
-      new google.maps.Marker({
-        position: restaurantLocation,
+      const directionsService = new google.maps.DirectionsService()
+      const directionsRenderer = new google.maps.DirectionsRenderer({
         map: map,
-        title: this.restaurantAddress,
+        polylineOptions: {
+          strokeColor: '#FF0000', // Change to your preferred color (Hex, RGB, or named color)
+          strokeOpacity: 0.8, // Adjust transparency (0.0 to 1.0)
+          strokeWeight: 6, // Thickness of the line
+        },
+      })
+      directionsRenderer.setMap(map)
+
+      const request = {
+        origin: userLocation,
+        destination: restaurantLocation,
+        travelMode: google.maps.TravelMode.DRIVING, // Change to WALKING, BICYCLING, or TRANSIT if needed
+      }
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result)
+        } else {
+          console.error('Directions request failed due to ' + status)
+        }
       })
 
       // Create "Get Directions" Button
@@ -480,7 +537,7 @@ export default {
       button.textContent = '📍 Get Directions'
       button.classList.add('maps-button')
       button.onclick = () => {
-        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${this.userLat},${this.userLng}&destination=${this.restaurantLat},${this.restaurantLng}`
         window.open(googleMapsUrl, '_blank')
       }
 
@@ -490,5 +547,17 @@ export default {
       map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(customControlDiv)
     },
   },
+}
+function generateStarRating(rating, totalStars = 5) {
+  let starsHtml = ''
+  for (let i = 0; i < totalStars; i++) {
+    if (i < rating) {
+      starsHtml += '<span class="star">&#9733;</span>'
+    } else {
+      starsHtml += '<span class="star-empty">&#9734;</span>'
+    }
+  }
+  starsHtml += '<span class="rating-text">' + rating + '</span>'
+  return starsHtml
 }
 </script>
