@@ -35,13 +35,25 @@
         <div class="Table-content">
           <div v-if="recentVisits.length > 0">
             <ul class="restaurant-list">
-              <li v-for="visit in recentVisits" :key="visit.name" class="restaurant-card">
+              <li
+                v-for="visit in recentVisits"
+                :key="visit.date + visit.name"
+                class="restaurant-card"
+              >
                 <div class="restaurant-info">
                   <p>
                     <span class="restaurant-name">{{ visit.name }}</span>
                   </p>
                   <p>
-                    <span class="visit-count">Visits: {{ visit.visits }}</span>
+                    <span class="visit-rating">Rating: {{ visit.rating }} ★</span>
+                  </p>
+                  <p>
+                    <span class="visit-comment">{{ visit.comment || 'No comment' }}</span>
+                  </p>
+                  <p>
+                    <span class="visit-date"
+                      >Date: {{ new Date(visit.date).toLocaleDateString() }}</span
+                    >
                   </p>
                 </div>
               </li>
@@ -70,16 +82,7 @@ onMounted(() => {
   user.value = userData
 
   const visits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
-
-  const visitCounts = visits.reduce((acc, visit) => {
-    if (!acc[visit.name]) {
-      acc[visit.name] = { name: visit.name, visits: 0 }
-    }
-    acc[visit.name].visits += 1
-    return acc
-  }, {})
-
-  recentVisits.value = Object.values(visitCounts)
+  recentVisits.value = visits.sort((a, b) => new Date(b.date) - new Date(a.date)) // Trier par date décroissante
 })
 
 const getInitials = () => {
@@ -304,17 +307,17 @@ ul li p {
 .restaurant-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 250px;
+  align-items: flex-start;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   background-color: #fff;
-  text-align: center;
-  height: 200px;
+  text-align: left;
+  padding: 15px;
+  height: 100%;
 }
-
 .restaurant-name {
   font-size: 23px;
   font-weight: bold;
@@ -328,7 +331,17 @@ ul li p {
   font-weight: normal;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
+.visit-rating,
+.visit-comment,
+.visit-date {
+  font-size: 16px;
+  color: #333;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+}
 
+.visit-comment {
+  font-style: italic;
+}
 .restaurant-info {
   padding: 10px;
   font-size: 16px;
@@ -337,8 +350,9 @@ ul li p {
 }
 .restaurant-list {
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
-  align-items: center;
+  justify-content: center;
 }
 @media (max-width: 1200px) {
   .image {
