@@ -1,7 +1,7 @@
 <template>
   <section id="restaurants-section">
     <h1 class="restaurants-label">Restaurants</h1>
-
+    <SearchBarRestaurant class="search-bar" @select-restaurant="handleRestaurantSelect" />
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     <p v-if="loading">Loading...</p>
 
@@ -176,6 +176,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { getRestaurants } from '@/api/restaurants.js'
 import { postVisit } from '@/api/visit.js'
+import SearchBarRestaurant from '../components/SearchBarRestaurant.vue'
 
 const isSmallScreen = ref(window.innerWidth <= 920)
 const isFilterVisible = ref(false)
@@ -197,7 +198,7 @@ const selectedSortBy = ref('')
 const selectedSortOrder = ref('asc')
 
 const showVisitModal = ref(false)
-const selectedRestaurant = ref(null)
+const selectedRestaurant = ref<any | null>(null)
 const visitDate = ref('')
 const visitRating = ref(3)
 const visitComment = ref('')
@@ -253,7 +254,9 @@ const submitVisit = async () => {
     alert('Failed to register visit.')
   }
 }
-
+const handleRestaurantSelect = (restaurant: any) => {
+  restaurants.value = [restaurant]
+}
 onMounted(async () => {
   try {
     const response = await getRestaurants({ limit: 20, page: 1 })
@@ -363,6 +366,7 @@ window.addEventListener('resize', () => {
     padding: 20px;
   }
 }
+
 .clear-button {
   background: none;
   border: none;
@@ -381,6 +385,14 @@ window.addEventListener('resize', () => {
   text-align: left;
   margin-left: 310px;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.search-bar {
+  margin-bottom: 40px;
+  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .restaurants {
@@ -414,6 +426,7 @@ window.addEventListener('resize', () => {
   height: fit-content;
   overflow: hidden;
 }
+
 .restaurant-banner {
   position: relative;
   width: 100%;
@@ -429,31 +442,33 @@ window.addEventListener('resize', () => {
   display: flex;
   margin-left: 10px;
   margin-right: 10px;
-  display: flex;
   width: 100%;
 }
 
 .inline-container-restaurant {
   align-items: start;
-  /* justify-content: space-between; */
   display: flex;
   padding: 10px 10px 0px 10px;
   font-family: Arial, Helvetica, sans-serif;
 }
+
 .restaurant-info {
   align-items: flex-start;
 }
+
 .restaurant-info p {
   color: #555;
   margin-top: 5px;
   margin-bottom: 0px;
 }
+
 .restaurant-details {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: #555;
   text-align: left;
 }
+
 .restaurant-name {
   font-size: 18px;
   font-weight: bold;
@@ -490,6 +505,7 @@ window.addEventListener('resize', () => {
   background: rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
+
 .banner-overlay img {
   width: 150px;
   height: auto;
@@ -653,6 +669,7 @@ h3 {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .visit-infos textarea {
   width: 95%;
   min-height: 70px;
@@ -704,6 +721,7 @@ textarea {
   resize: none;
   padding: 5px;
 }
+
 @media (max-width: 920px) {
   .filter-sidebar {
     position: relative;
@@ -719,7 +737,12 @@ textarea {
     display: block;
     margin-bottom: 10px;
   }
+
+  .search-bar {
+    margin-bottom: 20px;
+  }
 }
+
 @media (max-width: 1600px) and (min-width: 1200px) {
   .Table {
     grid-template-columns: repeat(2, 1fr);

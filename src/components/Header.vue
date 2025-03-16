@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import SearchBar from '@/components/SearchBar.vue'
+import SearchBar from '@/components/SearchBarUser.vue'
 import Navigation from '@/components/Navigation.vue'
 
 const isMenuOpen = ref(false)
