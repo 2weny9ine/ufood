@@ -56,15 +56,19 @@
                 <span>{{ '$'.repeat(restaurant?.price_range || 0) }}</span>
               </div>
             </div>
-            <button class="visit-button" @click="openVisitModal(restaurant)">
-              Register Your Visit
-            </button>
+            <div class="button-container">
+              <button class="visit-button" @click="openVisitModal(restaurant)">
+                Register Your Visit
+              </button>
+              <button class="favorite-button" @click="openFavoriteModal(restaurant)">
+                Add to Favorites
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Visit Modal -->
     <div v-if="showVisitModal" class="modal-overlay">
       <div class="visit-modal">
         <h2>Register Your Visit</h2>
@@ -102,12 +106,35 @@
       </div>
     </div>
 
-    <!-- Google Maps -->
+    <div v-if="showFavoriteModal" class="modal-overlay">
+      <div class="favorite-modal">
+        <h2>Add to Favorites</h2>
+        <p>
+          <strong>{{ selectedRestaurant?.name }}</strong>
+        </p>
+        <div class="favorite-infos">
+          <label for="favorite-list">Select a Favorite List:</label>
+          <select id="favorite-list" v-model="selectedListId">
+            <option value="" disabled>Select a list</option>
+            <option v-for="list in favoriteLists" :key="list.id" :value="list.id">
+              {{ list.name }}
+            </option>
+          </select>
+        </div>
+        <p v-if="favoriteSuccess" class="success-message">Added to favorites successfully!</p>
+        <div class="modal-buttons">
+          <button class="submit-favorite" @click="submitFavorite" :disabled="!selectedListId">
+            Add
+          </button>
+          <button class="close-modal" @click="closeFavoriteModal">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <h2 style="text-align: center">Restaurant Location</h2>
     <div id="map"></div>
     <div id="directions-panel" v-if="showDirectionsPanel"></div>
 
-    <!-- Gallery -->
     <h2 style="text-align: center">Restaurant Gallery</h2>
     <div class="gallery-container">
       <div class="gallery" ref="gallery">
@@ -118,11 +145,10 @@
           alt="Gallery Image"
         />
       </div>
-      <button class="btn prev" @click="moveSlide(-1)">&#10094;</button>
-      <button class="btn next" @click="moveSlide(1)">&#10095;</button>
+      <button class="btn prev" @click="moveSlide(-1)">❮</button>
+      <button class="btn next" @click="moveSlide(1)">❯</button>
     </div>
 
-    <!-- Opening Hours -->
     <div class="opening-hours">
       <h3>Opening Hours</h3>
       <ul>
@@ -133,11 +159,11 @@
     </div>
   </div>
 </template>
-
 <script>
 import { getRestaurantById } from '@/api/restaurantId'
 import { useRoute } from 'vue-router'
 import { postVisit } from '@/api/visit.js'
+import { getFavoriteLists, addRestaurantToList } from '@/api/favoritesList.js'
 
 export default {
   data() {
@@ -159,6 +185,10 @@ export default {
       directionsRenderer: null,
       showDirectionsPanel: false,
       userLocation: null,
+      showFavoriteModal: false,
+      favoriteLists: [],
+      selectedListId: '',
+      favoriteSuccess: false,
     }
   },
 
@@ -184,8 +214,8 @@ export default {
 
         if (this.restaurant?.location?.coordinates) {
           this.restaurant.location = {
-            lat: this.restaurant.location.coordinates[1], // Extract latitude
-            lng: this.restaurant.location.coordinates[0], // Extract longitude
+            lat: this.restaurant.location.coordinates[1],
+            lng: this.restaurant.location.coordinates[0],
           }
           console.log('Restaurant coordinates loaded:', this.restaurant.location)
         }
@@ -220,6 +250,7 @@ export default {
         },
       )
     },
+
     openVisitModal(restaurant) {
       this.selectedRestaurant = restaurant
       this.visitDate = ''
@@ -255,9 +286,7 @@ export default {
         })
 
         const existingVisits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
-
         existingVisits.push(visitData)
-
         localStorage.setItem('recentVisits', JSON.stringify(existingVisits))
 
         this.visitSuccess = true
@@ -270,6 +299,39 @@ export default {
         alert('Failed to register visit.')
       }
     },
+
+    openFavoriteModal(restaurant) {
+      this.selectedRestaurant = restaurant
+      this.favoriteLists = getFavoriteLists()
+      this.selectedListId = ''
+      this.favoriteSuccess = false
+      this.showFavoriteModal = true
+    },
+
+    closeFavoriteModal() {
+      this.showFavoriteModal = false
+    },
+
+    submitFavorite() {
+      if (!this.selectedListId) {
+        alert('Please select a favorite list!')
+        return
+      }
+
+      const updatedList = addRestaurantToList(this.selectedListId, this.selectedRestaurant.id, [
+        this.restaurant,
+      ])
+      if (updatedList) {
+        this.favoriteSuccess = true
+        setTimeout(() => {
+          this.favoriteSuccess = false
+          this.closeFavoriteModal()
+        }, 1500)
+      } else {
+        alert('Failed to add to favorites. Restaurant might already be in the list.')
+      }
+    },
+
     moveSlide(direction) {
       const gallery = this.$refs.gallery
       const totalImages = this.restaurant?.pictures?.length || 0
@@ -288,6 +350,7 @@ export default {
       gallery.style.transform = `translateX(${-this.index * imageWidth}px)`
       gallery.style.transition = 'transform 0.5s ease-in-out'
     },
+
     loadGoogleMaps() {
       if (window.google && window.google.maps) {
         this.initMap()
@@ -420,6 +483,29 @@ export default {
   background-color: #cc5200;
 }
 
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.favorite-button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 150px;
+  display: block;
+  text-align: center;
+}
+
+.favorite-button:hover {
+  background-color: #cc5200;
+}
+
 .modal-overlay {
   font-family: Arial, Helvetica, sans-serif;
   position: fixed;
@@ -477,6 +563,7 @@ export default {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+
 .visit-infos textarea {
   width: 95%;
   min-height: 70px;
@@ -488,6 +575,34 @@ export default {
 
 .visit-modal h2 {
   margin-bottom: 10px;
+}
+
+.favorite-modal {
+  background: white;
+  padding: 20px;
+  width: 350px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.favorite-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.favorite-infos label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.favorite-infos select {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 .modal-buttons {
@@ -509,6 +624,19 @@ export default {
   background-color: #cc5200;
 }
 
+.submit-favorite {
+  background-color: #cc5200;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.submit-favorite:hover {
+  background-color: #e1650d;
+}
+
 .close-modal {
   background-color: #9c9c9c;
   color: white;
@@ -522,12 +650,19 @@ export default {
   background-color: #383737;
 }
 
+.success-message {
+  color: green;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
 textarea {
   width: 100%;
   height: 50px;
   resize: none;
   padding: 5px;
 }
+
 .gallery-container {
   position: relative;
   width: 800px;
@@ -576,12 +711,15 @@ textarea {
   margin: 0 5px;
   color: #aaa;
 }
+
 .rating {
   flex-direction: row;
 }
+
 .star-icon {
   height: 15px;
 }
+
 .restaurant-info {
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
@@ -719,6 +857,7 @@ textarea {
 .prev {
   left: 10px;
 }
+
 .next {
   right: 10px;
 }
@@ -791,6 +930,7 @@ textarea {
 .maps-button:hover {
   background-color: #e64a19;
 }
+
 @media (max-width: 768px) {
   .contact-info {
     display: flex;
@@ -830,6 +970,16 @@ textarea {
 
   .logo-text-container {
     bottom: -70px;
+  }
+
+  .button-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .visit-button,
+  .favorite-button {
+    width: 100%;
   }
 }
 </style>
