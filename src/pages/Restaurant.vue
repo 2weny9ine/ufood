@@ -105,6 +105,7 @@
     <!-- Google Maps -->
     <h2 style="text-align: center">Restaurant Location</h2>
     <div id="map"></div>
+    <div id="directions-panel" v-if="showDirectionsPanel"></div>
 
     <!-- Gallery -->
     <h2 style="text-align: center">Restaurant Gallery</h2>
@@ -153,6 +154,11 @@ export default {
       visitComment: '',
       visitSuccess: false,
       USER_ID: '6569767db55a58e85c543213',
+      map: null,
+      directionsService: null,
+      directionsRenderer: null,
+      showDirectionsPanel: false,
+      userLocation: null,
     }
   },
 
@@ -166,18 +172,54 @@ export default {
       return
     }
 
-    try {
-      this.restaurant = await getRestaurantById(restaurantId)
-      this.loadGoogleMaps()
-    } catch (error) {
-      console.error('Error fetching restaurant:', error)
-      this.errorMessage = 'Failed to fetch restaurant data.'
-    } finally {
-      this.loading = false
-    }
+    this.getUserLocation()
+    await this.getRestaurantData(restaurantId)
+    this.loadGoogleMaps()
   },
 
   methods: {
+    async getRestaurantData(restaurantId) {
+      try {
+        this.restaurant = await getRestaurantById(restaurantId)
+
+        if (this.restaurant?.location?.coordinates) {
+          this.restaurant.location = {
+            lat: this.restaurant.location.coordinates[1], // Extract latitude
+            lng: this.restaurant.location.coordinates[0], // Extract longitude
+          }
+          console.log('Restaurant coordinates loaded:', this.restaurant.location)
+        }
+
+        if (window.google && window.google.maps) {
+          this.initMap()
+        }
+      } catch (error) {
+        console.error('Error fetching restaurant:', error)
+        this.errorMessage = 'Failed to fetch restaurant data.'
+      } finally {
+        this.loading = false
+      }
+    },
+
+    getUserLocation() {
+      if (!navigator.geolocation) {
+        console.error('Geolocation is not supported by this browser.')
+        return
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }
+          console.log('User location fetched:', this.userLocation)
+        },
+        (error) => {
+          console.error('Geolocation error:', error)
+        },
+      )
+    },
     openVisitModal(restaurant) {
       this.selectedRestaurant = restaurant
       this.visitDate = ''
@@ -247,61 +289,114 @@ export default {
       gallery.style.transition = 'transform 0.5s ease-in-out'
     },
     loadGoogleMaps() {
-      if (!window.google) {
-        const script = document.createElement('script')
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&callback=initMap`
-        script.defer = true
-        script.async = true
-        window.initMap = this.getCoordinates
-        document.head.appendChild(script)
-      } else {
-        this.getCoordinates()
+      if (window.google && window.google.maps) {
+        this.initMap()
+        return
       }
-    },
 
-    async getCoordinates() {
-      const address = encodeURIComponent(this.restaurant?.address)
-      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${this.googleMapsApiKey}`
+      const script = document.createElement('script')
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&callback=initMap`
+      script.defer = true
+      script.async = true
 
-      try {
-        const response = await fetch(url)
-        const data = await response.json()
-
-        if (data.status === 'OK') {
-          const location = data.results[0].geometry.location
-          this.initMap(location.lat, location.lng)
-        } else {
-          console.error('Geocoding error:', data.status)
+      window.initMap = () => {
+        if (this.initMap) {
+          this.initMap()
         }
-      } catch (error) {
-        console.error('Error fetching geocode:', error)
       }
+
+      script.onload = () => {
+        console.log('Google Maps script loaded.')
+      }
+
+      script.onerror = () => {
+        console.error('Failed to load Google Maps script.')
+        this.errorMessage = 'Failed to load Google Maps.'
+      }
+
+      document.head.appendChild(script)
     },
 
-    initMap(lat, lng) {
-      const restaurantLocation = { lat, lng }
-      const map = new google.maps.Map(document.getElementById('map'), {
+    initMap() {
+      if (!window.google || !window.google.maps) {
+        console.error('Google Maps API is not available yet.')
+        return
+      }
+
+      if (
+        !this.restaurant.location ||
+        !this.restaurant.location.lat ||
+        !this.restaurant.location.lng
+      ) {
+        console.error('Restaurant location is missing.')
+        return
+      }
+
+      const restaurantLocation = {
+        lat: this.restaurant.location.lat,
+        lng: this.restaurant.location.lng,
+      }
+
+      this.map = new google.maps.Map(document.getElementById('map'), {
         center: restaurantLocation,
         zoom: 15,
       })
 
       new google.maps.Marker({
         position: restaurantLocation,
-        map: map,
-        title: this.restaurant?.address,
+        map: this.map,
+        title: this.restaurant.address,
       })
+
+      this.directionsService = new google.maps.DirectionsService()
+      this.directionsRenderer = new google.maps.DirectionsRenderer()
+      this.directionsRenderer.setMap(this.map)
 
       const button = document.createElement('button')
       button.textContent = '📍 Get Directions'
       button.classList.add('maps-button')
-      button.onclick = () => {
-        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`
-        window.open(googleMapsUrl, '_blank')
-      }
+      button.onclick = this.showDirections
 
       const customControlDiv = document.createElement('div')
       customControlDiv.appendChild(button)
-      map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(customControlDiv)
+      this.map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(customControlDiv)
+    },
+
+    showDirections() {
+      if (!this.userLocation || !this.userLocation.lat || !this.userLocation.lng) {
+        alert('Your location is unavailable. Please enable location access.')
+        return
+      }
+
+      if (
+        !this.restaurant.location ||
+        !this.restaurant.location.lat ||
+        !this.restaurant.location.lng
+      ) {
+        alert('Restaurant location is missing.')
+        return
+      }
+
+      const origin = { lat: this.userLocation.lat, lng: this.userLocation.lng }
+      const destination = { lat: this.restaurant.location.lat, lng: this.restaurant.location.lng }
+
+      console.log('Routing from:', origin, 'to:', destination)
+
+      this.directionsService.route(
+        {
+          origin: origin,
+          destination: destination,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (response, status) => {
+          if (status === 'OK') {
+            this.directionsRenderer.setDirections(response)
+          } else {
+            console.error('Directions request failed due to:', status)
+            alert('Failed to get directions.')
+          }
+        },
+      )
     },
   },
 }
