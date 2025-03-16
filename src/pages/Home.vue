@@ -223,13 +223,25 @@ const submitVisit = async () => {
     return
   }
 
+  const visitData = {
+    restaurant_id: selectedRestaurant.value.id,
+    name: selectedRestaurant.value.name,
+    comment: visitComment.value,
+    rating: visitRating.value,
+    date: new Date(visitDate.value).toISOString(),
+  }
+
   try {
     await postVisit(USER_ID, {
-      restaurant_id: selectedRestaurant.value.id,
-      comment: visitComment.value,
-      rating: visitRating.value,
-      date: new Date(visitDate.value).toISOString(),
+      restaurant_id: visitData.restaurant_id,
+      comment: visitData.comment,
+      rating: visitData.rating,
+      date: visitData.date,
     })
+
+    const existingVisits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
+    existingVisits.push(visitData)
+    localStorage.setItem('recentVisits', JSON.stringify(existingVisits))
 
     visitSuccess.value = true
     setTimeout(() => {
