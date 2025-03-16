@@ -115,22 +115,19 @@
                   class="restaurant-banner"
                 />
               </div>
-            </router-link>
-            <div class="inline-container-restaurant">
-              <div class="restaurant-info">
-                <h3 class="restaurant-name">{{ restaurant.name }}</h3>
-                <!-- <p class="restaurant-details">
-                  {{ '$'.repeat(restaurant.price_range) }} | {{ restaurant.genres?.join(', ') }}
-                </p> -->
-                <p>
-                  {{ '$'.repeat(restaurant.price_range) }} | {{ restaurant.genres?.join(', ') }}
+              <div class="inline-container-restaurant">
+                <div class="restaurant-info">
+                  <h3 class="restaurant-name">{{ restaurant.name }}</h3>
+                  <p>
+                    {{ '$'.repeat(restaurant.price_range) }} | {{ restaurant.genres?.join(', ') }}
+                  </p>
+                </div>
+                <p class="restaurant-rating">
+                  {{ restaurant.rating.toFixed(1) }}
+                  <img src="../assets/images/star.png" class="star-icon" />
                 </p>
               </div>
-              <p class="restaurant-rating">
-                {{ restaurant.rating.toFixed(1) }}
-                <img src="../assets/images/star.png" class="star-icon" />
-              </p>
-            </div>
+            </router-link>
             <button class="visit-button" @click="openVisitModal(restaurant)">Visit</button>
           </div>
         </div>
@@ -426,21 +423,23 @@ window.addEventListener('resize', () => {
 
 .inline-container-restaurant {
   align-items: start;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   display: flex;
   padding: 10px 10px 0px 10px;
   font-family: Arial, Helvetica, sans-serif;
 }
 .restaurant-info {
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
+}
+.restaurant-info p {
+  color: #555;
+  margin-top: 5px;
+  margin-bottom: 0px;
 }
 .restaurant-details {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: #555;
-  margin-top: 2px;
   text-align: left;
 }
 .restaurant-name {
