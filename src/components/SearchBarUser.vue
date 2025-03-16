@@ -1,35 +1,3 @@
-<script setup>
-import { ref } from 'vue'
-
-const options = [
-  'Pizza Pizza',
-  'Grillades Torino',
-  'McDonalds',
-  'Sushi X ',
-  'Holy Burgers',
-  'Chocolato',
-]
-
-const searchQuery = ref('')
-const filteredSuggestions = ref([])
-
-const resetSearch = () => {
-  searchQuery.value = ''
-  filteredSuggestions.value = []
-}
-
-const updateSuggestions = () => {
-  const search = searchQuery.value.trim()
-  if (search !== '') {
-    filteredSuggestions.value = options.filter((option) =>
-      option.toLowerCase().includes(search.toLowerCase()),
-    )
-  } else {
-    filteredSuggestions.value = []
-  }
-}
-</script>
-
 <template>
   <div id="container-drop">
     <div id="dropDown-container">
@@ -39,29 +7,8 @@ const updateSuggestions = () => {
           alt="search-logo"
           class="search-icon"
         />
-        <input
-          id="text-field"
-          type="text"
-          v-model="searchQuery"
-          placeholder="Find your favorite meal here!"
-          @input="updateSuggestions"
-        />
-        <button id="reset-button" @click="resetSearch">X</button>
-      </div>
-
-      <div id="suggestions-container" v-if="filteredSuggestions.length > 0">
-        <div
-          v-for="(suggestion, index) in filteredSuggestions"
-          :key="index"
-          class="suggestion"
-          @click="searchQuery = suggestion"
-        >
-          {{ suggestion }}
-        </div>
-      </div>
-
-      <div v-if="filteredSuggestions.length === 0 && searchQuery.trim() !== ''">
-        <div class="no-result">No results found</div>
+        <input id="text-field" type="text" placeholder="Search for users..." />
+        <button id="reset-button">X</button>
       </div>
     </div>
   </div>
