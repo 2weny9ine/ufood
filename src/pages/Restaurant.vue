@@ -56,7 +56,48 @@
                 <span>{{ '$'.repeat(restaurant?.price_range || 0) }}</span>
               </div>
             </div>
+            <button class="visit-button" @click="openVisitModal(restaurant)">
+              Register Your Visit
+            </button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visit Modal -->
+    <div v-if="showVisitModal" class="modal-overlay">
+      <div class="visit-modal">
+        <h2>Register Your Visit</h2>
+        <p>
+          <strong>{{ selectedRestaurant?.name }}</strong>
+        </p>
+        <div class="visit-infos">
+          <div>
+            <label for="visit-date">Date:</label>
+            <input type="date" id="visit-date" v-model="visitDate" required />
+          </div>
+
+          <div>
+            <label for="visit-rating">Rating:</label>
+            <select id="visit-rating" v-model="visitRating">
+              <option v-for="n in 5" :key="n" :value="n">{{ n }} ★</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="visit-comment">Comment:</label>
+          </div>
+          <textarea
+            id="visit-comment"
+            v-model="visitComment"
+            placeholder="Write a comment..."
+          ></textarea>
+        </div>
+
+        <p v-if="visitSuccess" class="success-message">Visit recorded successfully!</p>
+        <div class="modal-buttons">
+          <button class="submit-visit" @click="submitVisit" :disabled="!visitDate">Submit</button>
+          <button class="close-modal" @click="closeVisitModal">Cancel</button>
         </div>
       </div>
     </div>
@@ -95,6 +136,7 @@
 <script>
 import { getRestaurantById } from '@/api/restaurantId'
 import { useRoute } from 'vue-router'
+import { postVisit } from '@/api/visit.js'
 
 export default {
   data() {
@@ -104,6 +146,13 @@ export default {
       errorMessage: '',
       googleMapsApiKey: 'AIzaSyB46nMuC6KEFC1o1Qv4HJPz66kTdJhoL3c',
       index: 0,
+      showVisitModal: false,
+      selectedRestaurant: null,
+      visitDate: '',
+      visitRating: 3,
+      visitComment: '',
+      visitSuccess: false,
+      USER_ID: '6569767db55a58e85c543213',
     }
   },
 
@@ -129,6 +178,56 @@ export default {
   },
 
   methods: {
+    openVisitModal(restaurant) {
+      this.selectedRestaurant = restaurant
+      this.visitDate = ''
+      this.visitRating = 3
+      this.visitComment = ''
+      this.showVisitModal = true
+    },
+
+    closeVisitModal() {
+      this.showVisitModal = false
+    },
+
+    async submitVisit() {
+      if (!this.visitDate) {
+        alert('Please select a date!')
+        return
+      }
+
+      const visitData = {
+        restaurant_id: this.selectedRestaurant.id,
+        name: this.selectedRestaurant.name,
+        comment: this.visitComment,
+        rating: this.visitRating,
+        date: new Date(this.visitDate).toISOString(),
+      }
+
+      try {
+        await postVisit(this.USER_ID, {
+          restaurant_id: visitData.restaurant_id,
+          comment: visitData.comment,
+          rating: visitData.rating,
+          date: visitData.date,
+        })
+
+        const existingVisits = JSON.parse(localStorage.getItem('recentVisits') || '[]')
+
+        existingVisits.push(visitData)
+
+        localStorage.setItem('recentVisits', JSON.stringify(existingVisits))
+
+        this.visitSuccess = true
+        setTimeout(() => {
+          this.visitSuccess = false
+          this.closeVisitModal()
+        }, 1500)
+      } catch (error) {
+        console.error('Error submitting visit:', error)
+        alert('Failed to register visit.')
+      }
+    },
     moveSlide(direction) {
       const gallery = this.$refs.gallery
       const totalImages = this.restaurant?.pictures?.length || 0
@@ -209,6 +308,131 @@ export default {
 </script>
 
 <style>
+.visit-button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 150px;
+  display: block;
+  text-align: center;
+}
+
+.visit-button:hover {
+  background-color: #cc5200;
+}
+
+.modal-overlay {
+  font-family: Arial, Helvetica, sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.visit-modal {
+  background: white;
+  padding: 20px;
+  width: 350px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.visit-infos {
+  font-weight: lighter;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.visit-infos div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 10px;
+}
+
+.visit-infos label {
+  font-weight: bold;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.visit-infos input {
+  width: 100px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.visit-infos select {
+  width: 60px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.visit-infos textarea {
+  width: 95%;
+  min-height: 70px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+}
+
+.visit-modal h2 {
+  margin-bottom: 10px;
+}
+
+.modal-buttons {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.submit-visit {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.submit-visit:hover {
+  background-color: #cc5200;
+}
+
+.close-modal {
+  background-color: #9c9c9c;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.close-modal:hover {
+  background-color: #383737;
+}
+
+textarea {
+  width: 100%;
+  height: 50px;
+  resize: none;
+  padding: 5px;
+}
 .gallery-container {
   position: relative;
   width: 800px;
@@ -295,23 +519,15 @@ export default {
 
 .restaurant-logo {
   position: absolute;
-  bottom: -70px;
+  bottom: -20px;
   left: 30px;
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   border-radius: 20%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
   background-color: #fff;
   z-index: 1;
   object-fit: cover;
-}
-.logo-text-container {
-  position: absolute;
-  bottom: -80px;
-  left: 130px;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
 }
 
 .restaurant-details {
@@ -320,8 +536,8 @@ export default {
   align-items: flex-start;
   gap: 5px;
   position: relative;
-  top: -25px;
-  left: 10px;
+  top: 5px;
+  left: 250px;
 }
 
 .name-category {
