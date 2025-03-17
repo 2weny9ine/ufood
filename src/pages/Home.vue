@@ -1,7 +1,6 @@
 <template>
   <section id="restaurants-section">
     <h1 class="restaurants-label">Restaurants</h1>
-    <SearchBarRestaurant class="search-bar" @select-restaurant="handleRestaurantSelect" />
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     <p v-if="loading">Loading...</p>
 
@@ -10,6 +9,8 @@
         ☰ Filters
       </button>
       <section :class="['filter-sidebar', { hidden: isSmallScreen && !isFilterVisible }]">
+        <h3>Search a Restaurant</h3>
+        <SearchBarRestaurant class="search-bar" @select-restaurant="handleRestaurantSelect" />
         <h3>
           Filters <button class="clear-button" @click="clearAllFilters">Clear All</button>
           <i class="icon-settings"></i>
@@ -383,16 +384,15 @@ window.addEventListener('resize', () => {
 .restaurants-label {
   margin-top: 30px;
   text-align: left;
-  margin-left: 310px;
+  margin-left: 0px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .search-bar {
-  margin-bottom: 40px;
-  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  width: 90%;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .restaurants {
@@ -546,6 +546,7 @@ h3 {
 }
 
 .filter-sidebar h3 {
+  margin-bottom: 5px;
   display: flex;
   align-items: center;
   font-size: 18px;

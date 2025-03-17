@@ -48,7 +48,7 @@ const toggleMenu = () => {
 }
 
 .logo {
-  flex: 1;
+  margin-right: 20px;
 }
 
 .logo img {
@@ -56,9 +56,7 @@ const toggleMenu = () => {
 }
 
 .search-container {
-  flex: 2;
   display: flex;
-  justify-content: center;
   min-width: 200px;
 }
 
@@ -84,15 +82,12 @@ const toggleMenu = () => {
 
 @media (max-width: 900px) {
   .header {
-    padding: 10px;
+    padding: 5px;
   }
 
   .menu-toggle {
     display: flex;
-  }
-
-  .search-container {
-    margin-right: 80px;
+    margin-left: 10px;
   }
 
   .nav-links {

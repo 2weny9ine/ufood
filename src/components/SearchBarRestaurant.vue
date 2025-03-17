@@ -1,14 +1,21 @@
 <template>
   <div class="search-bar-container">
-    <input
-      type="text"
-      v-model="searchQuery"
-      placeholder="Search for a restaurant..."
-      @input="onInput"
-      @focus="showSuggestions = true"
-      @blur="hideSuggestions"
-      class="search-input"
-    />
+    <div class="search-bar">
+      <img
+        src="../assets/images/search-svgrepo-com%20(1).svg"
+        alt="search-logo"
+        class="search-icon"
+      />
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Search for a restaurant..."
+        @input="onInput"
+        @focus="showSuggestions = true"
+        @blur="hideSuggestions"
+        class="search-input"
+      />
+    </div>
     <div v-if="showSuggestions && suggestions.length > 0" class="suggestions">
       <ul>
         <li
@@ -74,26 +81,32 @@ export default {
 </script>
 
 <style scoped>
+.search-bar {
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  padding: 5px;
+  background-color: #ffffff;
+  width: 95%;
+}
+.search-icon {
+  width: 40px;
+  height: 25px;
+  margin-right: 10px;
+}
 .search-bar-container {
   position: relative;
   width: 300px;
 }
 
 .search-input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  border: none;
   outline: none;
+  border: none;
+  width: 100%;
+  font-size: 16px;
+  font-family: Arial, Helvetica, sans-serif;
 }
-
-.search-input:focus {
-  border-color: #f55702;
-  box-shadow: 0 0 5px rgba(245, 87, 2, 0.5);
-}
-
 .suggestions {
   position: absolute;
   top: 100%;
@@ -128,7 +141,7 @@ export default {
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
   color: #666;
 }
 </style>
