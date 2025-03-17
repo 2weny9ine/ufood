@@ -805,7 +805,7 @@ textarea {
 
   .Table {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 14px;
   }
 
   .restaurant-card {
