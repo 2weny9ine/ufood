@@ -620,6 +620,9 @@ p1 {
 }
 
 @media (max-width: 1200px) {
+  .Table .Table-Visit .Table-Favorites {
+    width: 100%;
+  }
   .info {
     padding-left: 0;
     text-align: center;
@@ -670,6 +673,9 @@ p1 {
   }
 }
 @media (max-width: 768px) {
+  .Table .Table-Visit .Table-Favorites {
+    width: 100%;
+  }
   .overlay h1 {
     font-size: 2em;
   }
@@ -737,6 +743,10 @@ p1 {
   }
 }
 @media (max-width: 480px) {
+  .Table .Table-Visit .Table-Favorites {
+    width: 100%;
+  }
+
   .overlay h1 {
     font-size: 1.5em;
   }
