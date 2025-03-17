@@ -113,7 +113,7 @@
   }
 
   .search-bar input {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .search-icon {
@@ -131,7 +131,7 @@
   }
 
   .search-bar input {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .search-icon {
@@ -150,7 +150,7 @@
   }
 
   .search-bar input {
-    font-size: 14px;
+    font-size: 16px;
     width: 100%;
   }
 

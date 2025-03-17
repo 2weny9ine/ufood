@@ -931,55 +931,141 @@ textarea {
   background-color: #e64a19;
 }
 
-@media (max-width: 768px) {
-  .contact-info {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1px;
+@media (max-width: 1200px) {
+  .restaurant-header {
+    max-width: 850px;
   }
 
-  .restaurant-location,
-  .restaurant-phone,
-  .rating,
-  .price-range {
-    display: flex;
+  .restaurant-details {
+    width: 500px;
+    left: 200px;
+  }
+
+  .restaurant-logo {
+    width: 170px;
+    height: 170px;
+    bottom: -20px;
+    left: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .restaurant-logo {
+    width: 170px;
+    height: 170px;
+    bottom: 130px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .restaurant-info {
+    padding: 10px;
+  }
+
+  .restaurant-header {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .restaurant-image {
+    max-height: 200px;
+    border-radius: 10px;
+  }
+
+  .restaurant-details {
+    top: 80px;
+    width: 100%;
+    left: 0;
     align-items: center;
-    gap: 5px;
-    line-height: 1.2;
-    margin: 2px 0;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .contact-info {
+    flex-direction: column;
+    align-items: center;
   }
 
   .separator {
     display: none;
-  }
-  .restaurant-name {
-    font-size: 1rem;
-  }
-
-  .restaurant-category {
-    font-size: 0.7rem;
   }
 
   .restaurant-location,
   .restaurant-phone,
   .rating-text,
   .price-range {
-    font-size: 0.5rem;
-  }
-
-  .logo-text-container {
-    bottom: -70px;
+    font-size: 1rem;
   }
 
   .button-container {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .gallery-container {
+    width: 100%;
+    height: auto;
+  }
+
+  .gallery img {
+    width: 100%;
+    height: auto;
+  }
+
+  .opening-hours {
+    width: 90%;
+    font-size: 0.9rem;
+  }
+
+  #map {
+    width: 90%;
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurant-name {
+    font-size: 1.2rem;
+  }
+  .restaurant-details {
+    top: 60px;
+  }
+  .restaurant-logo {
+    width: 140px;
+    height: 140px;
+  }
+  .contact-info {
+    gap: 5px;
+  }
+
+  .button-container {
+    width: 100%;
+    gap: 5px;
   }
 
   .visit-button,
   .favorite-button {
     width: 100%;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .gallery-container {
+    height: auto;
+  }
+
+  .gallery img {
+    width: 100%;
+    height: auto;
+  }
+
+  .opening-hours {
+    width: 95%;
+    font-size: 0.8rem;
+  }
+
+  #map {
+    width: 95%;
+    height: 250px;
   }
 }
 </style>

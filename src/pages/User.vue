@@ -4,10 +4,6 @@
       <div class="Home">
         <div class="wrapper">
           <img src="../assets/images/background%20pic.png" alt="Background Image" class="image" />
-          <div class="overlay">
-            <h1>Welcome To your profile</h1>
-            <img class="logo-main" src="../assets/images/Logo.png" alt="Logo" />
-          </div>
           <div class="info">
             <div class="info-item">
               <div class="info-item-part1">
@@ -302,7 +298,7 @@ const removeRestaurant = (listId, restaurantId) => {
   width: 100%;
   justify-content: center;
   align-items: flex-start;
-  height: 750px;
+  height: px;
   padding-top: 30px;
   margin-top: 0;
 }
@@ -310,9 +306,10 @@ const removeRestaurant = (listId, restaurantId) => {
   position: relative;
 }
 .image {
+  margin-top: 100px;
   width: 1200px;
-  border-radius: 50px;
-  height: 550px;
+  border-radius: 20px;
+  height: 400px;
   object-fit: cover;
   object-position: right;
   z-index: -1;
@@ -361,10 +358,11 @@ p {
   font-size: 20px;
 }
 .Follow {
+  margin-top: 10px;
   background-color: #f55702;
   border-radius: 15px;
   width: 150px;
-  height: 95px;
+  height: 50px;
   color: white;
   font-size: 25px;
   border: none;
@@ -378,7 +376,7 @@ p {
 }
 .profile-picture {
   width: 200px;
-  height: 230px;
+  height: 200px;
   background-color: #ffffff;
   border-radius: 50px;
   position: absolute;
@@ -388,7 +386,6 @@ p {
 }
 .profile-picture h2 {
   text-align: center;
-  margin-top: 40%;
   font-family: 'Courier New', Courier, monospace;
   font-size: 80px;
   color: #f55702;
@@ -548,7 +545,6 @@ p1 {
   background-color: #c82333;
 }
 
-/* Styles pour les modals */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -627,14 +623,38 @@ p1 {
 }
 
 @media (max-width: 1200px) {
-  .image {
-    width: 100%;
-    height: auto;
-  }
   .info {
-    padding-left: 20px;
+    padding-left: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info-item-part1 {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .info-item-part1-2-3 {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  .profile-picture h2 {
+    font-size: 50px;
+  }
+
+  .Follow {
+    width: 120px;
+    height: 45px;
+    font-size: 16px;
   }
   .profile-picture {
+    top: 400px;
     right: 50%;
     transform: translateX(50%);
   }
@@ -645,6 +665,11 @@ p1 {
   }
   .Table-content {
     width: 100%;
+  }
+  .restaurant-card {
+    width: 100%;
+    max-width: 90%;
+    box-sizing: border-box;
   }
 }
 @media (max-width: 768px) {
@@ -677,12 +702,31 @@ p1 {
   p1 {
     font-size: 30px;
   }
-  .restaurant-card {
-    width: 90%;
-  }
-  .restaurant-list {
+  .favorite-list {
+    width: 100%;
+    display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .favorite-card {
+    width: 100%;
+    max-width: 90%;
+    box-sizing: border-box;
+  }
+
+  .restaurant-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .restaurant-card {
+    width: 100%;
+    max-width: 90%;
+    box-sizing: border-box;
   }
   .favorite-info {
     flex-direction: column;
