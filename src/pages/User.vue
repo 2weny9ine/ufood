@@ -58,9 +58,6 @@
           </div>
           <div v-else class="no-visits">
             <p1>You haven't visited any restaurants yet!</p1>
-            <div class="btn">
-              <router-link to="/Home">⬅️ Home Page</router-link>
-            </div>
           </div>
         </div>
       </div>
