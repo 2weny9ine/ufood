@@ -10,7 +10,7 @@
         type="text"
         v-model="searchQuery"
         placeholder="Search for a restaurant..."
-        @input="onInput"
+        @input="debouncedSearch"
         @focus="showSuggestions = true"
         @blur="hideSuggestions"
         class="search-input"
@@ -41,36 +41,60 @@ export default {
   data() {
     return {
       searchQuery: '',
+      allRestaurants: [],
       suggestions: [],
       showSuggestions: false,
+      debounceTimer: null,
     }
   },
+
+  async mounted() {
+    await this.fetchAllRestaurants()
+  },
+
   methods: {
-    async onInput() {
-      if (!this.searchQuery) {
+    debouncedSearch() {
+      clearTimeout(this.debounceTimer)
+      this.debounceTimer = setTimeout(() => {
+        this.filterRestaurants()
+      }, 300)
+    },
+
+    async fetchAllRestaurants() {
+      try {
+        const response = await getRestaurants({ limit: 100, page: 1 })
+        this.allRestaurants = response.items || []
+      } catch (error) {
+        console.error('Error fetching all restaurants:', error)
+        this.allRestaurants = []
+      }
+    },
+
+    filterRestaurants() {
+      if (!this.searchQuery.trim()) {
         this.suggestions = []
         this.showSuggestions = false
         return
       }
 
-      try {
-        const response = await getRestaurants({
-          query: this.searchQuery,
-          limit: 10,
-          page: 1,
-        })
-        this.suggestions = response.items || []
-        this.showSuggestions = true
-      } catch (error) {
-        console.error('Error fetching restaurant suggestions:', error)
-        this.suggestions = []
-      }
+      const query = this.searchQuery.toLowerCase()
+
+      this.suggestions = this.allRestaurants.filter((restaurant) =>
+        restaurant.name
+          .toLowerCase()
+          .split(/\s+/)
+          .some((word) => word.includes(query)),
+      )
+
+      this.showSuggestions = this.suggestions.length > 0
     },
+
     selectSuggestion(suggestion) {
       this.searchQuery = suggestion.name
       this.showSuggestions = false
       this.$emit('select-restaurant', suggestion)
     },
+
     hideSuggestions() {
       setTimeout(() => {
         this.showSuggestions = false
@@ -79,7 +103,6 @@ export default {
   },
 }
 </script>
-
 <style scoped>
 .search-bar {
   display: flex;
@@ -102,7 +125,6 @@ export default {
 .search-input {
   border: none;
   outline: none;
-  border: none;
   width: 100%;
   font-size: 16px;
   font-family: Arial, Helvetica, sans-serif;
@@ -124,7 +146,7 @@ export default {
 .suggestion-item {
   padding: 10px;
   cursor: pointer;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .suggestion-item:hover {
