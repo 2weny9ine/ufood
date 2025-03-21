@@ -56,10 +56,13 @@ const toggleDropdown = () => {
 <style scoped></style>
 
 <style>
+.icon {
+  fill: #f3f0f0;
+}
 nav ul {
   display: flex;
   list-style: none;
-  gap: 20px;
+  gap: 10px;
   align-items: center;
   position: relative;
 }
@@ -68,7 +71,7 @@ nav a {
   text-decoration: none;
   color: white;
   font-weight: bold;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
 
@@ -84,7 +87,7 @@ nav a:hover {
 .user-greeting {
   font-size: 20px;
   font-weight: bold;
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .user-greeting:hover {
