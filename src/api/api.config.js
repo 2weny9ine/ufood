@@ -16,15 +16,30 @@ const QUERY_KEY = 0
 const QUERY_VALUE = 1
 
 export function paramsToStr(params) {
-  let index = 0
   let queryStr = ''
+  let index = 0
+
+  if (!Array.isArray(params)) {
+    params = Object.entries(params)
+  }
 
   params.forEach((param) => {
-    if (param !== null && param && param !== 'undefined') {
-      queryStr += index === 0 ? '?' : '&'
-      queryStr += `${param[QUERY_KEY]}=${param[QUERY_VALUE]}`
+    const key = param[QUERY_KEY]
+    const value = param[QUERY_VALUE]
+
+    if (value !== null && value !== undefined && value !== '') {
+      if (Array.isArray(value)) {
+        value.forEach((v) => {
+          queryStr += index === 0 ? '?' : '&'
+          queryStr += `${key}=${encodeURIComponent(v)}`
+          index++
+        })
+      } else {
+        queryStr += index === 0 ? '?' : '&'
+        queryStr += `${key}=${encodeURIComponent(value)}`
+        index++
+      }
     }
-    index++
   })
 
   return queryStr

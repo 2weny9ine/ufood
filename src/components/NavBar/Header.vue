@@ -2,7 +2,7 @@
   <header class="header">
     <div class="logo">
       <a href="/Home">
-        <img src="../assets/images/Logo.png" alt="Logo" />
+        <img src="@/assets/images/Logo.png" alt="Logo" />
       </a>
     </div>
 
@@ -22,8 +22,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import SearchBar from '@/components/SearchBarUser.vue'
-import Navigation from '@/components/Navigation.vue'
+import SearchBar from '@/components/NavBar/SearchBarUser.vue'
+import Navigation from '@/components/NavBar/Navigation.vue'
 
 const isMenuOpen = ref(false)
 

@@ -3,7 +3,7 @@
     <div id="dropDown-container">
       <div class="search-bar">
         <img
-          src="../assets/images/search-svgrepo-com%20(1).svg"
+          src="@/assets/images/search-svgrepo-com%20(1).svg"
           alt="search-logo"
           class="search-icon"
         />

@@ -8,19 +8,11 @@
         <span class="user-greeting" @click="toggleDropdown">Hi, {{ user.firstName }}</span>
         <div v-if="dropdownVisible" class="dropdown-menu">
           <router-link to="/user" class="dropdown-item">
-            <img
-              src="../assets/images/profile-round-1342-svgrepo-com.svg"
-              alt="Profile Icon"
-              class="icon"
-            />
+            <img src="@/assets/images/profileicon.svg" alt="Profile Icon" class="icon" />
             Profile
           </router-link>
           <router-link to="/" class="dropdown-item">
-            <img
-              src="../assets/images/logout-line-svgrepo-com.svg"
-              alt="Log out Icon"
-              class="icon"
-            />
+            <img src="@/assets/images/logouticon.svg" alt="Log out Icon" class="icon" />
             Log out
           </router-link>
         </div>

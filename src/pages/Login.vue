@@ -6,18 +6,74 @@
         <div class="logo">
           <img src="../assets/images/Logo.png" alt="logo" />
         </div>
+
         <h1>Discover Flavor, Share the Love!</h1>
         <h2>Find & Share Your Favorite Restaurants!</h2>
+
+        <div class="auth-toggle">
+          <button :class="{ active: isLoginMode }" @click="isLoginMode = true">Login</button>
+          <button :class="{ active: !isLoginMode }" @click="isLoginMode = false">Sign Up</button>
+        </div>
+
         <div class="login-form">
-          <input type="text" placeholder="Username" class="login-input" v-model="username" />
+          <input
+            type="text"
+            placeholder="Name"
+            class="login-input"
+            v-model="name"
+            v-if="!isLoginMode"
+          />
+          <input type="text" placeholder="Email" class="login-input" v-model="username" />
           <input type="password" placeholder="Password" class="login-input" v-model="password" />
+
           <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-          <button class="Start" @click="handleLogin">Login</button>
+          <button class="Start" @click="isLoginMode ? handleLogin() : handleSignup()">
+            {{ isLoginMode ? 'Login' : 'Sign Up' }}
+          </button>
         </div>
       </div>
     </div>
   </section>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import Cookies from 'js-cookie'
+import { authenticateUser, registerAccount } from '@/api/authentication'
+
+const router = useRouter()
+
+const isLoginMode = ref(true)
+const username = ref('')
+const password = ref('')
+const name = ref('')
+const errorMessage = ref('')
+
+const handleLogin = async () => {
+  try {
+    const [token, user] = await authenticateUser(username.value, password.value)
+    Cookies.set('token', token)
+    Cookies.set('userId', user.id)
+    Cookies.set('userName', user.name)
+    Cookies.set('userEmail', user.email)
+    router.push('/Home')
+  } catch (error) {
+    console.error('Login failed:', error)
+    errorMessage.value = 'Invalid username or password'
+  }
+}
+
+const handleSignup = async () => {
+  try {
+    await registerAccount(name.value, username.value, password.value)
+    await handleLogin() // auto-login after sign up
+  } catch (error) {
+    console.error('Signup failed:', error)
+    errorMessage.value = 'Account creation failed. Please try again.'
+  }
+}
+</script>
 
 <style scoped>
 .Main {
@@ -76,6 +132,28 @@
   color: white;
   font-family: Arial, Helvetica, sans-serif;
   margin-bottom: 40px;
+}
+
+.auth-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.auth-toggle button {
+  background-color: #f55702;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.auth-toggle button.active {
+  opacity: 1;
 }
 
 .login-form {
@@ -144,33 +222,3 @@
   }
 }
 </style>
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import userData from '@/assets/user.json'
-
-const username = ref('')
-const password = ref('')
-const errorMessage = ref('')
-const router = useRouter()
-let user = ref({})
-
-onMounted(() => {
-  user.value = {
-    username: userData.firstName.trim().toLowerCase(),
-    password: userData.password,
-  }
-})
-
-const handleLogin = () => {
-  if (
-    username.value.trim().toLowerCase() === user.value.username &&
-    password.value === user.value.password
-  ) {
-    router.push('/Home')
-  } else {
-    errorMessage.value = 'Invalid username or password'
-  }
-}
-</script>

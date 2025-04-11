@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div v-if="loading" class="loading">Loading...</div>
   <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
 
@@ -1068,4 +1068,6 @@ textarea {
     height: 250px;
   }
 }
-</style>
+</style> -->
+<template></template>
+<style></style>
