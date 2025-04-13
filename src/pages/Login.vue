@@ -67,7 +67,7 @@ const handleLogin = async () => {
 const handleSignup = async () => {
   try {
     await registerAccount(name.value, username.value, password.value)
-    await handleLogin() // auto-login after sign up
+    await handleLogin()
   } catch (error) {
     console.error('Signup failed:', error)
     errorMessage.value = 'Account creation failed. Please try again.'

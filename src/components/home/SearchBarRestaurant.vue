@@ -24,15 +24,16 @@
           v-for="r in restaurants"
           :key="r.id"
           class="list-group-item d-flex justify-content-between"
+          @click="delayedClearSearch"
         >
           <router-link
-            :to="`/restaurants/${r.id}`"
+            :to="{ name: 'Restaurant', params: { id: r.id } }"
             class="text-decoration-none text-dark"
             style="flex: 1"
-            @click="clearSearch"
           >
             {{ r.name }}
           </router-link>
+
           <slot name="actions" :restaurant="r" />
         </li>
       </ul>
@@ -44,8 +45,6 @@
 import { ref, watch } from 'vue'
 import { fetchRestaurants } from '@/api/restaurants'
 import { restaurantParams } from '@/api/api.config'
-
-// const emit = defineEmits(['select-restaurant'])
 
 const query = ref('')
 const restaurants = ref([])
@@ -68,6 +67,10 @@ const searchRestaurants = async () => {
 const clearSearch = () => {
   query.value = ''
   restaurants.value = []
+}
+
+const delayedClearSearch = () => {
+  setTimeout(clearSearch, 100)
 }
 
 const clearIfClickedOutside = (e) => {
