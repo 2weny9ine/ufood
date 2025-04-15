@@ -75,6 +75,7 @@ import { getCurrentPositionWithRetry } from '@/components/restaurant/script/geol
 import { fetchRestaurantDetails } from '@/api/restaurants.js'
 import { fetchUserLists } from '@/api/users.js'
 import { registerVisit } from '@/api/visit.js'
+import { addRestaurantToList } from '@/api/favoritesList.js'
 
 const route = useRoute()
 const restaurant = ref(null)
@@ -177,24 +178,23 @@ function closeFavoriteModal() {
   showFavoriteModal.value = false
 }
 
-function submitFavorite() {
+async function submitFavorite() {
   if (!selectedListId.value) {
     alert('Please select a favorite list!')
     return
   }
 
-  const selected = favoriteLists.value.find((list) => list.id === selectedListId.value)
-  if (selected && selected.restaurants.includes(selectedRestaurant.value.id)) {
-    alert('Already added to this list.')
-    return
+  try {
+    await addRestaurantToList(selectedListId.value, selectedRestaurant.value.id)
+    favoriteSuccess.value = true
+    setTimeout(() => {
+      favoriteSuccess.value = false
+      closeFavoriteModal()
+    }, 1500)
+  } catch (error) {
+    console.error('Failed to add restaurant to list:', error)
+    alert('Could not add to favorites.')
   }
-
-  selected.restaurants.push(selectedRestaurant.value.id)
-  favoriteSuccess.value = true
-  setTimeout(() => {
-    favoriteSuccess.value = false
-    closeFavoriteModal()
-  }, 1500)
 }
 </script>
 

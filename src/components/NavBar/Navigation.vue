@@ -5,7 +5,7 @@
         <router-link to="/Home">Home</router-link>
       </li>
       <li class="user-container">
-        <span class="user-greeting" @click="toggleDropdown">Hi, {{ user.firstName }}</span>
+        <span class="user-greeting" @click="toggleDropdown"> Hi, {{ user.firstName }} </span>
         <div v-if="dropdownVisible" class="dropdown-menu">
           <router-link to="/user" class="dropdown-item">
             <img src="@/assets/images/profileicon.svg" alt="Profile Icon" class="icon" />
@@ -23,21 +23,21 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-
-import userData from '@/assets/user.json'
+import Cookies from 'js-cookie'
 
 const dropdownVisible = ref(false)
 
 const user = ref({
   firstName: '',
-  lastName: '',
+  email: '',
   followers: 0,
   following: 0,
   rating: 0,
 })
 
 onMounted(() => {
-  user.value = userData
+  user.value.firstName = Cookies.get('userName') || 'Guest'
+  user.value.email = Cookies.get('userEmail') || ''
 })
 
 const toggleDropdown = () => {
@@ -45,9 +45,7 @@ const toggleDropdown = () => {
 }
 </script>
 
-<style scoped></style>
-
-<style>
+<style scoped>
 .icon {
   fill: #f3f0f0;
 }
@@ -122,6 +120,7 @@ nav a:hover {
   background: #f4b4b4;
   color: white;
 }
+
 .icon {
   width: 20px;
   height: 20px;

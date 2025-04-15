@@ -24,12 +24,12 @@
       <RestaurantCardsContainer :restaurants="filteredRestaurants" @visit="openVisitModal" />
     </div>
 
-    <RegisterVisitForm
+    <VisitModal
       v-if="showVisitModal"
       :restaurant="selectedRestaurant"
-      :date="visitDate"
-      :rating="visitRating"
-      :comment="visitComment"
+      v-model:date="visitDate"
+      v-model:rating="visitRating"
+      v-model:comment="visitComment"
       :success="visitSuccess"
       @submit="submitVisit"
       @close="closeVisitModal"
@@ -47,7 +47,7 @@ import { RestaurantModel } from '@/components/home/script/RestaurantModel.js'
 
 import RestaurantFilter from '@/components/home/Filter.vue'
 import RestaurantCardsContainer from '@/components/home/CardsContainer.vue'
-import RegisterVisitForm from '@/components/form/VisitModal.vue'
+import VisitModal from '@/components/form/VisitModal.vue'
 
 const isSmallScreen = ref(window.innerWidth <= 920)
 const isFilterVisible = ref(false)
