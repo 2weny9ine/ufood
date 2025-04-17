@@ -11,23 +11,21 @@
               class="restaurant-card"
             >
               <div class="restaurant-info">
-                <p>
-                  <span class="restaurant-name">{{ visit.name }}</span>
-                </p>
-                <p>
-                  <span class="visit-rating">Rating: {{ visit.rating }} ★</span>
-                </p>
-                <p>
-                  <span class="visit-comment">{{ visit.comment || 'No comment' }}</span>
-                </p>
-                <p>
-                  <span class="visit-date">
-                    Date: {{ new Date(visit.date).toLocaleDateString() }}
-                  </span>
-                </p>
+                <p class="restaurant-name">{{ visit.name }}</p>
+                <p class="visit-date">Date: {{ new Date(visit.date).toLocaleDateString() }}</p>
+                <button class="more-button" @click="openModal(visit)">Details</button>
               </div>
             </li>
           </ul>
+          <div v-if="showModal" class="modal-overlay">
+            <div class="modal-content">
+              <h3>{{ selectedVisit.name }}</h3>
+              <p><strong>Rating:</strong> {{ selectedVisit.rating }} ★</p>
+              <p><strong>Comment:</strong> {{ selectedVisit.comment || 'No comment' }}</p>
+              <p><strong>Date:</strong> {{ new Date(selectedVisit.date).toLocaleDateString() }}</p>
+              <button class="close-button" @click="closeModal">Close</button>
+            </div>
+          </div>
         </div>
         <div v-else class="no-visits">
           <p1>You haven't visited any restaurants yet!</p1>
@@ -38,6 +36,54 @@
 </template>
 
 <style scoped>
+.more-button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #f55702;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.more-button:hover {
+  background-color: #a5a1a1;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px;
+  width: 350px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.close-button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #9c9c9c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.close-button:hover {
+  background-color: #383737;
+}
+
 .Table {
   display: flex;
   justify-content: center;
@@ -74,7 +120,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   background-color: #fff;
   padding: 15px;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
 }
 .restaurant-name {
   font-size: 23px;
@@ -101,10 +152,26 @@ p1 {
 }
 </style>
 <script setup>
+import { ref } from 'vue'
+
 defineProps({
   recentVisits: {
     type: Array,
     required: true,
   },
 })
+
+const selectedVisit = ref(null)
+const showModal = ref(false)
+
+const openModal = (visit) => {
+  console.log('Visit object:', visit)
+  selectedVisit.value = visit
+  showModal.value = true
+}
+
+const closeModal = () => {
+  selectedVisit.value = null
+  showModal.value = false
+}
 </script>
