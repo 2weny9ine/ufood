@@ -4,6 +4,11 @@
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     <p v-if="loading">Loading...</p>
 
+    <div class="view-toggle">
+      <button @click="viewMode = 'list'" :class="{ active: viewMode === 'list' }">Liste</button>
+      <button @click="viewMode = 'map'" :class="{ active: viewMode === 'map' }">Carte</button>
+    </div>
+
     <div class="inline-container">
       <button v-if="isSmallScreen" class="hamburger-button" @click="toggleFilterSidebar">
         ☰ Filters
@@ -12,6 +17,7 @@
       <RestaurantFilter
         v-show="!isSmallScreen || isFilterVisible"
         v-model:genres="filters.genres"
+        v-model:price="filters.price"
         v-model:rating="filters.rating"
         v-model:sortBy="filters.sortBy"
         v-model:sortOrder="filters.sortOrder"
@@ -20,7 +26,17 @@
         @clear-filters="clearFilters"
       />
 
-      <RestaurantCardsContainer :restaurants="filteredRestaurants" @visit="openVisitModal" />
+      <template v-if="viewMode === 'list'">
+        <RestaurantCardsContainer :restaurants="filteredRestaurants" @visit="openVisitModal" />
+      </template>
+
+      <template v-else>
+        <MapRestaurantView
+          :restaurants="filteredRestaurants"
+          :user-location="userLocation"
+          @visit="openVisitModal"
+        />
+      </template>
     </div>
 
     <VisitModal
@@ -39,14 +55,17 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import Cookies from 'js-cookie'
+
 import { fetchRestaurants } from '@/api/restaurants'
 import { registerVisit } from '@/api/visit.js'
 import { buildQueryParams } from '@/components/home/script/RestaurantTools.js'
 import { RestaurantModel } from '@/components/home/script/RestaurantModel.js'
+import { getCurrentPositionWithRetry } from '@/components/restaurant/script/geolocation.js'
 
 import RestaurantFilter from '@/components/home/Filter.vue'
 import RestaurantCardsContainer from '@/components/home/CardsContainer.vue'
 import VisitModal from '@/components/form/VisitModal.vue'
+import MapRestaurantView from '@/components/home/MapRestaurantView.vue'
 
 const isSmallScreen = ref(window.innerWidth <= 920)
 const isFilterVisible = ref(false)
@@ -61,6 +80,7 @@ const filters = ref({
   rating: '',
   sortBy: '',
   sortOrder: 'asc',
+  price:'',
 })
 
 const currentPage = ref(1)
@@ -74,6 +94,9 @@ const visitDate = ref('')
 const visitRating = ref(3)
 const visitComment = ref('')
 const visitSuccess = ref(false)
+
+const viewMode = ref<'list' | 'map'>('list')
+const userLocation = ref([])
 
 const USER_ID = Cookies.get('userId')
 
@@ -167,12 +190,17 @@ const loadRestaurants = async (reset = false) => {
   }
 }
 
+const applyFilters = async () => {
+  await loadRestaurants(true)
+}
+
 const clearFilters = () => {
   filters.value = {
     genres: [],
     rating: '',
     sortBy: '',
     sortOrder: 'asc',
+    price: '',
   }
   loadRestaurants(true)
 }
@@ -233,6 +261,7 @@ const handleScroll = () => {
 }
 
 onMounted(async () => {
+  userLocation.value = await getCurrentPositionWithRetry()
   await loadRestaurants(true)
   window.addEventListener('scroll', handleScroll)
 })
@@ -289,6 +318,26 @@ onBeforeUnmount(() => {
 
 .hamburger-button:hover {
   background-color: #ff6600;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.view-toggle button {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.view-toggle button.active {
+  background-color: #ff6600;
+  color: white;
 }
 
 @media (max-width: 920px) {
