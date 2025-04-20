@@ -12,13 +12,11 @@ export const fetchRestaurantDetails = async (restaurantId) => {
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message)
+      return null
     }
 
     return await response.json()
-  } catch (error) {
-    console.error('Error fetching restaurant details:', error)
+  } catch {
     return null
   }
 }
@@ -36,63 +34,31 @@ export const fetchRestaurants = async (filters = []) => {
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message)
+      return [[], 0]
     }
 
     const result = await response.json()
     return [result.items, result.total]
-  } catch (error) {
-    console.error('Error fetching restaurants:', error)
+  } catch {
     return [[], 0]
   }
 }
 
-export const loadVisits = async (restaurantId, filters = []) => {
-  const query = paramsToStr(filters)
+export const fetchSimilarRestaurants = async (
+  genres,
+  priceRange,
+  currentRestaurantId,
+  limit = 4,
+) => {
+  const filters = []
+  if (genres?.length) filters.push({ key: 'genres', value: genres.join(',') })
+  if (priceRange) filters.push({ key: 'price_range', value: priceRange })
+  if (limit) filters.push({ key: 'limit', value: limit })
 
   try {
-    const response = await fetch(`${API_URL}/restaurants/${restaurantId}/visits${query}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: Cookies.get('token'),
-      },
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message)
-    }
-
-    const result = await response.json()
-    return [result.items, result.total]
-  } catch (error) {
-    console.error('Error loading restaurant visits:', error)
-    return [[], 0]
-  }
-}
-
-export const fetchNearbyRestaurants = async (locationParams = []) => {
-  const query = paramsToStr(locationParams)
-
-  try {
-    const response = await fetch(`${API_URL}/restaurants${query}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: Cookies.get('token'),
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch restaurants near location')
-    }
-
-    const nearby = await response.json()
-    return [nearby.items, nearby.total]
-  } catch (error) {
-    console.error('Error fetching nearby restaurants:', error)
-    return [[], 0]
+    const [restaurants] = await fetchRestaurants(filters)
+    return restaurants.filter((restaurant) => restaurant.id !== currentRestaurantId) || []
+  } catch {
+    return []
   }
 }

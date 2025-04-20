@@ -11,14 +11,13 @@
 
       <RestaurantFilter
         v-show="!isSmallScreen || isFilterVisible"
-        :genres="tempGenres"
-        :price="tempPrice"
-        :rating="tempRating"
-        :sort-by="tempSortBy"
-        :sort-order="tempSortOrder"
+        v-model:genres="filters.genres"
+        v-model:rating="filters.rating"
+        v-model:sortBy="filters.sortBy"
+        v-model:sortOrder="filters.sortOrder"
+        :genres-list="availableGenres"
         @select-restaurant="handleRestaurantSelect"
-        @clear-filters="clearAllFilters"
-        @apply-filters="applyFilters"
+        @clear-filters="clearFilters"
       />
 
       <RestaurantCardsContainer :restaurants="filteredRestaurants" @visit="openVisitModal" />
@@ -38,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 import Cookies from 'js-cookie'
 import { fetchRestaurants } from '@/api/restaurants'
 import { registerVisit } from '@/api/visit.js'
@@ -54,20 +53,21 @@ const isFilterVisible = ref(false)
 const loading = ref(true)
 const errorMessage = ref('')
 
+const allRestaurants = ref([])
 const restaurants = ref([])
-const selectedGenres = ref('')
-const selectedPrice = ref('')
-const selectedSortBy = ref('')
-const selectedSortOrder = ref('asc')
+const availableGenres = ref([])
+const filters = ref({
+  genres: [],
+  rating: '',
+  sortBy: '',
+  sortOrder: 'asc',
+})
 
-const tempGenres = ref('')
-tempGenres.value = ''
-const tempPrice = ref('')
-const tempRating = ref('')
-const tempSortBy = ref('')
-const tempSortOrder = ref('asc')
+const currentPage = ref(1)
+const limitPerPage = ref(80)
+const isLoadingMore = ref(false)
+const totalRestaurants = ref(0)
 
-const selectedRating = ref(null)
 const showVisitModal = ref(false)
 const selectedRestaurant = ref(null)
 const visitDate = ref('')
@@ -109,8 +109,7 @@ const submitVisit = async () => {
       visitSuccess.value = false
       closeVisitModal()
     }, 1500)
-  } catch (error) {
-    console.error('Error submitting visit:', error)
+  } catch {
     alert('Failed to register visit.')
   }
 }
@@ -119,50 +118,123 @@ const handleRestaurantSelect = (restaurant) => {
   restaurants.value = [restaurant]
 }
 
-const applyFilters = async () => {
-  selectedGenres.value = tempGenres.value
-  selectedPrice.value = tempPrice.value
-  selectedSortBy.value = tempSortBy.value
-  selectedSortOrder.value = tempSortOrder.value
-  selectedRating.value = tempRating.value
+const loadRestaurants = async (reset = false) => {
+  if (isLoadingMore.value) return
 
-  const filters = buildQueryParams(selectedGenres.value, selectedPrice.value, 1)
+  if (reset) {
+    currentPage.value = 1
+    restaurants.value = []
+  }
+
+  isLoadingMore.value = true
+  loading.value = true
+
+  const queryFilters = buildQueryParams(
+    filters.value.genres.length ? filters.value.genres : '',
+    '',
+    currentPage.value,
+    limitPerPage.value,
+  )
 
   try {
-    loading.value = true
-    const [items] = await fetchRestaurants(filters)
-    restaurants.value = items.map((r) => new RestaurantModel(r))
+    const [items, total] = await fetchRestaurants(queryFilters)
+    const newRestaurants = items.map((r) => new RestaurantModel(r))
+    totalRestaurants.value = total
+
+    if (reset) {
+      restaurants.value = newRestaurants
+      allRestaurants.value = [...restaurants.value]
+
+      const genresSet = new Set()
+      newRestaurants.forEach((restaurant) => {
+        restaurant.genres?.forEach((genre) => {
+          if (genre && typeof genre === 'string') {
+            genresSet.add(genre.toLowerCase())
+          }
+        })
+      })
+      availableGenres.value = Array.from(genresSet).sort()
+    } else {
+      restaurants.value = [...restaurants.value, ...newRestaurants]
+    }
+
+    currentPage.value += 1
   } catch {
-    errorMessage.value = 'Failed to load restaurants with filters.'
+    errorMessage.value = 'Failed to load restaurants.'
   } finally {
     loading.value = false
+    isLoadingMore.value = false
   }
 }
 
-const clearAllFilters = () => {
-  tempGenres.value = ''
-  tempPrice.value = ''
-  tempSortBy.value = ''
-  tempSortOrder.value = 'asc'
-  tempRating.value = ''
-  applyFilters()
+const clearFilters = () => {
+  filters.value = {
+    genres: [],
+    rating: '',
+    sortBy: '',
+    sortOrder: 'asc',
+  }
+  loadRestaurants(true)
 }
 
-const filteredRestaurants = computed(() => restaurants.value)
+const filteredRestaurants = computed(() => {
+  let filtered = [...restaurants.value]
+
+  if (filters.value.genres.length) {
+    filtered = filtered.filter((restaurant) =>
+      filters.value.genres.some((genre) =>
+        restaurant.genres?.map((g) => g.toLowerCase()).includes(genre.toLowerCase()),
+      ),
+    )
+  }
+
+  if (filters.value.rating !== '' && filters.value.rating !== null) {
+    const rating = Number(filters.value.rating)
+    filtered = filtered.filter((restaurant) => Math.floor(restaurant.rating) === rating)
+  }
+
+  if (filters.value.sortBy) {
+    filtered.sort((a, b) => {
+      let valueA = a[filters.value.sortBy]
+      let valueB = b[filters.value.sortBy]
+
+      if (filters.value.sortBy === 'name') {
+        valueA = valueA.toLowerCase()
+        valueB = valueB.toLowerCase()
+      }
+
+      return filters.value.sortOrder === 'asc'
+        ? valueA < valueB
+          ? -1
+          : 1
+        : valueA > valueB
+          ? -1
+          : 1
+    })
+  }
+
+  return filtered
+})
 
 const toggleFilterSidebar = () => {
   isFilterVisible.value = !isFilterVisible.value
 }
 
-onMounted(async () => {
-  try {
-    const [items] = await fetchRestaurants([])
-    restaurants.value = items.map((r) => new RestaurantModel(r))
-  } catch {
-    errorMessage.value = 'Failed to load restaurants.'
-  } finally {
-    loading.value = false
+const handleScroll = () => {
+  const scrollOffset = window.pageYOffset || document.documentElement.scrollTop
+  const totalHeight = document.documentElement.scrollHeight
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight
+
+  const bottomOfWindow = totalHeight - (scrollOffset + windowHeight) < 100
+
+  if (bottomOfWindow && restaurants.value.length < totalRestaurants.value) {
+    loadRestaurants()
   }
+}
+
+onMounted(async () => {
+  await loadRestaurants(true)
+  window.addEventListener('scroll', handleScroll)
 })
 
 window.addEventListener('resize', () => {
@@ -170,6 +242,11 @@ window.addEventListener('resize', () => {
   if (!isSmallScreen.value) {
     isFilterVisible.value = false
   }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('resize', () => {})
 })
 </script>
 
@@ -187,7 +264,7 @@ window.addEventListener('resize', () => {
 .restaurants-label {
   margin-top: 30px;
   text-align: left;
-  margin-left: 0px;
+  margin-left: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -211,7 +288,7 @@ window.addEventListener('resize', () => {
 }
 
 .hamburger-button:hover {
-  background-color: #cc5200;
+  background-color: #ff6600;
 }
 
 @media (max-width: 920px) {

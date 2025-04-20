@@ -14,53 +14,53 @@
     <div class="filter-section">
       <p class="filter-title">Sort</p>
       <div class="filter-options">
-        <label
-          ><input
+        <label>
+          <input
             type="radio"
-            :value="'name'"
+            value="name"
             :checked="sortBy === 'name'"
             @change="$emit('update:sortBy', 'name')"
           />
-          Name</label
-        >
-        <label
-          ><input
+          Name
+        </label>
+        <label>
+          <input
             type="radio"
-            :value="'price_range'"
+            value="price_range"
             :checked="sortBy === 'price_range'"
             @change="$emit('update:sortBy', 'price_range')"
           />
-          Price</label
-        >
-        <label
-          ><input
+          Price
+        </label>
+        <label>
+          <input
             type="radio"
-            :value="'rating'"
+            value="rating"
             :checked="sortBy === 'rating'"
             @change="$emit('update:sortBy', 'rating')"
           />
-          Rating</label
-        >
+          Rating
+        </label>
       </div>
       <div class="filter-options">
-        <label
-          ><input
+        <label>
+          <input
             type="radio"
-            :value="'asc'"
+            value="asc"
             :checked="sortOrder === 'asc'"
             @change="$emit('update:sortOrder', 'asc')"
           />
-          Ascending</label
-        >
-        <label
-          ><input
+          Ascending
+        </label>
+        <label>
+          <input
             type="radio"
-            :value="'desc'"
+            value="desc"
             :checked="sortOrder === 'desc'"
             @change="$emit('update:sortOrder', 'desc')"
           />
-          Descending</label
-        >
+          Descending
+        </label>
       </div>
     </div>
 
@@ -70,9 +70,10 @@
         <label v-for="genre in genresList" :key="genre">
           <input
             type="checkbox"
+            :id="`genre-${genre}`"
             :value="genre"
             :checked="genres.includes(genre)"
-            @change="$emit('update:genres', toggleCheckbox(genres, genre))"
+            @change="$emit('update:genres', toggleCheckbox(genres, $event.target.value))"
           />
           {{ genre }}
         </label>
@@ -85,9 +86,10 @@
         <label v-for="p in 5" :key="p">
           <input
             type="radio"
+            :id="`price-${p}`"
             :value="p"
             :checked="price === p"
-            @change="$emit('update:price', p)"
+            @change="$emit('update:price', Number($event.target.value))"
           />
           {{ '$'.repeat(p) }}
         </label>
@@ -100,24 +102,32 @@
         <label v-for="r in 5" :key="r">
           <input
             type="radio"
-            :value="String(r)"
-            :checked="rating === String(r)"
-            @change="$emit('update:rating', String(r))"
+            :id="`rating-${r}`"
+            :value="r"
+            :checked="rating === r"
+            @change="$emit('update:rating', Number($event.target.value))"
           />
           {{ '★'.repeat(r) }}
         </label>
       </div>
     </div>
-
-    <button class="apply-filters" @click="$emit('apply-filters')">Apply</button>
   </section>
 </template>
+
 <script setup>
 import SearchBarRestaurant from './SearchBarRestaurant.vue'
 
-defineProps(['genres', 'price', 'rating', 'sortBy', 'sortOrder'])
+// Définir les props et emits sans les assigner à des variables
+defineProps({
+  genres: { type: Array, default: () => [] },
+  price: { type: [Number, String], default: '' },
+  rating: { type: [Number, String], default: '' },
+  sortBy: { type: String, default: '' },
+  sortOrder: { type: String, default: 'asc' },
+  genresList: { type: Array, required: true },
+})
+
 defineEmits([
-  'apply-filters',
   'clear-filters',
   'select-restaurant',
   'update:genres',
@@ -126,27 +136,6 @@ defineEmits([
   'update:sortBy',
   'update:sortOrder',
 ])
-
-const genresList = [
-  'végétarien',
-  'café',
-  'italien',
-  'santé',
-  'hamburgers',
-  'desserts',
-  'asiatique',
-  'japonais',
-  'ambiance',
-  'happy hour',
-  'pizzeria',
-  'cuisine moléculaire',
-  'fast-food',
-  'mexicain',
-  'fruits de mer',
-  'bistro',
-  'libanais',
-  'steakhouse',
-]
 
 function toggleCheckbox(list, value) {
   const copy = [...list]
@@ -208,24 +197,6 @@ function toggleCheckbox(list, value) {
 
 .clear-button:hover {
   text-decoration: underline;
-}
-
-.apply-filters {
-  margin-left: 25%;
-  margin-top: 10px;
-  padding: 10px;
-  width: 50%;
-  background: #ff6600;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.apply-filters:hover {
-  background: #cc5200;
 }
 
 .search-bar {
