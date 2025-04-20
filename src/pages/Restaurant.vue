@@ -29,25 +29,25 @@
     />
     <div v-if="showFavoriteModal" class="modal-overlay">
       <div class="favorite-modal">
-        <h2>Add to Favorites</h2>
+        <h2>Ajouter aux Favoris</h2>
         <p>
           <strong>{{ selectedRestaurant?.name }}</strong>
         </p>
         <div class="favorite-infos">
-          <label for="favorite-list">Select a Favorite List:</label>
+          <label for="favorite-list">Sélectionner une liste :</label>
           <select id="favorite-list" v-model="selectedListId">
-            <option value="" disabled>Select a list</option>
+            <option value="" disabled>Choisir une liste</option>
             <option v-for="list in favoriteLists" :key="list.id" :value="list.id">
               {{ list.name }}
             </option>
           </select>
         </div>
-        <p v-if="favoriteSuccess" class="success-message">Added to favorites successfully!</p>
+        <p v-if="favoriteSuccess" class="success-message">Ajouté aux favoris avec succès !</p>
         <div class="modal-buttons">
           <button class="submit-favorite" @click="submitFavorite" :disabled="!selectedListId">
-            Add
+            Ajouter
           </button>
-          <button class="close-modal" @click="closeFavoriteModal">Cancel</button>
+          <button class="close-modal" @click="closeFavoriteModal">Annuler</button>
         </div>
       </div>
     </div>
@@ -59,6 +59,11 @@
     />
     <Images :pictures="restaurant?.pictures" />
     <Opening :opening-hours="restaurant?.opening_hours" />
+    <SimilarRestaurants
+      :genres="restaurant?.genres"
+      :current-restaurant-id="restaurant?.id"
+      @open-visit-modal="openVisitModal"
+    />
   </div>
 </template>
 
@@ -71,6 +76,7 @@ import RegisterVisitForm from '@/components/form/VisitModal.vue'
 import Map from '@/components/restaurant/Map.vue'
 import Images from '@/components/restaurant/Images.vue'
 import Opening from '@/components/restaurant/Opening.vue'
+import SimilarRestaurants from '@/components/restaurant/SimilarRestaurants.vue'
 import { getCurrentPositionWithRetry } from '@/components/restaurant/script/geolocation.js'
 import { fetchRestaurantDetails } from '@/api/restaurants.js'
 import { fetchUserLists } from '@/api/users.js'
@@ -101,7 +107,7 @@ const restaurantId = route.params.id
 
 onMounted(async () => {
   if (!restaurantId) {
-    errorMessage.value = 'Invalid restaurant ID.'
+    errorMessage.value = 'ID de restaurant invalide.'
     loading.value = false
     return
   }
@@ -112,17 +118,15 @@ onMounted(async () => {
     if (data?.location?.coordinates?.length === 2) {
       data.location = [data.location.coordinates[0], data.location.coordinates[1]]
     }
-
     restaurant.value = data
-  } catch (e) {
-    errorMessage.value = 'Failed to load restaurant or location data.'
-    console.error(e)
+  } catch {
+    errorMessage.value = 'Échec du chargement des données du restaurant ou de la localisation.'
   } finally {
     loading.value = false
   }
 })
 
-function openVisitModal(r) {
+const openVisitModal = (r) => {
   selectedRestaurant.value = r
   visitDate.value = ''
   visitRating.value = 3
@@ -130,13 +134,13 @@ function openVisitModal(r) {
   showVisitModal.value = true
 }
 
-function closeVisitModal() {
+const closeVisitModal = () => {
   showVisitModal.value = false
 }
 
-async function submitVisit() {
+const submitVisit = async () => {
   if (!visitDate.value) {
-    alert('Please select a date!')
+    alert('Veuillez sélectionner une date !')
     return
   }
 
@@ -154,13 +158,12 @@ async function submitVisit() {
       visitSuccess.value = false
       closeVisitModal()
     }, 1500)
-  } catch (error) {
-    console.error('Failed to submit visit:', error)
-    alert('Could not register visit.')
+  } catch {
+    alert('Impossible d’enregistrer la visite.')
   }
 }
 
-async function openFavoriteModal(r) {
+const openFavoriteModal = async (r) => {
   selectedRestaurant.value = r
   selectedListId.value = ''
   favoriteSuccess.value = false
@@ -169,18 +172,18 @@ async function openFavoriteModal(r) {
   try {
     const [lists] = await fetchUserLists(USER_ID)
     favoriteLists.value = lists
-  } catch (error) {
-    console.error('Error loading favorites:', error)
+  } catch {
+    alert('Erreur lors du chargement des listes de favoris.')
   }
 }
 
-function closeFavoriteModal() {
+const closeFavoriteModal = () => {
   showFavoriteModal.value = false
 }
 
-async function submitFavorite() {
+const submitFavorite = async () => {
   if (!selectedListId.value) {
-    alert('Please select a favorite list!')
+    alert('Veuillez sélectionner une liste de favoris !')
     return
   }
 
@@ -191,9 +194,8 @@ async function submitFavorite() {
       favoriteSuccess.value = false
       closeFavoriteModal()
     }, 1500)
-  } catch (error) {
-    console.error('Failed to add restaurant to list:', error)
-    alert('Could not add to favorites.')
+  } catch {
+    alert('Impossible d’ajouter aux favoris.')
   }
 }
 </script>
