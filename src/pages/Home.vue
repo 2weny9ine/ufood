@@ -80,7 +80,7 @@ const filters = ref({
   rating: '',
   sortBy: '',
   sortOrder: 'asc',
-  price:'',
+  price: '',
 })
 
 const currentPage = ref(1)
@@ -154,7 +154,7 @@ const loadRestaurants = async (reset = false) => {
 
   const queryFilters = buildQueryParams(
     filters.value.genres.length ? filters.value.genres : '',
-    '',
+    filters.value.price,
     currentPage.value,
     limitPerPage.value,
   )
@@ -190,10 +190,6 @@ const loadRestaurants = async (reset = false) => {
   }
 }
 
-const applyFilters = async () => {
-  await loadRestaurants(true)
-}
-
 const clearFilters = () => {
   filters.value = {
     genres: [],
@@ -219,6 +215,11 @@ const filteredRestaurants = computed(() => {
   if (filters.value.rating !== '' && filters.value.rating !== null) {
     const rating = Number(filters.value.rating)
     filtered = filtered.filter((restaurant) => Math.floor(restaurant.rating) === rating)
+  }
+
+  if (filters.value.price !== '' && filters.value.price !== null) {
+    const price = Number(filters.value.price)
+    filtered = filtered.filter((restaurant) => restaurant.price_range === price)
   }
 
   if (filters.value.sortBy) {
