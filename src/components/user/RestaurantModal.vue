@@ -7,7 +7,7 @@
         <select
           id="restaurant-select"
           :value="modelValue"
-          @change="(e) => emit('update:modelValue', e.target.value)"
+          @change="$emit('update:modelValue', $event.target.value)"
         >
           <option value="" disabled>Select a restaurant</option>
           <option v-for="restaurant in allRestaurants" :key="restaurant.id" :value="restaurant.id">

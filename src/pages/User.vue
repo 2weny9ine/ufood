@@ -50,10 +50,7 @@ import {
 import { fetchUserVisits } from '@/api/visit'
 import { fetchRestaurants } from '@/api/restaurants'
 import { restaurantParams } from '@/api/api.config'
-import {
-  retrieveAllPaginatedUserData,
-  filterUniqueByKey,
-} from '@/components/user/script/userUtil.js'
+import { retrieveAllPaginatedUserData } from '@/components/user/script/userUtil.js'
 
 import UserBanner from '@/components/user/UserBanner.vue'
 import RecentlyVisited from '@/components/user/RecentlyVisited.vue'
@@ -93,7 +90,23 @@ onMounted(async () => {
   initials.value = `${user.value.firstName[0]}${user.value.lastName[0]}`.toUpperCase()
 
   const [visits] = await fetchUserVisits(userId, [[restaurantParams.LIMIT, 10]])
-  recentVisits.value = filterUniqueByKey(visits, 'id')
+  const enrichedVisits = []
+
+  for (const visit of visits) {
+    const restaurant = await fetchRestaurantDetails(visit.restaurant_id)
+    if (restaurant) {
+      enrichedVisits.push({
+        ...visit,
+        name: restaurant.name,
+        genres: restaurant.genres,
+        price_range: restaurant.price_range,
+        address: restaurant.address,
+        tel: restaurant.tel,
+      })
+    }
+  }
+
+  recentVisits.value = enrichedVisits
 
   await reloadMyFavoriteLists()
 
