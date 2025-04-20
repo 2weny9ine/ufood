@@ -2,9 +2,10 @@
   <section class="Table">
     <div class="Table-Favorites">
       <h3>Favorite Lists</h3>
-      <button class="create-list-button" @click="$emit('open-create-modal')">
+      <button v-if="!readonly" class="create-list-button" @click="$emit('open-create-modal')">
         Create New List
       </button>
+
       <div class="Table-content">
         <div v-if="favoriteLists.length > 0">
           <ul class="favorite-list">
@@ -17,9 +18,11 @@
                   :disabled="editingListId !== list.id"
                 />
                 <div class="favorite-actions">
-                  <button @click="$emit('toggle-edit', list.id)">Edit Name</button>
-                  <button @click="$emit('open-add-modal', list.id)">Add Restaurant</button>
-                  <button @click="$emit('delete-list', list.id)">Delete</button>
+                  <button v-if="!readonly" @click="$emit('toggle-edit', list.id)">Edit Name</button>
+                  <button v-if="!readonly" @click="$emit('open-add-modal', list.id)">
+                    Add Restaurant
+                  </button>
+                  <button v-if="!readonly" @click="$emit('delete-list', list.id)">Delete</button>
                 </div>
               </div>
               <ul class="restaurant-list">
@@ -35,6 +38,7 @@
                       </router-link>
                       | Rating: {{ (restaurant.rating || 0).toFixed(1) }} ★
                       <button
+                        v-if="!readonly"
                         class="remove-button"
                         @click="$emit('remove-restaurant', list.id, restaurant.id)"
                       >
@@ -145,6 +149,10 @@ defineProps({
   editingListId: {
     type: String,
     default: null,
+  },
+  readonly: {
+    type: Boolean,
+    default: false,
   },
 })
 

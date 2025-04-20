@@ -1,6 +1,6 @@
 <template>
   <div class="User">
-    <UserBanner :user="user" :initials="initials" />
+    <UserBanner :user="user" :initials="initials" :email="user.email" />
 
     <RecentlyVisited :recentVisits="recentVisits" />
 
@@ -83,6 +83,7 @@ onMounted(async () => {
   user.value = {
     firstName: userData.name.split(' ')[0],
     lastName: userData.name.split(' ')[1] || '',
+    email: userData.email,
     followers: userData.followers,
     following: userData.following,
     rating: userData.rating || 0,

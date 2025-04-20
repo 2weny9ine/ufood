@@ -3,6 +3,7 @@ import Home from '../pages/Home.vue'
 import Restaurant from '../pages/Restaurant.vue'
 import User from '../pages/User.vue'
 import Login from '../pages/Login.vue'
+import OtherUsers from '@/pages/OtherUsers.vue'
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/user',
     name: 'User',
     component: User,
+  },
+  {
+    path: '/user/:id',
+    name: 'OtherUsers',
+    component: OtherUsers,
   },
   {
     path: '/:pathMatch(.*)*',
