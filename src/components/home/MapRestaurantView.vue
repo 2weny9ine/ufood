@@ -5,6 +5,7 @@
 <script setup>
 import mapboxgl from 'mapbox-gl'
 import { onMounted, ref, watch, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   restaurants: {
@@ -18,6 +19,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['visit'])
+const router = useRouter() // Use Vue Router for navigation
 
 const mapContainer = ref(null)
 let mapInstance = null
@@ -36,7 +38,6 @@ const initMap = () => {
     zoom: 13,
   })
 
-  // Add navigation controls for zoom and pan
   mapInstance.addControl(new mapboxgl.NavigationControl(), 'bottom-right')
   mapInstance.addControl(new mapboxgl.ScaleControl({ unit: 'metric' }))
 
@@ -71,6 +72,7 @@ const addMarkers = async () => {
               ${'$'.repeat(r.price_range)} | ${r.genres?.join(', ') || ''}<br/>
               Rating: ${r.rating.toFixed(1)} ★<br/>
               <button class="popup-btn" id="visit-${r.id}">Visiter</button>
+              <button class="popup-btn details-btn" id="details-${r.id}">Voir les détails</button>
             </div>
           `),
         )
@@ -80,9 +82,18 @@ const addMarkers = async () => {
 
       marker.getElement().addEventListener('click', () => {
         setTimeout(() => {
-          const btn = document.getElementById(`visit-${r.id}`)
-          if (btn) {
-            btn.addEventListener('click', () => emit('visit', r))
+          // Handle "Visit" button
+          const visitBtn = document.getElementById(`visit-${r.id}`)
+          if (visitBtn) {
+            visitBtn.addEventListener('click', () => emit('visit', r))
+          }
+
+          // Handle "View Details" button
+          const detailsBtn = document.getElementById(`details-${r.id}`)
+          if (detailsBtn) {
+            detailsBtn.addEventListener('click', () => {
+              router.push({ name: 'Restaurant', params: { id: r.id } })
+            })
           }
         }, 0)
       })
@@ -155,6 +166,15 @@ watch(
 
 .popup-btn:hover {
   background-color: #cc5200;
+}
+
+.details-btn {
+  margin-left: 8px;
+  background-color: #4a90e2;
+}
+
+.details-btn:hover {
+  background-color: #357abd;
 }
 
 @media (max-width: 920px) {
