@@ -14,7 +14,13 @@
                   </span>
                 </div>
               </div>
-              <button class="Follow">Follow</button>
+              <button
+                v-if="currentUserId !== user.id"
+                class="Follow"
+                @click="isFollowing ? unfollowUser() : followUser()"
+              >
+                {{ isFollowing ? 'Unfollow' : 'Follow' }}
+              </button>
             </div>
           </div>
           <div class="profile-picture">
@@ -104,7 +110,9 @@
 </style>
 <script setup>
 import md5 from 'md5'
-import { computed } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
+import Cookies from 'js-cookie'
+import { fetchUserDetails, follow, unfollow } from '@/api/users'
 
 const props = defineProps({
   user: {
@@ -117,10 +125,32 @@ const props = defineProps({
     required: true,
   },
 })
-
 const gravatarUrl = computed(() =>
   props.email
     ? `https://www.gravatar.com/avatar/${md5(props.email.trim().toLowerCase())}?s=200&d=identicon`
     : '',
 )
+
+const isFollowing = ref(false)
+const currentUserId = Cookies.get('userId')
+
+const checkFollowingStatus = async () => {
+  if (currentUserId !== props.user.id) {
+    const currentUser = await fetchUserDetails(currentUserId)
+    isFollowing.value = currentUser.following?.some((u) => u.id === props.user.id)
+  }
+}
+
+onMounted(checkFollowingStatus)
+watch(() => props.user.id, checkFollowingStatus)
+
+const followUser = async () => {
+  await follow(props.user.id)
+  isFollowing.value = true
+}
+
+const unfollowUser = async () => {
+  await unfollow(props.user.id)
+  isFollowing.value = false
+}
 </script>

@@ -105,7 +105,6 @@ const isFollowing = (id) => {
 const followUser = async (id) => {
   try {
     await follow(id)
-    clearSearch()
     await updateFollowingList()
   } catch (err) {
     displayPopup('Erreur', err.message)
@@ -115,7 +114,6 @@ const followUser = async (id) => {
 const unfollowUser = async (id) => {
   try {
     await unfollow(id)
-    clearSearch()
     await updateFollowingList()
   } catch (err) {
     displayPopup('Erreur', err.message)

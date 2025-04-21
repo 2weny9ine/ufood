@@ -29,6 +29,7 @@ const favoriteLists = ref([])
 const loadUserProfile = async (userId) => {
   const userData = await fetchUserDetails(userId)
   user.value = {
+    id: userData.id,
     firstName: userData.name.split(' ')[0],
     lastName: userData.name.split(' ')[1] || '',
     email: userData.email,
