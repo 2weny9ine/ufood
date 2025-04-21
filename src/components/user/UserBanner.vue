@@ -17,6 +17,17 @@
             </div>
           </div>
 
+          <div class="stats-bar">
+            <div class="stat" @click="$emit('open-followers')">
+              <strong>{{ user.followers.length }}</strong>
+              <span>Followers</span>
+            </div>
+            <div class="stat" @click="$emit('open-following')">
+              <strong>{{ user.following.length }}</strong>
+              <span>Following</span>
+            </div>
+          </div>
+
           <button
             v-if="currentUserId !== user.id"
             class="Follow"
@@ -29,6 +40,55 @@
     </div>
   </section>
 </template>
+
+<script setup>
+import md5 from 'md5'
+import { computed, ref, onMounted, watch } from 'vue'
+import Cookies from 'js-cookie'
+import { fetchUserDetails, follow, unfollow } from '@/api/users'
+
+const props = defineProps({
+  user: {
+    type: Object,
+    required: true,
+  },
+  initials: String,
+  email: {
+    type: String,
+    required: true,
+  },
+})
+
+const gravatarUrl = computed(() =>
+  props.email
+    ? `https://www.gravatar.com/avatar/${md5(props.email.trim().toLowerCase())}?s=200&d=identicon`
+    : '',
+)
+
+const isFollowing = ref(false)
+const currentUserId = Cookies.get('userId')
+
+const checkFollowingStatus = async () => {
+  if (currentUserId !== props.user.id) {
+    const currentUser = await fetchUserDetails(currentUserId)
+    isFollowing.value = currentUser.following?.some((u) => u.id === props.user.id)
+  }
+}
+
+onMounted(checkFollowingStatus)
+watch(() => props.user.id, checkFollowingStatus)
+
+const followUser = async () => {
+  await follow(props.user.id)
+  isFollowing.value = true
+}
+
+const unfollowUser = async () => {
+  await unfollow(props.user.id)
+  isFollowing.value = false
+}
+</script>
+
 <style scoped>
 .gravatar {
   width: 100%;
@@ -61,6 +121,7 @@
   filter: brightness(90%);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
 .info {
   position: absolute;
   top: 75%;
@@ -104,6 +165,27 @@
   font-size: 1.1rem;
 }
 
+.stats-bar {
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+  color: #333;
+}
+
+.stat strong {
+  font-size: 22px;
+  color: #000;
+}
+
 .Follow {
   margin-top: 15px;
   background-color: #f55702;
@@ -141,53 +223,13 @@
     font-size: 1rem;
     padding: 8px 20px;
   }
-}
-</style>
 
-<script setup>
-import md5 from 'md5'
-import { computed, ref, onMounted, watch } from 'vue'
-import Cookies from 'js-cookie'
-import { fetchUserDetails, follow, unfollow } from '@/api/users'
+  .stat strong {
+    font-size: 18px;
+  }
 
-const props = defineProps({
-  user: {
-    type: Object,
-    required: true,
-  },
-  initials: String,
-  email: {
-    type: String,
-    required: true,
-  },
-})
-const gravatarUrl = computed(() =>
-  props.email
-    ? `https://www.gravatar.com/avatar/${md5(props.email.trim().toLowerCase())}?s=200&d=identicon`
-    : '',
-)
-
-const isFollowing = ref(false)
-const currentUserId = Cookies.get('userId')
-
-const checkFollowingStatus = async () => {
-  if (currentUserId !== props.user.id) {
-    const currentUser = await fetchUserDetails(currentUserId)
-    isFollowing.value = currentUser.following?.some((u) => u.id === props.user.id)
+  .stat span {
+    font-size: 14px;
   }
 }
-
-onMounted(checkFollowingStatus)
-watch(() => props.user.id, checkFollowingStatus)
-
-const followUser = async () => {
-  await follow(props.user.id)
-  isFollowing.value = true
-}
-
-const unfollowUser = async () => {
-  await unfollow(props.user.id)
-  isFollowing.value = false
-}
-</script>
-})
+</style>

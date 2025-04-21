@@ -1,7 +1,12 @@
 <template>
   <div class="User">
-    <UserBanner :user="user" :initials="initials" :email="user.email" />
-    <FollowingList :following="user.following" style="margin-top: 30px" />
+    <UserBanner
+      :user="user"
+      :initials="initials"
+      :email="user.email"
+      @open-followers="showFollowers = true"
+      @open-following="showFollowing = true"
+    />
 
     <RecentlyVisited :recentVisits="recentVisits" />
 
@@ -32,15 +37,25 @@
       @add="addRestaurant"
       @close="closeAddRestaurantModal"
     />
+
+    <FollowersModal
+      v-if="showFollowers"
+      :followers="user.followers"
+      @close="showFollowers = false"
+    />
+    <FollowingModal
+      v-if="showFollowing"
+      :following="user.following"
+      @close="showFollowing = false"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import Cookies from 'js-cookie'
-import { fetchUserDetails } from '@/api/users'
-import { fetchUserLists } from '@/api/users'
-import { fetchRestaurantDetails } from '@/api/restaurants'
+import { fetchUserDetails, fetchUserLists } from '@/api/users'
+import { fetchRestaurantDetails, fetchRestaurants } from '@/api/restaurants'
 import {
   createFavoriteList,
   updateListName,
@@ -49,7 +64,6 @@ import {
   removeRestaurantFromList,
 } from '@/api/favoritesList'
 import { fetchUserVisits } from '@/api/visit'
-import { fetchRestaurants } from '@/api/restaurants'
 import { restaurantParams } from '@/api/api.config'
 import { retrieveAllPaginatedUserData } from '@/components/user/script/userUtil.js'
 
@@ -58,7 +72,8 @@ import RecentlyVisited from '@/components/user/RecentlyVisited.vue'
 import FavoriteLists from '@/components/user/FavoriteLists.vue'
 import FavoriteModal from '@/components/user/FavoriteModal.vue'
 import RestaurantModal from '@/components/user/RestaurantModal.vue'
-import FollowingList from '@/components/user/FollowingList.vue'
+import FollowersModal from '@/components/user/FollowersModal.vue'
+import FollowingModal from '@/components/user/FollowingModal.vue'
 
 const user = ref({ firstName: '', lastName: '', followers: [], following: [], rating: 0 })
 const initials = ref('')
@@ -75,6 +90,9 @@ const showAddRestaurantModal = ref(false)
 const selectedRestaurantId = ref('')
 const addRestaurantSuccess = ref(false)
 const currentListId = ref(null)
+
+const showFollowers = ref(false)
+const showFollowing = ref(false)
 
 onMounted(async () => {
   const userId = Cookies.get('userId')
@@ -119,7 +137,6 @@ onMounted(async () => {
 })
 
 const openCreateListModal = () => {
-  console.log('Opening modal...')
   showCreateListModal.value = true
   newListName.value = ''
   createListSuccess.value = false
@@ -209,6 +226,7 @@ const reloadMyFavoriteLists = async () => {
   favoriteLists.value = lists
 }
 </script>
+
 <style scoped>
 .User {
   display: flex;
@@ -217,13 +235,39 @@ const reloadMyFavoriteLists = async () => {
   width: 100%;
   font-family: Arial, Helvetica, sans-serif;
 }
+.stats-container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin: 40px 0 0;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+.stat-number {
+  font-size: 22px;
+  font-weight: bold;
+  color: #f55702;
+}
+.stat-label {
+  font-size: 14px;
+  color: #666;
+}
 .UserBanner + * {
   margin-top: 140px;
 }
-
 @media (max-width: 960px) {
   .UserBanner + * {
     margin-top: 180px;
+  }
+  .stats-container {
+    gap: 25px;
+  }
+  .stat-number {
+    font-size: 18px;
   }
 }
 </style>

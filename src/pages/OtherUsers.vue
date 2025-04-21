@@ -1,10 +1,27 @@
 <template>
   <div class="User">
-    <UserBanner :user="user" :initials="initials" :email="user.email" />
+    <UserBanner
+      :user="user"
+      :initials="initials"
+      :email="user.email"
+      @open-followers="showFollowers = true"
+      @open-following="showFollowing = true"
+    />
 
     <RecentlyVisited :recentVisits="recentVisits" />
 
     <FavoriteLists :favoriteLists="favoriteLists" :editingListId="null" :readonly="true" />
+
+    <FollowersModal
+      v-if="showFollowers"
+      :followers="user.followers"
+      @close="showFollowers = false"
+    />
+    <FollowingModal
+      v-if="showFollowing"
+      :following="user.following"
+      @close="showFollowing = false"
+    />
   </div>
 </template>
 
@@ -19,12 +36,17 @@ import { restaurantParams } from '@/api/api.config'
 import UserBanner from '@/components/user/UserBanner.vue'
 import RecentlyVisited from '@/components/user/RecentlyVisited.vue'
 import FavoriteLists from '@/components/user/FavoriteLists.vue'
+import FollowersModal from '@/components/user/FollowersModal.vue'
+import FollowingModal from '@/components/user/FollowingModal.vue'
 
 const route = useRoute()
 const user = ref({ firstName: '', lastName: '', followers: [], following: [], rating: 0 })
 const initials = ref('')
 const recentVisits = ref([])
 const favoriteLists = ref([])
+
+const showFollowers = ref(false)
+const showFollowing = ref(false)
 
 const loadUserProfile = async (userId) => {
   const userData = await fetchUserDetails(userId)
