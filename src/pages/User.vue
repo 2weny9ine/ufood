@@ -2,6 +2,8 @@
   <div class="User">
     <UserBanner :user="user" :initials="initials" :email="user.email" />
 
+    <FollowersFollowingsLists :user="user"/>
+
     <RecentlyVisited :recentVisits="recentVisits" />
 
     <FavoriteLists
@@ -57,6 +59,7 @@ import RecentlyVisited from '@/components/user/RecentlyVisited.vue'
 import FavoriteLists from '@/components/user/FavoriteLists.vue'
 import FavoriteModal from '@/components/user/FavoriteModal.vue'
 import RestaurantModal from '@/components/user/RestaurantModal.vue'
+import FollowersFollowingsLists from '@/components/user/FollowersFollowingsLists.vue'
 
 const user = ref({ firstName: '', lastName: '', followers: [], following: [], rating: 0 })
 const initials = ref('')

@@ -9,12 +9,16 @@
               <div class="info-item-part1-2">
                 <div class="info-item-part1-2-3">
                   <p>{{ user.firstName }} {{ user.lastName }}</p>
+<!--                  <p>{{ user.following }}</p>-->
                   <span class="rating">
                     <span v-for="star in Math.min(user.rating, 5)" :key="star">⭐</span>
                   </span>
                 </div>
               </div>
-              <button class="Follow">Follow</button>
+              <div class="follow-wrapper">
+                <button class="follow-btn" @click="followUser(user.id)">Follow</button>
+                <button class="follow-btn" @click="unfollowUser(user.id)">Unfollow</button>
+              </div>
             </div>
           </div>
           <div class="profile-picture">
@@ -41,6 +45,7 @@
 }
 .wrapper {
   position: relative;
+  margin-bottom: 70px;
 }
 .image {
   margin-top: 100px;
@@ -101,26 +106,76 @@
   font-size: 80px;
   color: #f55702;
 }
+
+.follow-wrapper {
+  display: flex;
+  gap: 10px; /* ← adds space between the buttons */
+  padding: 0;
+  margin: 0;
+}
+
+.follow-btn {
+  margin: 0;
+  padding: 10px 20px;
+  border: none;
+  background-color: #f55702;
+  color: white;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.follow-btn:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.follow-btn:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
 </style>
 <script setup>
 import md5 from 'md5'
+import Cookies from 'js-cookie'
 import { computed } from 'vue'
+import { follow, unfollow } from '@/api/users.js'
 
-const props = defineProps({
+
+const email = Cookies.get('userEmail')
+const gravatarUrl = computed(() =>
+  email
+    ? `https://www.gravatar.com/avatar/${md5(email.trim().toLowerCase())}?s=200&d=identicon`
+    : '',
+)
+const followUser = async (id) => {
+  try {
+    const pathSegments = window.location.pathname.split('/');
+    const id = pathSegments.pop() || pathSegments.pop(); // handle trailing slash
+    await follow(id)
+    console.log('Follow success')
+  } catch (e) {
+    console.error('Follow failed', e)
+  }
+}
+
+const unfollowUser = async (id) => {
+  try {
+    const pathSegments = window.location.pathname.split('/');
+    const id = pathSegments.pop() || pathSegments.pop(); // handle trailing slash
+    await unfollow(id)
+    console.log('unfollow success')
+  } catch (e) {
+    console.error('unfollow failed', e)
+  }
+}
+
+
+defineProps({
   user: {
     type: Object,
     required: true,
   },
-  initials: String,
-  email: {
-    type: String,
-    required: true,
-  },
 })
 
-const gravatarUrl = computed(() =>
-  props.email
-    ? `https://www.gravatar.com/avatar/${md5(props.email.trim().toLowerCase())}?s=200&d=identicon`
-    : '',
-)
 </script>
