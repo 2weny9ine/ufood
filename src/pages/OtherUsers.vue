@@ -1,6 +1,7 @@
 <template>
   <div class="User">
     <UserBanner
+      v-if="user.email"
       :user="user"
       :initials="initials"
       :email="user.email"
@@ -40,7 +41,14 @@ import FollowersModal from '@/components/user/FollowersModal.vue'
 import FollowingModal from '@/components/user/FollowingModal.vue'
 
 const route = useRoute()
-const user = ref({ firstName: '', lastName: '', followers: [], following: [], rating: 0 })
+const user = ref({
+  firstName: '',
+  lastName: '',
+  followers: [],
+  following: [],
+  rating: 0,
+  email: '',
+})
 const initials = ref('')
 const recentVisits = ref([])
 const favoriteLists = ref([])
@@ -50,16 +58,18 @@ const showFollowing = ref(false)
 
 const loadUserProfile = async (userId) => {
   const userData = await fetchUserDetails(userId)
+
   user.value = {
     id: userData.id,
-    firstName: userData.name.split(' ')[0],
-    lastName: userData.name.split(' ')[1] || '',
-    email: userData.email,
-    followers: userData.followers,
-    following: userData.following,
+    firstName: userData.name?.split(' ')[0] || '',
+    lastName: userData.name?.split(' ')[1] || '',
+    email: userData.email || '',
+    followers: userData.followers || [],
+    following: userData.following || [],
     rating: userData.rating || 0,
   }
-  initials.value = `${user.value.firstName[0]}${user.value.lastName[0]}`.toUpperCase()
+
+  initials.value = `${user.value.firstName[0] || ''}${user.value.lastName[0] || ''}`.toUpperCase()
 
   const [visits] = await fetchUserVisits(userId, [[restaurantParams.LIMIT, 10]])
   const enrichedVisits = []
