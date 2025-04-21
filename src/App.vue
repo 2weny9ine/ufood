@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import Header from '@/components/Header.vue'
+import Header from '@/components/NavBar/Header.vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 </script>

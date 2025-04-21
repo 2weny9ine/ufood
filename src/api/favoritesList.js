@@ -1,73 +1,166 @@
-import { getRestaurants } from './restaurants.js'
-export const getFavoriteLists = () => {
-  return JSON.parse(localStorage.getItem('favoriteLists') || '[]')
-}
+import { API_URL, paramsToStr } from './api.config'
+import Cookies from 'js-cookie'
 
-export const fetchAllRestaurants = async () => {
+export const getFavoriteLists = async (options = []) => {
+  const query = paramsToStr(options)
+
   try {
-    const response = await getRestaurants({ limit: 50, page: 1 })
-    return response.items || []
-  } catch (error) {
-    console.error('Error fetching restaurants:', error)
-    return []
-  }
-}
-
-export const createFavoriteList = (name, ownerId = '6569767db55a58e85c543213') => {
-  const lists = getFavoriteLists()
-  const newList = {
-    id: Date.now().toString(),
-    name,
-    restaurants: [],
-    owner: ownerId,
-  }
-  lists.push(newList)
-  localStorage.setItem('favoriteLists', JSON.stringify(lists))
-  return newList
-}
-
-export const updateFavoriteListName = (listId, newName) => {
-  const lists = getFavoriteLists()
-  const list = lists.find((l) => l.id === listId)
-  if (list) {
-    list.name = newName
-    localStorage.setItem('favoriteLists', JSON.stringify(lists))
-    return list
-  }
-  return null
-}
-
-export const deleteFavoriteList = (listId) => {
-  const lists = getFavoriteLists().filter((l) => l.id !== listId)
-  localStorage.setItem('favoriteLists', JSON.stringify(lists))
-  return lists
-}
-
-export const addRestaurantToList = (listId, restaurantId, allRestaurants) => {
-  const lists = getFavoriteLists()
-  const list = lists.find((l) => l.id === listId)
-  const restaurant = allRestaurants.find((r) => r.id === restaurantId)
-  if (list && restaurant && !list.restaurants.some((r) => r.id === restaurantId)) {
-    list.restaurants.push({
-      id: restaurant.id,
-      name: restaurant.name,
-      price_range: restaurant.price_range,
-      genres: restaurant.genres,
-      rating: restaurant.rating,
+    const response = await fetch(`${API_URL}/favorites${query}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Cookies.get('token'),
+      },
     })
-    localStorage.setItem('favoriteLists', JSON.stringify(lists))
-    return list
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message)
+    }
+
+    const data = await response.json()
+    return [data.items, data.total]
+  } catch (error) {
+    console.error('Failed to fetch favorite lists:', error)
+    return [[], 0]
   }
-  return null
 }
 
-export const removeRestaurantFromList = (listId, restaurantId) => {
-  const lists = getFavoriteLists()
-  const list = lists.find((l) => l.id === listId)
-  if (list) {
-    list.restaurants = list.restaurants.filter((r) => r.id !== restaurantId)
-    localStorage.setItem('favoriteLists', JSON.stringify(lists))
-    return list
+export const getFavoriteListById = async (listId) => {
+  try {
+    const response = await fetch(`${API_URL}/favorites/${listId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Cookies.get('token'),
+      },
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message)
+    }
+
+    const data = await response.json()
+    return [data.id, data.name, data.restaurants, data.owner]
+  } catch (error) {
+    console.error('Failed to get favorite list:', error)
+    return null
   }
-  return null
+}
+
+export const createFavoriteList = async (name) => {
+  try {
+    const response = await fetch(`${API_URL}/favorites`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Cookies.get('token'),
+      },
+      body: JSON.stringify({ name }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message)
+    }
+
+    const data = await response.json()
+    return [data.id, data.name, data.restaurants]
+  } catch (error) {
+    console.error('Failed to create favorite list:', error)
+    return null
+  }
+}
+
+export const deleteFavoriteList = async (listId) => {
+  try {
+    const response = await fetch(`${API_URL}/favorites/${listId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Cookies.get('token'),
+      },
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Failed to delete favorite list:', error)
+    return false
+  }
+}
+
+export const addRestaurantToList = async (listId, restaurantId) => {
+  try {
+    const response = await fetch(`${API_URL}/favorites/${listId}/restaurants`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Cookies.get('token'),
+      },
+      body: JSON.stringify({ id: restaurantId }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message)
+    }
+
+    const data = await response.json()
+    return [data.id, data.name, data.restaurants]
+  } catch (error) {
+    console.error('Failed to add restaurant to list:', error)
+    return null
+  }
+}
+
+export const updateListName = async (listId, newName) => {
+  try {
+    const response = await fetch(`${API_URL}/favorites/${listId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Cookies.get('token'),
+      },
+      body: JSON.stringify({ name: newName }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message)
+    }
+
+    const data = await response.json()
+    return [data.id, data.name, data.restaurants]
+  } catch (error) {
+    console.error('Failed to update favorite list name:', error)
+    return null
+  }
+}
+
+export const removeRestaurantFromList = async (listId, restaurantId) => {
+  try {
+    const response = await fetch(`${API_URL}/favorites/${listId}/restaurants/${restaurantId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: Cookies.get('token'),
+      },
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message)
+    }
+
+    const data = await response.json()
+    return [data.id, data.name, data.restaurants]
+  } catch (error) {
+    console.error('Failed to remove restaurant from list:', error)
+    return null
+  }
 }
