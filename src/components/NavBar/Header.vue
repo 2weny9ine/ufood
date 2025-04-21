@@ -11,7 +11,7 @@
     </div>
 
     <button class="menu-toggle" @click="toggleMenu">
-      <img src="../assets/images/icone-version2.png" alt="Menu" />
+      <img src="@/assets/images/icone-version2.png" alt="Menu" />
     </button>
 
     <nav :class="['nav-links', { 'nav-active': isMenuOpen }]">

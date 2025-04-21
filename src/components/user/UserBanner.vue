@@ -4,26 +4,26 @@
       <div class="wrapper">
         <img src="@/assets/images/background%20pic.png" alt="Background Image" class="image" />
         <div class="info">
-          <div class="info-item">
-            <div class="info-item-part1">
-              <div class="info-item-part1-2">
-                <div class="info-item-part1-2-3">
-                  <p>{{ user.firstName }} {{ user.lastName }}</p>
-<!--                  <p>{{ user.following }}</p>-->
-                  <span class="rating">
-                    <span v-for="star in Math.min(user.rating, 5)" :key="star">⭐</span>
-                  </span>
-                </div>
-              </div>
-              <div class="follow-wrapper">
-                <button class="follow-btn" @click="followUser(user.id)">Follow</button>
-                <button class="follow-btn" @click="unfollowUser(user.id)">Unfollow</button>
-              </div>
+          <div class="top-container">
+            <div class="profile-picture">
+              <img :src="gravatarUrl" alt="Gravatar" class="gravatar" />
+            </div>
+
+            <div class="name-rating">
+              <p>{{ user.firstName }} {{ user.lastName }}</p>
+              <span class="rating">
+                <span v-for="star in Math.min(user.rating, 5)" :key="star">⭐</span>
+              </span>
             </div>
           </div>
-          <div class="profile-picture">
-            <img :src="gravatarUrl" alt="Gravatar" class="gravatar" />
-          </div>
+
+          <button
+            v-if="currentUserId !== user.id"
+            class="Follow"
+            @click="isFollowing ? unfollowUser() : followUser()"
+          >
+            {{ isFollowing ? 'Unfollow' : 'Follow' }}
+          </button>
         </div>
       </div>
     </div>
@@ -36,6 +36,7 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
 .Home {
   display: flex;
   width: 100%;
@@ -43,138 +44,120 @@
   align-items: flex-start;
   padding-top: 30px;
 }
+
 .wrapper {
   position: relative;
-  margin-bottom: 70px;
 }
+
 .image {
   margin-top: 100px;
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   border-radius: 20px;
   height: 400px;
   object-fit: cover;
   object-position: right;
   z-index: -1;
   filter: brightness(90%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 .info {
-  font-size: 25px;
-  padding-left: 300px;
-}
-.info-item-part1 {
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  justify-content: space-between;
-}
-.info-item-part1-2-3 {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-}
-.rating {
-  font-size: 20px;
-}
-.Follow {
-  margin-top: 10px;
-  background-color: #f55702;
-  border-radius: 15px;
-  width: 150px;
-  height: 50px;
-  color: white;
   font-size: 25px;
-  border: none;
-  cursor: pointer;
+  color: #000;
+  z-index: 2;
 }
-.Follow:hover {
-  background-color: #c8c0c0;
-  transition:
-    background-color 0.3s ease,
-    transform 0.2s;
+
+.top-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 .profile-picture {
   width: 200px;
   height: 200px;
   background-color: #ffffff;
   border-radius: 100px;
   border: solid 5px #f55702;
-  position: absolute;
-  top: 70%;
-  right: 76%;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 1);
-}
-.profile-picture h2 {
-  text-align: center;
-  font-size: 80px;
-  color: #f55702;
+  overflow: hidden;
+  z-index: 1;
 }
 
-.follow-wrapper {
+.name-rating {
+  margin-top: 15px;
   display: flex;
-  gap: 10px; /* ← adds space between the buttons */
-  padding: 0;
-  margin: 0;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.2rem;
 }
 
-.follow-btn {
-  margin: 0;
-  padding: 10px 20px;
-  border: none;
+.rating {
+  color: #ffc107;
+  font-size: 1.1rem;
+}
+
+.Follow {
+  margin-top: 15px;
   background-color: #f55702;
+  border-radius: 15px;
+  padding: 10px 25px;
   color: white;
-  font-weight: bold;
-  border-radius: 12px;
+  font-size: 1.2rem;
+  border: none;
   cursor: pointer;
 }
 
-.follow-btn:first-child {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+.Follow:hover {
+  background-color: #c8c0c0;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s;
 }
 
-.follow-btn:last-child {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+@media (max-width: 960px) {
+  .profile-picture {
+    width: 140px;
+    height: 140px;
+  }
+
+  .info {
+    top: 85%;
+    font-size: 20px;
+  }
+
+  .name-rating {
+    font-size: 1rem;
+  }
+
+  .Follow {
+    font-size: 1rem;
+    padding: 8px 20px;
+  }
 }
 </style>
+
 <script setup>
 import md5 from 'md5'
 import { computed, ref, onMounted, watch } from 'vue'
 import Cookies from 'js-cookie'
 import { fetchUserDetails, follow, unfollow } from '@/api/users'
 
-
-
-const email = Cookies.get('userEmail')
-const gravatarUrl = computed(() =>
-  email
-    ? `https://www.gravatar.com/avatar/${md5(email.trim().toLowerCase())}?s=200&d=identicon`
-    : '',
-)
-const followUser = async (id) => {
-  try {
-    const pathSegments = window.location.pathname.split('/');
-    const id = pathSegments.pop() || pathSegments.pop(); // handle trailing slash
-    await follow(id)
-    console.log('Follow success')
-  } catch (e) {
-    console.error('Follow failed', e)
-  }
-}
-
-const unfollowUser = async (id) => {
-  try {
-    const pathSegments = window.location.pathname.split('/');
-    const id = pathSegments.pop() || pathSegments.pop(); // handle trailing slash
-    await unfollow(id)
-    console.log('unfollow success')
-  } catch (e) {
-    console.error('unfollow failed', e)
-  }
-}
-
-
-defineProps({
+const props = defineProps({
   user: {
     type: Object,
+    required: true,
+  },
+  initials: String,
+  email: {
+    type: String,
     required: true,
   },
 })
@@ -206,5 +189,5 @@ const unfollowUser = async () => {
   await unfollow(props.user.id)
   isFollowing.value = false
 }
-
 </script>
+})
