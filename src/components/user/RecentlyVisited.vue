@@ -93,6 +93,7 @@
 .Table-Visit {
   width: 1200px;
   padding: 20px;
+  margin-top: 180px;
 }
 .Table-content {
   width: 100%;

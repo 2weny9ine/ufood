@@ -217,4 +217,13 @@ const reloadMyFavoriteLists = async () => {
   width: 100%;
   font-family: Arial, Helvetica, sans-serif;
 }
+.UserBanner + * {
+  margin-top: 140px;
+}
+
+@media (max-width: 960px) {
+  .UserBanner + * {
+    margin-top: 180px;
+  }
+}
 </style>

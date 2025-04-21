@@ -35,7 +35,8 @@ defineProps({
 
 .Table-Visit {
   width: 1200px;
-  padding: 20px;
+  padding: 40px;
+  margin-top: 100px;
 }
 .Table-content {
   width: 100%;

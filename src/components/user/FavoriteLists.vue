@@ -139,6 +139,42 @@ p1 {
   font-size: 40px;
   padding: 25px;
 }
+
+@media (max-width: 1200px) {
+  .Table-Favorites {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .favorite-card {
+    padding: 10px;
+  }
+
+  .list-name-input {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .favorite-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .restaurant-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .restaurant-link {
+    font-size: 16px;
+  }
+
+  .remove-button {
+    margin-top: 5px;
+    margin-left: 0;
+  }
+}
 </style>
 <script setup>
 defineProps({

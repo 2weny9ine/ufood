@@ -47,9 +47,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = Cookies.get('token')
   const isPublic = to.meta.public
-
-  console.log('Navigation to:', to.path, '| Authenticated:', !!token, '| Public:', isPublic)
-
   if (isPublic) {
     return next()
   }
