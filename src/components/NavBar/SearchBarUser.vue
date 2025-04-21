@@ -21,10 +21,13 @@
           v-for="user in users"
           :key="user.id"
           class="suggestion"
-          style="display: flex; justify-content: space-between"
+          style="display: flex; justify-content: space-between; align-items: center"
         >
           <span @click="goToUser(user.id)" style="cursor: pointer; color: dodgerblue">
             {{ user.name }}
+            <span style="margin-left: 10px; font-size: 14px; color: gray">
+              {{ isFollowing(user.id) ? 'Following' : 'Follow' }}
+            </span>
           </span>
 
           <div style="cursor: pointer">
@@ -32,13 +35,13 @@
               class="bi bi-plus-circle-fill"
               style="color: dodgerblue"
               :hidden="isFollowing(user.id)"
-              @click="followUser(user.id)"
+              @click.stop="followUser(user.id)"
             ></i>
             <i
               class="bi bi-trash3-fill"
               style="color: red"
               :hidden="!isFollowing(user.id)"
-              @click="unfollowUser(user.id)"
+              @click.stop="unfollowUser(user.id)"
             ></i>
           </div>
         </li>
