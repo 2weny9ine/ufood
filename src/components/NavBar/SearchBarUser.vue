@@ -7,12 +7,121 @@
           alt="search-logo"
           class="search-icon"
         />
-        <input id="text-field" type="text" placeholder="Search for users..." />
-        <button id="reset-button">X</button>
+        <input
+          id="text-field"
+          type="text"
+          placeholder="Search for users..."
+          v-model="search"
+          @input="handleSearch"
+        />
+        <button id="reset-button" @click="clearSearch">X</button>
       </div>
+      <ul v-if="users.length > 0" id="suggestions-container">
+        <li
+          v-for="user in users"
+          :key="user.id"
+          class="suggestion"
+          style="display: flex; justify-content: space-between; align-items: center"
+        >
+          <span @click="goToUser(user.id)" style="cursor: pointer; color: dodgerblue">
+            {{ user.name }}
+            <span style="margin-left: 10px; font-size: 14px; color: gray">
+              {{ isFollowing(user.id) ? 'Following' : 'Follow' }}
+            </span>
+          </span>
+
+          <div style="cursor: pointer">
+            <i
+              class="bi bi-plus-circle-fill"
+              style="color: dodgerblue"
+              :hidden="isFollowing(user.id)"
+              @click.stop="followUser(user.id)"
+            ></i>
+            <i
+              class="bi bi-trash3-fill"
+              style="color: red"
+              :hidden="!isFollowing(user.id)"
+              @click.stop="unfollowUser(user.id)"
+            ></i>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import Cookies from 'js-cookie'
+import { fetchAllUsers, fetchUserDetails, follow, unfollow } from '@/api/users'
+import { restaurantParams } from '@/api/api.config'
+import { displayPopup } from '@/components/NavBar/script/searchuser.js'
+
+const search = ref('')
+const users = ref([])
+const followingList = ref([])
+const router = useRouter()
+
+onMounted(async () => {
+  await updateFollowingList()
+})
+
+const goToUser = (userId) => {
+  router.push(`/user/${userId}`)
+  clearSearch()
+}
+
+const clearSearch = () => {
+  search.value = ''
+  users.value = []
+}
+
+const updateFollowingList = async () => {
+  const userId = Cookies.get('userId')
+  const userData = await fetchUserDetails(userId)
+  followingList.value = userData.following || []
+}
+
+const handleSearch = async () => {
+  const query = search.value.trim().toLowerCase()
+  if (!query) {
+    users.value = []
+    return
+  }
+
+  const options = [
+    [restaurantParams.Q, query],
+    [restaurantParams.LIMIT, 10],
+  ]
+  const [result] = await fetchAllUsers(options)
+  users.value = result
+}
+
+const isFollowing = (id) => {
+  return followingList.value.some((user) => user.id === id)
+}
+
+const followUser = async (id) => {
+  try {
+    await follow(id)
+    clearSearch()
+    await updateFollowingList()
+  } catch (err) {
+    displayPopup('Erreur', err.message)
+  }
+}
+
+const unfollowUser = async (id) => {
+  try {
+    await unfollow(id)
+    clearSearch()
+    await updateFollowingList()
+  } catch (err) {
+    displayPopup('Erreur', err.message)
+  }
+}
+</script>
 
 <style scoped>
 #container-drop {
@@ -67,6 +176,7 @@
 #reset-button:hover {
   color: #333;
 }
+
 #suggestions-container {
   position: absolute;
   top: 100%;
@@ -106,6 +216,7 @@
   font-size: 20px;
   font-family: 'Comic Sans MS', 'Comic Sans', cursive;
 }
+
 @media (max-width: 1300px) {
   .search-bar {
     padding: 5px;
@@ -124,6 +235,7 @@
     font-size: 16px;
   }
 }
+
 @media (max-width: 768px) {
   .search-bar {
     padding: 5px;

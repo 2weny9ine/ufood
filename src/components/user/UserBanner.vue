@@ -104,19 +104,23 @@
 </style>
 <script setup>
 import md5 from 'md5'
-import Cookies from 'js-cookie'
 import { computed } from 'vue'
 
-const email = Cookies.get('userEmail')
-const gravatarUrl = computed(() =>
-  email
-    ? `https://www.gravatar.com/avatar/${md5(email.trim().toLowerCase())}?s=200&d=identicon`
-    : '',
-)
-defineProps({
+const props = defineProps({
   user: {
     type: Object,
     required: true,
   },
+  initials: String,
+  email: {
+    type: String,
+    required: true,
+  },
 })
+
+const gravatarUrl = computed(() =>
+  props.email
+    ? `https://www.gravatar.com/avatar/${md5(props.email.trim().toLowerCase())}?s=200&d=identicon`
+    : '',
+)
 </script>
