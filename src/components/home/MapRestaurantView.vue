@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['visit'])
-const router = useRouter() // Use Vue Router for navigation
+const router = useRouter()
 
 const mapContainer = ref(null)
 let mapInstance = null

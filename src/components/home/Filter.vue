@@ -117,7 +117,6 @@
 <script setup>
 import SearchBarRestaurant from './SearchBarRestaurant.vue'
 
-// Définir les props et emits sans les assigner à des variables
 defineProps({
   genres: { type: Array, default: () => [] },
   price: { type: [Number, String], default: '' },
