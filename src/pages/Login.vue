@@ -51,6 +51,13 @@ const name = ref('')
 const errorMessage = ref('')
 
 const handleLogin = async () => {
+  errorMessage.value = ''
+
+  if (!username.value.includes('@')) {
+    errorMessage.value = 'Please enter a valid email address.'
+    return
+  }
+
   try {
     const [token, user] = await authenticateUser(username.value, password.value)
     Cookies.set('token', token)
@@ -59,23 +66,49 @@ const handleLogin = async () => {
     Cookies.set('userEmail', user.email)
     router.push('/Home')
   } catch (error) {
-    console.error('Login failed:', error)
-    errorMessage.value = 'Invalid username or password'
+    if (error.message.includes('Unauthorized')) {
+      errorMessage.value = 'Invalid email or password.'
+    } else {
+      errorMessage.value = error.message
+    }
   }
 }
 
 const handleSignup = async () => {
+  errorMessage.value = ''
+
+  if (!username.value.includes('@')) {
+    errorMessage.value = 'Please enter a valid email address.'
+    return
+  }
+
   try {
     await registerAccount(name.value, username.value, password.value)
     await handleLogin()
   } catch (error) {
-    console.error('Signup failed:', error)
-    errorMessage.value = 'Account creation failed. Please try again.'
+    if (error.message.includes('already exists')) {
+      errorMessage.value = 'An account with this email already exists.'
+    } else {
+      errorMessage.value = error.message || 'Signup failed. Please try again.'
+    }
   }
 }
 </script>
 
 <style scoped>
+.error-message {
+  color: #ff4d4d;
+  font-size: 0.95em;
+  background-color: #fff2f2;
+  border: 1px solid #ffb3b3;
+  padding: 10px 15px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 320px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
 .Main {
   display: flex;
   width: 100vw;

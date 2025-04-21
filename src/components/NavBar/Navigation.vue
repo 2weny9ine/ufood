@@ -11,10 +11,10 @@
             <img src="@/assets/images/profileicon.svg" alt="Profile Icon" class="icon" />
             Profile
           </router-link>
-          <router-link to="/" class="dropdown-item">
+          <a @click.prevent="logout" class="dropdown-item logout">
             <img src="@/assets/images/logouticon.svg" alt="Log out Icon" class="icon" />
             Log out
-          </router-link>
+          </a>
         </div>
       </li>
     </ul>
@@ -24,6 +24,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Cookies from 'js-cookie'
+import { useRouter } from 'vue-router'
+import { endSession } from '@/api/authentication'
+
+const router = useRouter()
+
+const logout = async () => {
+  await endSession()
+  router.push('/')
+}
 
 const dropdownVisible = ref(false)
 
