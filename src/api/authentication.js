@@ -9,13 +9,14 @@ export const authenticateUser = async (email, password) => {
 
   if (!response.ok) {
     let errorMessage = 'Login failed.'
+
     try {
-      const error = await response.json()
-      errorMessage = error.message || errorMessage
+      const errorData = await response.clone().json()
+      errorMessage = errorData.message || errorMessage
     } catch {
-      const text = await response.text()
-      errorMessage = text || errorMessage
+      errorMessage = await response.text()
     }
+
     throw new Error(errorMessage)
   }
 
@@ -57,8 +58,15 @@ export const registerAccount = async (name, email, password) => {
     })
 
     if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.message)
+      let errorMessage = 'Signup failed.'
+      try {
+        const errorData = await response.clone().json()
+        errorMessage = errorData.message || errorMessage
+      } catch {
+        errorMessage = await response.text()
+      }
+
+      throw new Error(errorMessage)
     }
 
     return await response.json()
