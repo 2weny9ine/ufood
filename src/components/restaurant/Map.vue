@@ -1,16 +1,11 @@
 <template>
   <div class="map-view">
     <h3 class="map-title">Restaurant Location</h3>
+    <div ref="mapContainer" class="map-box"></div>
 
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet" />
-
-    <div ref="mapContainer" class="map-box">
-      <div v-if="!showDirectionsPanel && !isMapLoading" class="map-controls">
-        <button class="maps-button" v-if="!routeShown" @click="displayRoute">Get Directions</button>
-        <button class="maps-button alt" v-if="routeShown" @click="clearRoute">
-          Hide Directions
-        </button>
-      </div>
+    <div v-if="!showDirectionsPanel && !isMapLoading" class="map-controls">
+      <button class="maps-button" v-if="!routeShown" @click="displayRoute">Get Directions</button>
+      <button class="maps-button alt" v-if="routeShown" @click="clearRoute">Hide Directions</button>
     </div>
   </div>
 </template>
@@ -44,6 +39,10 @@ export default {
     async initializeMap() {
       mapboxgl.accessToken = MAPBOX_API_KEY
       this.isMapLoading = true
+
+      if (this.$refs.mapContainer) {
+        this.$refs.mapContainer.innerHTML = ''
+      }
 
       this.mapInstance = new mapboxgl.Map({
         container: this.$refs.mapContainer,
@@ -97,7 +96,7 @@ export default {
 
 .map-title {
   margin-top: 20px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   font-size: 1.5rem;
   font-weight: bold;
   color: #333;

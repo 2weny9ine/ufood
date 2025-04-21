@@ -52,7 +52,7 @@
           </ul>
         </div>
         <div v-else class="no-favorites">
-          <p1>You haven't created any favorite lists yet!</p1>
+          <p>You haven't created any favorite lists yet!</p>
         </div>
       </div>
     </div>

@@ -28,7 +28,7 @@
           </div>
         </div>
         <div v-else class="no-visits">
-          <p1>You haven't visited any restaurants yet!</p1>
+          <p class="empty-message">You haven't visited any restaurants yet!</p>
         </div>
       </div>
     </div>
