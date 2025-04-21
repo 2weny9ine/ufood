@@ -93,13 +93,11 @@ watch(query, (newVal) => {
 </script>
 
 <style scoped>
-.search-result {
-  max-height: 30rem;
-  overflow-y: auto;
-}
-
-.disabled {
-  pointer-events: none;
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 750px;
+  margin: 0 auto;
 }
 
 .search-bar-wrapper {
@@ -109,6 +107,55 @@ watch(query, (newVal) => {
 
 .search-form {
   display: flex;
-  padding: 1rem;
+  padding: 5px 10px;
+  border-radius: 15px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+}
+
+.form-control {
+  border: none;
+  padding: 6px 8px;
+  font-size: 15px;
+  flex-grow: 1;
+  font-family: Arial, Helvetica, sans-serif;
+  outline: none;
+  min-width: 100px;
+  background-color: transparent;
+}
+
+.search-result {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  z-index: 10;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 15px;
+  padding: 0;
+  list-style: none;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  border: 1px solid #f55702;
+}
+
+.search-result li {
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.search-result li:hover {
+  background-color: #eee;
+}
+
+.text-dark {
+  color: #f55702 !important;
+  font-weight: bold;
+  text-decoration: none;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="User">
     <UserBanner :user="user" :initials="initials" :email="user.email" />
+    <FollowingList :following="user.following" style="margin-top: 30px" />
 
     <RecentlyVisited :recentVisits="recentVisits" />
 
@@ -57,6 +58,7 @@ import RecentlyVisited from '@/components/user/RecentlyVisited.vue'
 import FavoriteLists from '@/components/user/FavoriteLists.vue'
 import FavoriteModal from '@/components/user/FavoriteModal.vue'
 import RestaurantModal from '@/components/user/RestaurantModal.vue'
+import FollowingList from '@/components/user/FollowingList.vue'
 
 const user = ref({ firstName: '', lastName: '', followers: [], following: [], rating: 0 })
 const initials = ref('')
@@ -81,6 +83,7 @@ onMounted(async () => {
 
   const userData = await fetchUserDetails(userId)
   user.value = {
+    id: userData.id,
     firstName: userData.name.split(' ')[0],
     lastName: userData.name.split(' ')[1] || '',
     email: userData.email,
