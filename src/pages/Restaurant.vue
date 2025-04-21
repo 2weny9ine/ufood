@@ -144,9 +144,12 @@ const submitVisit = async () => {
     return
   }
 
+  const localDate = new Date(visitDate.value)
+  localDate.setUTCHours(12, 0, 0, 0)
+
   const payload = {
     restaurant_id: selectedRestaurant.value.id,
-    date: new Date(visitDate.value).toISOString(),
+    date: localDate.toISOString(),
     rating: visitRating.value,
     comment: visitComment.value,
   }

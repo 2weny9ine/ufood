@@ -37,6 +37,7 @@ defineProps({
   width: 1200px;
   padding: 40px;
   margin-top: 100px;
+  margin-bottom: -250px;
 }
 .Table-content {
   width: 100%;

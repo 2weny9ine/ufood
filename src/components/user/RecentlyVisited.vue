@@ -12,7 +12,7 @@
             >
               <div class="restaurant-info">
                 <p class="restaurant-name">{{ visit.name }}</p>
-                <p class="visit-date">Date: {{ new Date(visit.date).toLocaleDateString() }}</p>
+                <p class="visit-date">Date: {{ formatLocalDate(visit.date) }}</p>
                 <button class="more-button" @click="openModal(visit)">Details</button>
               </div>
             </li>
@@ -161,6 +161,13 @@ defineProps({
     required: true,
   },
 })
+
+const formatLocalDate = (isoDate) => {
+  const date = new Date(isoDate)
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+}
 
 const selectedVisit = ref(null)
 const showModal = ref(false)
