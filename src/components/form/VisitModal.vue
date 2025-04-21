@@ -37,9 +37,10 @@
         ></textarea>
       </div>
 
+      <p v-if="error" class="error-message">{{ error }}</p>
       <p v-if="success" class="success-message">Visit recorded successfully!</p>
       <div class="modal-buttons">
-        <button class="submit-visit" @click="$emit('submit')" :disabled="!date">Submit</button>
+        <button class="submit-visit" @click="$emit('submit')">Submit</button>
         <button class="close-modal" @click="$emit('close')">Cancel</button>
       </div>
     </div>
@@ -47,7 +48,7 @@
 </template>
 
 <script setup>
-defineProps(['restaurant', 'date', 'rating', 'comment', 'success'])
+defineProps(['restaurant', 'date', 'rating', 'comment', 'success', 'error'])
 defineEmits(['submit', 'close', 'update:date', 'update:rating', 'update:comment'])
 </script>
 
@@ -158,5 +159,11 @@ defineEmits(['submit', 'close', 'update:date', 'update:rating', 'update:comment'
 .success-message {
   color: green;
   font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
 }
 </style>

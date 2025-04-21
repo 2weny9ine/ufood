@@ -46,6 +46,7 @@
       v-model:rating="visitRating"
       v-model:comment="visitComment"
       :success="visitSuccess"
+      :error="visitError"
       @submit="submitVisit"
       @close="closeVisitModal"
     />
@@ -94,6 +95,7 @@ const visitDate = ref('')
 const visitRating = ref(3)
 const visitComment = ref('')
 const visitSuccess = ref(false)
+const visitError = ref('') // New ref for error message
 
 const viewMode = ref<'list' | 'map'>('list')
 const userLocation = ref([])
@@ -105,16 +107,20 @@ const openVisitModal = (restaurant) => {
   visitDate.value = ''
   visitRating.value = 3
   visitComment.value = ''
+  visitSuccess.value = false
+  visitError.value = '' // Clear error when opening modal
   showVisitModal.value = true
 }
 
 const closeVisitModal = () => {
   showVisitModal.value = false
+  visitError.value = '' // Clear error when closing modal
 }
 
 const submitVisit = async () => {
+  // Validate required fields
   if (!visitDate.value) {
-    alert('Please select a date!')
+    visitError.value = 'Please select a date!'
     return
   }
 
@@ -128,12 +134,13 @@ const submitVisit = async () => {
   try {
     await registerVisit(USER_ID, visitData)
     visitSuccess.value = true
+    visitError.value = '' // Clear error on success
     setTimeout(() => {
       visitSuccess.value = false
       closeVisitModal()
     }, 1500)
   } catch {
-    alert('Failed to register visit.')
+    visitError.value = 'Failed to register visit.'
   }
 }
 
